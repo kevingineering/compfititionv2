@@ -3,3 +3,5 @@ bin
 **.db*
 *.DS_Store
 appsettings.json
+notes.txt
+checklist.txt

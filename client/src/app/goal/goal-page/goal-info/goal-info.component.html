@@ -1,0 +1,39 @@
+<li *ngIf="this.goal.description" class="table-info lr-border">
+  <span><strong>Description: </strong>{{ this.goal.description }}</span>
+</li>
+<li class="table-info lr-border">
+  <div class="space-between">
+    <span *ngIf="topLeftTag !== null">
+      <strong>{{ topLeftTag }}</strong
+      >{{ topLeftMsg }}
+    </span>
+    <span class="right" *ngIf="topRightTag !== null">
+      <strong>{{ topRightTag }}</strong
+      >{{ topRightMsg }}
+    </span>
+  </div>
+</li>
+<li class="table-info lr-border">
+  <div class="space-between">
+    <span *ngIf="middleLeftTag !== null">
+      <strong>{{ middleLeftTag }}</strong
+      >{{ middleLeftMsg }}
+    </span>
+    <span class="right" *ngIf="middleRightTag !== null">
+      <strong>{{ middleRightTag }}</strong
+      >{{ middleRightMsg }}
+    </span>
+  </div>
+</li>
+<li class="table-info lr-border">
+  <div class="space-between">
+    <span *ngIf="bottomLeftTag !== null">
+      <strong>{{ bottomLeftTag }}</strong
+      >{{ bottomLeftMsg }}
+    </span>
+    <span class="right" *ngIf="bottomRightTag !== null">
+      <strong>{{ bottomRightTag }}</strong
+      >{{ bottomRightMsg }}
+    </span>
+  </div>
+</li>

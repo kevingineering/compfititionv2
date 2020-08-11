@@ -1,0 +1,38 @@
+<li class="table-info lr-border center">
+  <strong>Record Your Progress</strong>
+</li>
+<li class="table-info lr-border center">
+  <span class="width-80">
+    <strong>Today:</strong>
+  </span>
+  <span>
+    <input
+      type="number"
+      id="chart-input"
+      class="center"
+      min="0"
+      max="1000000"
+      name="today"
+      [(value)]="today === null ? '' : today"
+      (keyup)="onEntry($event.currentTarget)"
+    />
+  </span>
+</li>
+<li class="table-info lr-border center" *ngIf="time > 0 && goal.type === 1">
+  <span class="width-80">
+    <strong>Yesterday:</strong>
+  </span>
+  <span>
+    <input
+      type="number"
+      id="chart-input"
+      class="center"
+      min="0"
+      max="1000000"
+      name="yesterday"
+      [(value)]="yesterday"
+      (keyup)="onEntry($event.currentTarget)"
+    />
+  </span>
+</li>
+<hr />

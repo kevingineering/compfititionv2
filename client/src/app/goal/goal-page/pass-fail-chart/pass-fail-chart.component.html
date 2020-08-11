@@ -1,0 +1,28 @@
+<li *ngFor="let item of weeks; index as i">
+  <span class="table-row">
+    <span class="table-label">
+      Week {{ i + 1 }} -
+      <span class="hide-sm">
+        {{ getWeekDate(i) }}
+      </span>
+    </span>
+    <span class="table-buttons">
+      <button
+        *ngFor="let item of days; index as j"
+        class="table-btn"
+        [ngClass]="{ 'table-btn-today': i * this.goal.total + j === time }"
+        (click)="handleClick($event.currentTarget.name)"
+        name="{{ i * this.goal.total + j }}"
+      >
+        <i
+          *ngIf="time >= i * this.goal.total + j"
+          [ngClass]="
+            this.record[i * this.goal.total + j]
+              ? 'fa fa-check success-color'
+              : 'fa fa-times danger-color'
+          "
+        ></i>
+      </button>
+    </span>
+  </span>
+</li>
