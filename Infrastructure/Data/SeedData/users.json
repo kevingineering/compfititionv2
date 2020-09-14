@@ -3,7 +3,7 @@
     "Id": "65fe1074-d2ce-454b-9bd4-b61a8db31021",
     "Name": "Alpha",
     "Email": "alpha@alpha.com",
-    "Password": "alpha1",
+    "Password": "AGPZSkX9ngiJ31CtYvaPnxbIMqOkq8eEcbkOMXPvDAWGkQYXqJ05YKqLQE4hhTE+Xw==",
     "RegisterDate": "2020-04-01T00:00:00.0000000",
     "IsSearchable": true
   },
@@ -11,7 +11,7 @@
     "Id": "e8568fde-e9eb-4f35-a963-e63b9759c778",
     "Name": "Bravo",
     "Email": "bravo@bravo.com",
-    "Password": "bravo1",
+    "Password": "AGPZSkX9ngiJ31CtYvaPnxbIMqOkq8eEcbkOMXPvDAWGkQYXqJ05YKqLQE4hhTE+Xw==",
     "RegisterDate": "2020-05-01T00:00:00.0000000",
     "IsSearchable": true
   },
@@ -19,8 +19,24 @@
     "Id": "4e6a32be-8608-49d1-a54f-8f27e83b09a9",
     "Name": "Charlie",
     "Email": "charlie@charlie.com",
-    "Password": "charlie1",
+    "Password": "AGPZSkX9ngiJ31CtYvaPnxbIMqOkq8eEcbkOMXPvDAWGkQYXqJ05YKqLQE4hhTE+Xw==",
     "RegisterDate": "2020-06-01T00:00:00.0000000",
     "IsSearchable": false
+  },
+  {
+    "Id": "3ed3ebc7-6dad-4350-b335-9a756450253e",
+    "Name": "Delta",
+    "Email": "delta@delta.com",
+    "Password": "AGPZSkX9ngiJ31CtYvaPnxbIMqOkq8eEcbkOMXPvDAWGkQYXqJ05YKqLQE4hhTE+Xw==",
+    "RegisterDate": "2020-07-01T00:00:00.0000000",
+    "IsSearchable": true
+  },
+  {
+    "Id": "176fca43-1685-42ab-81c9-33445ebcc249",
+    "Name": "Echo",
+    "Email": "echo@echo.com",
+    "Password": "AGPZSkX9ngiJ31CtYvaPnxbIMqOkq8eEcbkOMXPvDAWGkQYXqJ05YKqLQE4hhTE+Xw==",
+    "RegisterDate": "2020-08-01T00:00:00.0000000",
+    "IsSearchable": true
   }
 ]

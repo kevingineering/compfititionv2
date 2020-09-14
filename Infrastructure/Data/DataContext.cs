@@ -13,13 +13,13 @@ namespace Infrastructure.Data
 
     public DbSet<Goal> Goals { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<UserFriendRequest> UserFriendRequests { get; set; }
+    public DbSet<UserFriendship> UserFriendships { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       base.OnModelCreating(modelBuilder);
       modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-      modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
     }
   }
 }

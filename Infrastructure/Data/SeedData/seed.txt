@@ -1,0 +1,34 @@
+Users: 
+  Alpha
+  Bravo
+  Charlie
+  Delta
+  Echo
+  Password: Pa$$w0rd
+
+Goals:
+  Alpha Pass Fail
+  Alpha Total
+  Alpha Difference
+  Brave Pass Fail
+
+Friendships:
+  Alpha and Bravo
+  Alpha and Charlie
+  Bravo and Charlie
+
+Friend Requests: 
+  Alpha to Delta
+  Echo to Alpha
+
+Competitions: 
+
+Admins:
+
+Comments:
+
+Letters:
+
+
+
+

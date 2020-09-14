@@ -1,0 +1,35 @@
+Routes: 
+  /goals
+    POST    /                   add goal
+    GET     /                   all goals
+    GET     /:goalId            user goal
+    PATCH   /:goalId            update goal
+    PATCH   /tracker            update tracker
+    DELETE  /:goalId            delete goal
+
+  /user
+    POST    /register           register user
+    POST    /login              login user
+    GET     /                   get user
+    GET     /searchable         get searchable users
+    PUT     /                   update user
+    PATCH   /changepassword     change password
+    DELETE  /                   delete user
+
+  /userfriendrequest
+    POST    /:friendId          add friend request
+    GET     /                   get friend requests
+    DELETE  /:friendId          delete friend request
+  
+  /userfriend
+    POST    /:friendId          add friend (and delete friend request)
+    GET     /                   get user friends
+    GET     /goals/:friendId    get friend's public goals
+    GET     /friends/:friendId  get friend's searchable friends
+    DELETE  /:friendId          delete friend
+
+  /errorgenerator
+    GET     /notfound           test 404 error
+    GET     /servererror        test 500 error
+    GET     /badrequest         test 400 error
+    GET     /badrequest/string  test 400 error with validation

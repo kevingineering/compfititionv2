@@ -1,7 +1,7 @@
 [
   {
     "Id": "58635691-1276-4c0f-9ea1-8703d79f6df2",
-    "Name": "Total Goal",
+    "Name": "Alpha Total Goal",
     "UserId": "65fe1074-d2ce-454b-9bd4-b61a8db31021",
     "Duration": 14,
     "StartDate": "2020-07-01T00:00:00.0000000",
@@ -15,7 +15,7 @@
   },
   {
     "Id": "0bc53989-3f9d-485a-8a5c-71350bc79143",
-    "Name": "Difference Goal",
+    "Name": "Alpha Difference Goal",
     "UserId": "65fe1074-d2ce-454b-9bd4-b61a8db31021",
     "Duration": 14,
     "StartDate": "2020-07-02T00:00:00.0000000",
@@ -29,11 +29,11 @@
   },
   {
     "Id": "62c896c2-676d-4282-aa6a-cf3aa44fc004",
-    "Name": "Pass Fail Goal",
+    "Name": "Alpha Pass Fail Goal",
     "UserId": "65fe1074-d2ce-454b-9bd4-b61a8db31021",
     "Duration": 14,
     "StartDate": "2020-07-03T00:00:00.0000000",
-    "Type": "total",
+    "Type": "passfail",
     "Description": "This is a pass fail goal.",
     "Units": null,
     "Total": 7,
@@ -43,11 +43,11 @@
   },
   {
     "Id": "c293bfd5-3ac4-47e9-8f52-19e4d902b7df",
-    "Name": "Pass Fail Goal",
+    "Name": "Bravo Pass Fail Goal",
     "UserId": "e8568fde-e9eb-4f35-a963-e63b9759c778",
     "Duration": 14,
     "StartDate": "2020-07-03T00:00:00.0000000",
-    "Type": "total",
+    "Type": "passfail",
     "Description": "This is a pass fail goal.",
     "Units": null,
     "Total": 7,

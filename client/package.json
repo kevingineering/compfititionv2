@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "tree": "node /home/kevin/Documents/js_html_css/component-tree/treeNode/js/treeNode/createTree /home/kevin/Documents/dotnet_core/fitness_website/client/src/app",
+    "treeDemo": "node /home/kevin/Documents/js_html_css/component-tree/treeNode/js/treeNode/createTree /home/kevin/Documents/dotnet_core/neil_cummings/eCommerce/skinet/client/src/app"
   },
   "private": true,
   "dependencies": {

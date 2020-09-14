@@ -1,10 +1,13 @@
 using System;
 using API.Errors;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+  [AllowAnonymous]
+  [ApiExplorerSettings(IgnoreApi = true)] //make Swagger ignore
   public class ErrorGeneratorController : BaseController
   {
     private readonly DataContext _context;

@@ -1,9 +1,11 @@
+using System;
+
 namespace API.Errors
 {
   public class ApiError
   {
     public int StatusCode { get; set; }
-    public string Message { get; set; }
+    public string Message { get; }
 
     public ApiError(int statusCode, string message = null)
     {
@@ -17,6 +19,7 @@ namespace API.Errors
       {
         400 => "Something was wrong with your request.",
         401 => "You are not authorized to perform this action.",
+        403 => "You are forbidden from performing actions. Please log in or register.",
         404 => "Resource was not found.",
         500 => "Something went wrong on the server.",
         _ => null

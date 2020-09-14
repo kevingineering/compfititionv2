@@ -100,11 +100,71 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Core.Entities.UserFriendRequest", b =>
+                {
+                    b.Property<Guid>("RequesterId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RequesteeId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RequesterId", "RequesteeId");
+
+                    b.HasIndex("RequesteeId");
+
+                    b.ToTable("UserFriendRequests");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserFriendship", b =>
+                {
+                    b.Property<Guid>("User1Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("User2Id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("User1Id", "User2Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("UserFriendships");
+                });
+
             modelBuilder.Entity("Core.Entities.Goal", b =>
                 {
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.UserFriendRequest", b =>
+                {
+                    b.HasOne("Core.Entities.User", "Requestee")
+                        .WithMany("Requestees")
+                        .HasForeignKey("RequesteeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "Requester")
+                        .WithMany("Requesters")
+                        .HasForeignKey("RequesterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.UserFriendship", b =>
+                {
+                    b.HasOne("Core.Entities.User", "User1")
+                        .WithMany("User1Friends")
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "User2")
+                        .WithMany("User2Friends")
+                        .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,0 +1,11 @@
+routes.txt for letter and competition
+LetterController and test
+CompetitionController and test
+
+FUTURE:
+Chat
+Serve Angular tree on backend? or different port?
+Authorization Policy - add role for admin?
+Turn Ok() 200 to Created() 201
+NotFound() instead of BadRequest()
+Unauthorized() to Forbid()

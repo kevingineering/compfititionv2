@@ -1,0 +1,19 @@
+using System;
+
+namespace API.DTOs.GoalDTOs
+{
+  public class GoalReturnDTO
+  {
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public int Duration { get; set; }
+    public DateTime StartDate { get; set; }
+    public string Type { get; set; }
+    public string Description { get; set; }
+    public string Units { get; set; }
+    public int Total { get; set; }
+    public bool IsPrivate { get; set; }
+    public Nullable<Guid> CompId { get; set; } = null;
+    public string Tracker { get; set; }
+  }
+}

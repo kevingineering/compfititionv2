@@ -11,14 +11,16 @@ namespace Core.Interfaces
     Task<Goal> CreateGoalAsync(Goal goal);
 
     //READ
-    Task<Goal> GetGoalAsync(Guid id);
-    Task<IReadOnlyList<Goal>> GetGoalsByUserIdAsync(Guid id);
-    Task<IReadOnlyList<Goal>> GetAllGoalsAsync(); //TODO - delete this option
+    Task<Goal> GetGoalAsync(Guid goalId);
+    Task<IReadOnlyList<Goal>> GetGoalsByUserIdAsync(Guid userId);
+    // Task<IReadOnlyList<Goal>> GetGoalsByCompId(Guid compId);
+    // Task<IReadOnlyList<Goal>> GetFriendGoals(Guid friendId);
+    // Task<Goal> GetCompTemplateGoal(Guid compId); //TODO - do I need this?
 
     //UPDATE
     Task<Goal> UpdateGoalAsync(Goal goal);
-    //void UpdatedCompIdToNull
-    //void UpdateCompIdToNullForOneUser
+    //void UpdatedCompIdToNull(Guid compId); - when competition deleted
+    //void UpdateCompIdToNullForOneUser(Guid compId, Guid userId); - when user leaves competition
     //update goals by user id
     //update goals by comp id
     //update goals by user id and append tracker
@@ -29,7 +31,7 @@ namespace Core.Interfaces
 
     //DELETE
     Task<bool> DeleteGoalAsync(Goal goal);
-    // void DeleteCompTemplateGoal(Guid compid);
-    // void DeleteAllUserGoals(Guid userid);
+    // void DeleteCompTemplateGoal(Guid compId);
+    // void DeleteAllUserGoals(Guid userId);
   }
 }

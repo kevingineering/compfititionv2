@@ -14,6 +14,8 @@ namespace Infrastructure.Data.Config
       builder.Property(u => u.Password).IsRequired();
       builder.Property(u => u.RegisterDate).IsRequired();
       builder.Property(u => u.IsSearchable).IsRequired();
+
+      builder.HasIndex(u => u.Email).IsUnique();
     }
   }
 }

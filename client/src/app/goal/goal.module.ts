@@ -8,6 +8,7 @@ import { GoalButtonsComponent } from './goal-page/goal-buttons/goal-buttons.comp
 import { PassFailChartComponent } from './goal-page/pass-fail-chart/pass-fail-chart.component';
 import { TotalChartComponent } from './goal-page/total-chart/total-chart.component';
 import { DifferenceChartComponent } from './goal-page/difference-chart/difference-chart.component';
+import { GoalFormComponent } from './goal-form/goal-form.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { DifferenceChartComponent } from './goal-page/difference-chart/differenc
     PassFailChartComponent,
     TotalChartComponent,
     DifferenceChartComponent,
+    GoalFormComponent,
   ],
   imports: [CommonModule, GoogleChartsModule],
   exports: [

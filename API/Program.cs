@@ -15,6 +15,7 @@ namespace API
     {
       var host = CreateHostBuilder(args).Build();
 
+      //seed database, using destroyed once finished
       using (var scope = host.Services.CreateScope())
       {
         var services = scope.ServiceProvider;
@@ -36,6 +37,7 @@ namespace API
       host.Run();
     }
 
+    //creates Kestrel server, gets config files (appsettings.json), and calls startup
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>

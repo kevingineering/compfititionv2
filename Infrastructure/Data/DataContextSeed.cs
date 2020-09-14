@@ -42,6 +42,34 @@ namespace Infrastructure.Data
 
           await context.SaveChangesAsync();
         }
+
+        if (!context.UserFriendships.Any())
+        {
+          var friendData = File.ReadAllText("../Infrastructure/Data/SeedData/friendships.json");
+
+          var friends = JsonSerializer.Deserialize<List<UserFriendship>>(friendData);
+
+          foreach (var friend in friends)
+          {
+            context.UserFriendships.Add(friend);
+          }
+
+          await context.SaveChangesAsync();
+        }
+
+        if (!context.UserFriendRequests.Any())
+        {
+          var requestData = File.ReadAllText("../Infrastructure/Data/SeedData/requests.json");
+
+          var requests = JsonSerializer.Deserialize<List<UserFriendRequest>>(requestData);
+
+          foreach (var request in requests)
+          {
+            context.UserFriendRequests.Add(request);
+          }
+
+          await context.SaveChangesAsync();
+        }
       }
       catch (Exception ex)
       {

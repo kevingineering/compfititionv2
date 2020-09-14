@@ -19,6 +19,6 @@ import { GoalModule } from '../goal/goal.module';
     NavbarComponent,
   ],
   imports: [CommonModule, RouterModule, GoalModule],
-  exports: [GoalListComponent, NavbarComponent],
+  exports: [GoalListComponent, NavbarComponent, FormFieldComponent],
 })
 export class SharedModule {}
