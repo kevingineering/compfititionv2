@@ -33,3 +33,24 @@ Routes:
     GET     /servererror        test 500 error
     GET     /badrequest         test 400 error
     GET     /badrequest/string  test 400 error with validation
+
+  /competition
+    POST    /                   add competition
+    GET     /                   get competition
+    PATCH   /                   update competition goals
+    PATCH   /                   add user to competition
+    PATCH   /                   remove user from competition
+    PATCH   /                   kick user from competition
+    PATCH   /                   add admin to competition
+    PATCH   /                   remove admin from competition
+    DELETE  /                   delete competition
+
+  /letter
+    POST    /                   add new letter
+    GET     /:letterId          get letter
+    GET     /                   get user letters
+    GET     /:compId            get competition letters
+    PATCH   /:compId            update competition letter expiration date
+    DELETE  /:letterId          delete letter
+
+  /chat

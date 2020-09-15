@@ -1,6 +1,6 @@
 routes.txt for letter and competition
-LetterController and test
 CompetitionController and test
+LetterController and test
 
 FUTURE:
 Chat
