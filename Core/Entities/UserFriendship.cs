@@ -17,10 +17,11 @@ namespace Core.Entities
     }
 
     //Compound (aka composite) Key
-    //User1 !== User2
     public Guid User1Id { get; set; }
-    public virtual User User1 { get; set; }
     public Guid User2Id { get; set; }
+
+    //relationships
+    public virtual User User1 { get; set; }
     public virtual User User2 { get; set; }
   }
 }

@@ -1,6 +1,7 @@
-using API.DTOs;
-using API.DTOs.GoalDTOs;
-using API.DTOs.UserDTOs;
+using System;
+using API.DTOs.HelperDTOs;
+using API.DTOs.InputDTOs;
+using API.DTOs.ReturnDTOs;
 using AutoMapper;
 using Core.Entities;
 
@@ -10,12 +11,20 @@ namespace API.Helpers
   {
     public MappingProfiles()
     {
-      CreateMap<Goal, GoalReturnDTO>();
-      CreateMap<GoalInputDTO, Goal>();
+      //User mappings
+      CreateMap<UserGoal, GoalReturnDTO>();
+      CreateMap<GoalOrCompInputDTO, UserGoal>();
       CreateMap<User, UserReturnDTO>();
-      CreateMap<UpdateUserDTO, User>();
-      CreateMap<UserFriendRequest, UserFriendRequestDTO>();
-      CreateMap<UserFriendship, UserFriendshipDTO>();
+      CreateMap<User, DifferentUserReturnDTO>();
+      CreateMap<RegisterOrUpdateInputDTO, User>();
+      CreateMap<UserFriendRequest, UserFriendRequestReturnDTO>();
+
+      //Competition mappings
+      CreateMap<GoalOrCompInputDTO, CompetitionGoal>();
+      CreateMap<CompetitionParticipant, CompetitionParticipantHelperDTO>().ForMember(d => d.Name, o => o.MapFrom(s => s.User.Name));
+      CreateMap<CompetitionAdmin, Guid>().ConstructUsing(x => x.UserId);
+      CreateMap<CompetitionGoal, CompetitionReturnDTO>().ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString()));
+      CreateMap<CompetitionLetter, LetterReturnDTO>().ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString()));
     }
   }
 }

@@ -8,6 +8,8 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+      builder.HasComment("User");
+
       builder.Property(u => u.Id).IsRequired();
       builder.Property(u => u.Name).IsRequired().HasMaxLength(50);
       builder.Property(u => u.Email).IsRequired().HasMaxLength(50);

@@ -50,18 +50,18 @@ namespace Infrastructure.Data
       _context.Set<T>().Add(entity);
     }
 
-    //DELETE
-    public void Delete(T entity)
-    {
-      _context.Set<T>().Remove(entity);
-    }
-
     //UPDATE
     public void Update(T entity)
     {
       //.Update has chance to add, this will only update
       _context.Set<T>().Attach(entity);
       _context.Entry(entity).State = EntityState.Modified;
+    }
+
+    //DELETE
+    public void Delete(T entity)
+    {
+      _context.Set<T>().Remove(entity);
     }
   }
 }

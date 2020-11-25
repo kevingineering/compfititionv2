@@ -7,17 +7,19 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<UserFriendship> builder)
     {
+      builder.HasComment("User Friend");
+
       //combination key
       builder.HasKey(k => new { k.User1Id, k.User2Id });
 
-      builder.HasOne(u => u.User1)
+      builder.HasOne(f => f.User1)
         .WithMany(u => u.User1Friends)
-        .HasForeignKey(u => u.User1Id)
+        .HasForeignKey(f => f.User1Id)
         .OnDelete(DeleteBehavior.Cascade);
 
-      builder.HasOne(u => u.User2)
+      builder.HasOne(f => f.User2)
         .WithMany(u => u.User2Friends)
-        .HasForeignKey(u => u.User2Id)
+        .HasForeignKey(f => f.User2Id)
         .OnDelete(DeleteBehavior.Cascade);
     }
   }

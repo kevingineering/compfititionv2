@@ -1,0 +1,10 @@
+Packages:
+  react-router-dom
+  redux
+  redux-thunk
+  react-redux
+  axios
+  mathjs
+  moment
+  react-google-charts
+

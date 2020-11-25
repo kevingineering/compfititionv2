@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using API.DTOs.UserDTOs;
+using API.DTOs.InputDTOs;
+using API.DTOs.ReturnDTOs;
 using API.Errors;
 using AutoMapper;
 using Core.Entities;
@@ -18,7 +18,6 @@ namespace API.Controllers
     //   POST    /register           register user
     //   POST    /login              login user
     //   GET     /                   get user
-    //   GET     /searchable         get searchable users
     //   PATCH   /                   update user
     //   PATCH   /changepassword     change password
     //   DELETE  /                   delete user
@@ -36,12 +35,11 @@ namespace API.Controllers
       _passwordService = passwordService;
     }
 
-    //CREATE
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<ActionResult<UserReturnDTO>> Register(RegisterDTO registerDTO)
+    public async Task<ActionResult<UserReturnDTO>> Register(RegisterOrUpdateInputDTO registerDTO)
     {
-      //Note: bad password checked by attributes on RegisterDTO
+      //Note: bad password checked by attributes on RegisterInputDTO
 
       //check if email exists
       var spec = new UserWithEmailSpec(registerDTO.Email);
@@ -54,7 +52,7 @@ namespace API.Controllers
       //encrypt password
       var hashedPassword = _passwordService.HashPassword(registerDTO.Password);
 
-      //create new user - TODO - make user constructor instead?
+      //create new user
       var newUser = new User
       {
         Name = registerDTO.Name,
@@ -76,13 +74,14 @@ namespace API.Controllers
         Id = user.Id,
         Email = user.Email,
         Name = user.Name,
-        Token = _tokenService.CreateToken(user)
+        Token = _tokenService.CreateToken(user),
+        IsSearchable = user.IsSearchable
       };
     }
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<ActionResult<UserReturnDTO>> Login(LoginDTO loginDTO)
+    public async Task<ActionResult<UserReturnDTO>> Login(LoginInputDTO loginDTO)
     {
       //get user by email
       var spec = new UserWithEmailSpec(loginDTO.Email);
@@ -104,13 +103,11 @@ namespace API.Controllers
         Id = user.Id,
         Email = user.Email,
         Name = user.Name,
-        Token = _tokenService.CreateToken(user)
+        Token = _tokenService.CreateToken(user),
+        IsSearchable = user.IsSearchable
       };
     }
 
-    //READ
-
-    [Authorize(Policy = "IsActiveUser")]
     [HttpGet]
     public async Task<ActionResult<UserReturnDTO>> GetUser()
     {
@@ -126,41 +123,44 @@ namespace API.Controllers
         Id = user.Id,
         Email = user.Email,
         Name = user.Name,
-        Token = _tokenService.CreateToken(user)
+        Token = _tokenService.CreateToken(user),
+        IsSearchable = user.IsSearchable
       };
     }
 
-    [HttpGet("searchable")]
-    public async Task<ActionResult<IReadOnlyList<UserReturnDTO>>> GetSearchableUsers()
-    {
-      var spec = new SearchableUserSpec();
-      var searchableUsers = await _userService.GetListWithSpecAsync(spec);
-      return Ok(_mapper.Map<IReadOnlyList<User>, IReadOnlyList<UserReturnDTO>>(searchableUsers));
-    }
-
-    //UPDATE
-
     [HttpPatch]
-    public async Task<ActionResult<UserReturnDTO>> UpdateUser(UpdateUserDTO updateDTO)
+    public async Task<ActionResult<UserReturnDTO>> UpdateUser(RegisterOrUpdateInputDTO updateDTO)
     {
       //get user
       var user = await GetUserFromClaimsPrincipal(HttpContext.User);
 
+      //check password
+      var isPasswordCorrect = _passwordService.CheckPassword(updateDTO.Password, user.Password);
+      if (!isPasswordCorrect)
+      {
+        return Unauthorized(new ApiError(401, "Incorrect password."));
+      }
+
+      //update fields - note that you cannot use mapper or it will set password
+      user.Name = updateDTO.Name;
+      user.Email = updateDTO.Email;
+      user.IsSearchable = updateDTO.IsSearchable;
+
       //update user
-      _mapper.Map<UpdateUserDTO, User>(updateDTO, user);
       var updatedUser = await _userService.UpdateAsync(user);
 
       return new UserReturnDTO
       {
-        Id = user.Id,
+        Id = updatedUser.Id,
         Email = updatedUser.Email,
         Name = updatedUser.Name,
-        Token = _tokenService.CreateToken(user)
+        Token = _tokenService.CreateToken(user),
+        IsSearchable = updatedUser.IsSearchable
       };
     }
 
     [HttpPatch("changepassword")]
-    public async Task<ActionResult> ChangeUserPassword(ChangePasswordDTO passwords)
+    public async Task<ActionResult> ChangeUserPassword(ChangePasswordInputDTO passwords)
     {
       //get user
       var user = await GetUserFromClaimsPrincipal(HttpContext.User);
@@ -181,10 +181,8 @@ namespace API.Controllers
       return NoContent();
     }
 
-    //DELETE
-
-    [HttpDelete]
-    public async Task<ActionResult> DeleteUser([FromBody] PasswordDTO password)
+    [HttpPost("delete")]
+    public async Task<ActionResult> DeleteUser(PasswordInputDTO password)
     {
       //get user
       var user = await GetUserFromClaimsPrincipal(HttpContext.User);
@@ -197,17 +195,19 @@ namespace API.Controllers
       }
 
       //delete user
-      await _userService.DeleteAsync(user);
+      var isDeleted = await _userService.DeleteAsync(user);
+      if (!isDeleted)
+      {
+        return BadRequest(new ApiError(400, "Error deleting user."));
+      }
 
       return NoContent();
     }
 
     private async Task<User> GetUserFromClaimsPrincipal(ClaimsPrincipal user)
     {
-      var email = GetEmailFromClaims();
-      //get user by email
-      var spec = new UserWithEmailSpec(email);
-      return await _userService.GetEntityWithSpecAsync(spec);
+      var id = GetUserIdFromClaims();
+      return await _userService.GetByIdAsync(id);
     }
   }
 }

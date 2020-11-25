@@ -1,10 +1,15 @@
-routes.txt for letter and competition
-CompetitionController and test
-LetterController and test
+competition controller
+letter controller
+
+Partial delete for comments
+When deleting competition, create goals
+Determine if competition has no more users and delete
+Determine if competition has no more admins and promote oldest participant
+
+Swagger for all controllers
 
 FUTURE:
 Chat
-Serve Angular tree on backend? or different port?
 Authorization Policy - add role for admin?
 Turn Ok() 200 to Created() 201
 NotFound() instead of BadRequest()

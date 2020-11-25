@@ -20,7 +20,7 @@ namespace API.Controllers
     [HttpGet("notfound")]
     public ActionResult GetNotFoundRequest()
     {
-      var nullObject = _context.Goals.Find(new Guid());
+      var nullObject = _context.UserGoals.Find(new Guid());
       if (nullObject == null)
       {
         return NotFound(new ApiError(404));
@@ -32,7 +32,7 @@ namespace API.Controllers
     [HttpGet("servererror")]
     public ActionResult GetServerError()
     {
-      var nullObject = _context.Goals.Find(new Guid());
+      var nullObject = _context.UserGoals.Find(new Guid());
       var cantStringNull = nullObject.ToString();
       return Ok();
     }

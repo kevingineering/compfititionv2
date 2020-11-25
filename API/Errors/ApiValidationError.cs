@@ -4,7 +4,8 @@ namespace API.Errors
 {
   public class ApiValidationError : ApiError
   {
-    public ApiValidationError() : base(400) //will always be 400 error
+    //will always be 400 error
+    public ApiValidationError() : base(400)
     {
     }
 

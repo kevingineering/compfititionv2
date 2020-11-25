@@ -1,7 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core.Entities;
+
 namespace Core.Interfaces
 {
-  public interface ICompetitionService
+  public interface ICompetitionService : IAbstractService<CompetitionGoal>
   {
+    Task<bool> AddCompetitionAsync(CompetitionGoal comp, Guid userId);
+    Task<IReadOnlyList<UserGoal>> GetUserCompetitionGoals(Guid userId);
+    Task<IReadOnlyList<UserGoal>> GetFriendPublicCompetitionGoals(Guid userId);
+
     //TODO 
 
     /*
@@ -47,30 +56,6 @@ namespace Core.Interfaces
     Remove admin from competition
 
     Get competition current goal
-
-
-
-    Services
-
-    C
-
-      Add new competition - replace with add goal?
-
-    R
-
-      Get competition by id - replace with get goals with compId, get admins with compId, and get users with goals?
-
-    U
-
-      Add user to competition - replace with add goal?
-      Remove user from competition - replace with remove CompId from goal?
-      Add admin to competition - replace with add admin?
-      Remove admin from competition - replace with delete admin?
-
-    D
-
-      Delete competition by id - replace with delete admins, delete CompId from goals, and add letters?
-
     */
   }
 }

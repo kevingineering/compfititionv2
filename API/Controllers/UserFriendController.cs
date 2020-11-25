@@ -10,9 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Core.Specifications.Users;
 using System.Collections.Generic;
-using API.DTOs.GoalDTOs;
-using API.DTOs.UserDTOs;
-using API.DTOs;
+using API.DTOs.ReturnDTOs;
 
 namespace API.Controllers
 {
@@ -21,22 +19,19 @@ namespace API.Controllers
     // /userfriend
     //   POST    /:friendId          add friend (and delete friend request)
     //   GET     /                   get user friends
-    //   GET     /goals/:friendId    get friend's public goals
-    //   GET     /friends/:friendId  get friend's searchable friends
+    //   GET     /:friendId          get friend's info, public goals, public competitions, and searchable friends
     //   DELETE  /:friendId          delete friend
 
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ICompetitionService _competitionService;
 
-    public UserFriendController(IUnitOfWork unitOfWork, IMapper mapper)
+    public UserFriendController(IUnitOfWork unitOfWork, IMapper mapper, ICompetitionService competitionService)
     {
       _unitOfWork = unitOfWork;
       _mapper = mapper;
+      _competitionService = competitionService;
     }
-
-    //request service, friend service, user service, goal service
-
-    //CREATE
 
     [HttpPost("{friendId}")]
     public async Task<ActionResult> AddFriend(Guid friendId)
@@ -59,75 +54,111 @@ namespace API.Controllers
         return NotFound(new ApiError(404, "Request not found."));
       }
 
+      //ensure request is accepted by receiver
+      if (existingRequest.SenderId == userId)
+      {
+        return Unauthorized(new ApiError(401, "You cannot accept a request you sent."));
+      }
+
       //delete request and add friendship
       _unitOfWork.Repository<UserFriendRequest>().Delete(existingRequest);
       var friendship = new UserFriendship(userId, friendId);
       _unitOfWork.Repository<UserFriendship>().Add(friendship);
-      var result = await _unitOfWork.Complete();
-      if (result <= 0)
+      var isAdded = await _unitOfWork.Complete();
+      if (isAdded <= 0)
       {
         return BadRequest(new ApiError(400, "Error creating friendship."));
       }
 
-      return Ok(_mapper.Map<UserFriendship, UserFriendshipDTO>(friendship));
-    }
+      //get and return friend
+      var friend = await _unitOfWork.Repository<User>().GetByIdAsync(friendId);
+      if (friend == null)
+      {
+        return NotFound(new ApiError(404, "Friend not found."));
+      }
 
-    //READ
+      return Ok(_mapper.Map<User, DifferentUserReturnDTO>(friend));
+    }
 
     [HttpGet]
     public async Task<ActionResult> GetFriends()
     {
       var userId = GetUserIdFromClaims();
+      //TODO - do this all in database?
       var spec = new FriendshipWithUserIdSpec(userId);
-      var friends = await _unitOfWork.Repository<UserFriendship>().ListAsync(spec);
-      return Ok(_mapper.Map<IReadOnlyList<UserFriendship>, IReadOnlyList<UserFriendshipDTO>>(friends));
+      var friendshipIds = (await _unitOfWork.Repository<UserFriendship>().ListAsync(spec)).Select(x => x.User1Id != userId ? x.User1Id : x.User2Id).ToList();
+      var usersSpec = new UsersInIdArraySpec(friendshipIds);
+      var friends = await _unitOfWork.Repository<User>().ListAsync(usersSpec);
+      return Ok(_mapper.Map<IReadOnlyList<User>, IReadOnlyList<DifferentUserReturnDTO>>(friends));
     }
 
-    //TODO - make only private goals available
-    [HttpGet("goals/{friendId}")]
-    public async Task<ActionResult<IReadOnlyList<GoalReturnDTO>>> GetFriendGoals(Guid friendId)
+    [HttpGet("{friendId}")]
+    public async Task<ActionResult<UserFriendInfoReturnDTO>> GetFriendInfo(Guid friendId)
     {
       //verify users are friends
       var userId = GetUserIdFromClaims();
       var friendshipSpec = new FriendshipWithBothIdsSpec(userId, friendId);
       var existing = await _unitOfWork.Repository<UserFriendship>().GetEntityWithSpec(friendshipSpec);
-      if (existing == null)
+
+      //get user
+      var friend = await _unitOfWork.Repository<User>().GetByIdAsync(friendId);
+
+      if (friend == null)
       {
-        return Unauthorized(new ApiError(403, "You are not friends with this user."));
+        return NotFound(new ApiError(404, "User not found."));
       }
 
-      //get public goals
+      //return basics if not friends with this user
+      if (existing == null)
+      {
+        return new UserFriendInfoReturnDTO
+        {
+          IsFriend = false,
+          Id = friend.Id,
+          Email = friend.Email,
+          Name = friend.Name,
+          PastGoals = new List<GoalReturnDTO> { },
+          ActiveGoals = new List<GoalReturnDTO> { },
+          PastCompetitions = new List<GoalReturnDTO> { },
+          ActiveCompetitions = new List<GoalReturnDTO> { },
+          Friends = new List<UserReturnDTO> { }
+        };
+      }
+
+      //get friend's public goals
       var goalSpec = new PublicGoalsWithUserIdSpec(friendId);
-      var goals = await _unitOfWork.Repository<Goal>().ListAsync(goalSpec);
-      return Ok(_mapper.Map<IReadOnlyList<Goal>, IReadOnlyList<GoalReturnDTO>>(goals));
-    }
+      var goals = await _unitOfWork.Repository<UserGoal>().ListAsync(goalSpec);
+      var pastGoals = goals.Where(x => x.StartDate.AddDays(x.Duration).CompareTo(DateTime.Today) < 0).OrderBy(x => x.StartDate).ToList();
+      var activeGoals = goals.Where(x => x.StartDate.AddDays(x.Duration).CompareTo(DateTime.Today) >= 0).OrderBy(x => x.StartDate).ToList();
 
-    [HttpGet("friends/{friendId}")]
-    public async Task<ActionResult> GetFriendSearchableFriends(Guid friendId)
-    {
-      //verify users are friends
-      var userId = GetUserIdFromClaims();
-      var friendshipSpec = new FriendshipWithBothIdsSpec(userId, friendId);
-      var existing = await _unitOfWork.Repository<UserFriendship>().GetEntityWithSpec(friendshipSpec);
-      if (existing == null)
-      {
-        return Unauthorized(new ApiError(403, "You are not friends with this user."));
-      }
+      //get friend's public competitions
+      var competitions = await _competitionService.GetFriendPublicCompetitionGoals(friendId);
+      var pastCompetitions = competitions.Where(x => x.StartDate.AddDays(x.Duration).CompareTo(DateTime.Today) < 0).OrderBy(x => x.StartDate).ToList();
+      var activeCompetitions = competitions.Where(x => x.StartDate.AddDays(x.Duration).CompareTo(DateTime.Today) >= 0).OrderBy(x => x.StartDate).ToList();
 
-      //get friend friendships
+      //get friend's searchable friends
       var friendSpec = new FriendshipWithUserIdSpec(friendId);
       var friendships = await _unitOfWork.Repository<UserFriendship>().ListAsync(friendSpec);
 
       //get array of friendIds
-      var friendIds = friendships.Select(x => x.User1Id == friendId ? x.User2Id : x.User1Id);
+      var friendIds = friendships.Select(x => x.User1Id == friendId ? x.User2Id : x.User1Id).Where(x => x != userId);
 
       //get searchable users
-      var searchableUserSpec = new SearchableUserSpec();
-      var searchableUsers = await _unitOfWork.Repository<User>().ListAsync(searchableUserSpec);
+      var searchableFriendSpec = new SearchableFriendsWithUserIdInArraySpec(friendIds);
+      var searchableFriends = await _unitOfWork.Repository<User>().ListAsync(searchableFriendSpec);
 
-      //join tables
-      var searchableFriends = searchableUsers.Join(friendIds, u => u.Id, guid => guid, (u, guid) => u);
-      return Ok(_mapper.Map<IEnumerable<User>, IReadOnlyList<UserReturnDTO>>(searchableFriends));
+      return new UserFriendInfoReturnDTO
+      {
+        Id = friend.Id,
+        Email = friend.Email,
+        Name = friend.Name,
+        PastGoals = _mapper.Map<IReadOnlyList<UserGoal>, IReadOnlyList<GoalReturnDTO>>(pastGoals),
+        ActiveGoals = _mapper.Map<IReadOnlyList<UserGoal>, IReadOnlyList<GoalReturnDTO>>(activeGoals),
+        PastCompetitions = _mapper.Map<IReadOnlyList<UserGoal>, IReadOnlyList<GoalReturnDTO>>(pastCompetitions),
+        ActiveCompetitions = _mapper.Map<IReadOnlyList<UserGoal>, IReadOnlyList<GoalReturnDTO>>(activeCompetitions),
+        Friends = _mapper.Map<IReadOnlyList<User>, IReadOnlyList<UserReturnDTO>>(searchableFriends),
+        IsFriend = true
+      };
     }
 
     [HttpDelete("{friendId}")]
@@ -142,8 +173,8 @@ namespace API.Controllers
       }
 
       _unitOfWork.Repository<UserFriendship>().Delete(friendship);
-      var result = await _unitOfWork.Complete();
-      if (result <= 0)
+      var changes = await _unitOfWork.Complete();
+      if (changes <= 0)
       {
         return BadRequest(new ApiError(400, "Error deleting friendship."));
       }

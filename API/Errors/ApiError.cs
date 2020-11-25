@@ -19,7 +19,7 @@ namespace API.Errors
       {
         400 => "Something was wrong with your request.",
         401 => "You are not authorized to perform this action.",
-        403 => "You are forbidden from performing actions. Please log in or register.",
+        403 => "You are forbidden from performing this action.",
         404 => "Resource was not found.",
         500 => "Something went wrong on the server.",
         _ => null

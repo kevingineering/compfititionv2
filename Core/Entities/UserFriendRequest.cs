@@ -4,10 +4,10 @@ namespace Core.Entities
 {
   public class UserFriendRequest : BaseEntity
   {
-    public UserFriendRequest(Guid requester, Guid requestee)
+    public UserFriendRequest(Guid sender, Guid receiver)
     {
-      RequesterId = requester;
-      RequesteeId = requestee;
+      SenderId = sender;
+      ReceiverId = receiver;
     }
 
     //parameterless constructor required by EF
@@ -17,11 +17,11 @@ namespace Core.Entities
     }
 
     //Compound Key
-    //Requester !== Requestee
-    //Cannot have both Requestee => Requester and Requester => Requestee
-    public Guid RequesterId { get; private set; }
-    public virtual User Requester { get; set; }
-    public Guid RequesteeId { get; private set; }
-    public virtual User Requestee { get; set; }
+    public Guid SenderId { get; set; }
+    public Guid ReceiverId { get; set; }
+
+    //relationships
+    public virtual User Sender { get; set; }
+    public virtual User Receiver { get; set; }
   }
 }

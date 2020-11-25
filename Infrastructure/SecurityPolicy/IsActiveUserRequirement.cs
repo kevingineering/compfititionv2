@@ -24,10 +24,10 @@ namespace Infrastructure.SecurityPolicy
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsActiveUserRequirement requirement)
     {
-      System.Console.WriteLine("Test");
+      System.Console.WriteLine("CHECKING IF USER IS ACTIVE...");
 
       var userId = context.User?.Claims?.SingleOrDefault(
-          x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
       if (userId != null)
       {
@@ -38,6 +38,7 @@ namespace Infrastructure.SecurityPolicy
         if (user != null)
         {
           context.Succeed(requirement);
+          System.Console.WriteLine("USER IS ACTIVE!");
         }
       }
 

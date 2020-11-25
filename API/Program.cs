@@ -25,7 +25,8 @@ namespace API
           var context = services.GetRequiredService<DataContext>();
 
           await context.Database.MigrateAsync();
-          await DataContextSeed.SeedAsync(context, loggerFactory);
+          await SeedData.SeedAsync(context, loggerFactory);
+          // await DataContextSeed.SeedAsync(context, loggerFactory);
         }
         catch (Exception ex)
         {
@@ -39,10 +40,10 @@ namespace API
 
     //creates Kestrel server, gets config files (appsettings.json), and calls startup
     public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-              webBuilder.UseStartup<Startup>();
-            });
+      Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+          webBuilder.UseStartup<Startup>();
+        });
   }
 }

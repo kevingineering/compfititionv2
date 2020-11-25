@@ -16,19 +16,66 @@ namespace Infrastructure.Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.5");
 
-            modelBuilder.Entity("Core.Entities.Goal", b =>
+            modelBuilder.Entity("Core.Entities.CompetitionAdmin", b =>
+                {
+                    b.Property<Guid>("CompId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CompId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CompetitionAdmins");
+
+                    b.HasComment("Competition Admin");
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionComment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("CompId")
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CompId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("CompId");
+
+                    b.ToTable("CompetitionComments");
+
+                    b.HasComment("Competition Comment");
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionGoal", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Duration")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Frequency")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsPrivate")
@@ -42,28 +89,82 @@ namespace Infrastructure.Data.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Total")
+                    b.Property<int>("Type")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Tracker")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Units")
                         .HasColumnType("TEXT")
                         .HasMaxLength(20);
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<bool>("isHighestScoreWins")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
+                    b.ToTable("CompetitionGoals");
+
+                    b.HasComment("Competition Goal");
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionLetter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CompId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("CompetitionLetters");
+
+                    b.HasComment("Competition Letter");
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionParticipant", b =>
+                {
+                    b.Property<Guid>("CompId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("InitialValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ledger")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Target")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CompId", "UserId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Goals");
+                    b.ToTable("CompetitionParticipants");
+
+                    b.HasComment("Competition Participant");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
@@ -98,21 +199,25 @@ namespace Infrastructure.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasComment("User");
                 });
 
             modelBuilder.Entity("Core.Entities.UserFriendRequest", b =>
                 {
-                    b.Property<Guid>("RequesterId")
+                    b.Property<Guid>("SenderId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("RequesteeId")
+                    b.Property<Guid>("ReceiverId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("RequesterId", "RequesteeId");
+                    b.HasKey("SenderId", "ReceiverId");
 
-                    b.HasIndex("RequesteeId");
+                    b.HasIndex("ReceiverId");
 
                     b.ToTable("UserFriendRequests");
+
+                    b.HasComment("User Friend Request");
                 });
 
             modelBuilder.Entity("Core.Entities.UserFriendship", b =>
@@ -128,12 +233,123 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("User2Id");
 
                     b.ToTable("UserFriendships");
+
+                    b.HasComment("User Friend");
                 });
 
-            modelBuilder.Entity("Core.Entities.Goal", b =>
+            modelBuilder.Entity("Core.Entities.UserGoal", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal?>("InitialValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Ledger")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Target")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Units")
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(20);
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserGoals");
+
+                    b.HasComment("User Goal");
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionAdmin", b =>
+                {
+                    b.HasOne("Core.Entities.CompetitionGoal", "Comp")
+                        .WithMany("Admins")
+                        .HasForeignKey("CompId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Core.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("AdminJobs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionComment", b =>
+                {
+                    b.HasOne("Core.Entities.User", "Author")
+                        .WithMany("Comments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.CompetitionGoal", "Comp")
+                        .WithMany("Comments")
+                        .HasForeignKey("CompId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionLetter", b =>
+                {
+                    b.HasOne("Core.Entities.CompetitionGoal", "Comp")
+                        .WithMany("Letters")
+                        .HasForeignKey("CompId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "Receiver")
+                        .WithMany("LettersReceived")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "Sender")
+                        .WithMany("LettersSent")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionParticipant", b =>
+                {
+                    b.HasOne("Core.Entities.CompetitionGoal", "CompGoal")
+                        .WithMany("Participants")
+                        .HasForeignKey("CompId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany("Participations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -141,15 +357,15 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Core.Entities.UserFriendRequest", b =>
                 {
-                    b.HasOne("Core.Entities.User", "Requestee")
-                        .WithMany("Requestees")
-                        .HasForeignKey("RequesteeId")
+                    b.HasOne("Core.Entities.User", "Receiver")
+                        .WithMany("Receivers")
+                        .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.User", "Requester")
-                        .WithMany("Requesters")
-                        .HasForeignKey("RequesterId")
+                    b.HasOne("Core.Entities.User", "Sender")
+                        .WithMany("Senders")
+                        .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -165,6 +381,15 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Core.Entities.User", "User2")
                         .WithMany("User2Friends")
                         .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.UserGoal", b =>
+                {
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany("UserGoals")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

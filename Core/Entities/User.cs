@@ -21,9 +21,16 @@ namespace Core.Entities
     public bool IsSearchable { get; set; }
 
     //relationships
+    public virtual ICollection<UserGoal> UserGoals { get; set; }
     public virtual ICollection<UserFriendship> User1Friends { get; set; }
     public virtual ICollection<UserFriendship> User2Friends { get; set; }
-    public virtual ICollection<UserFriendRequest> Requesters { get; set; }
-    public virtual ICollection<UserFriendRequest> Requestees { get; set; }
+    public virtual ICollection<UserFriendRequest> Senders { get; set; }
+    public virtual ICollection<UserFriendRequest> Receivers { get; set; }
+    public virtual ICollection<CompetitionParticipant> Participations { get; set; }
+    public virtual ICollection<CompetitionLetter> LettersSent { get; set; }
+    public virtual ICollection<CompetitionLetter> LettersReceived { get; set; }
+    public virtual ICollection<CompetitionComment> Comments { get; set; }
+    public virtual ICollection<CompetitionAdmin> AdminJobs { get; set; }
+
   }
 }

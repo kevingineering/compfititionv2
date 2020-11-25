@@ -8,17 +8,19 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(EntityTypeBuilder<UserFriendRequest> builder)
     {
-      //combination key
-      builder.HasKey(k => new { k.RequesterId, k.RequesteeId });
+      builder.HasComment("User Friend Request");
 
-      builder.HasOne(u => u.Requestee)
-        .WithMany(u => u.Requestees)
-        .HasForeignKey(u => u.RequesteeId)
+      //combination key
+      builder.HasKey(k => new { k.SenderId, k.ReceiverId });
+
+      builder.HasOne(fr => fr.Receiver)
+        .WithMany(u => u.Receivers)
+        .HasForeignKey(fr => fr.ReceiverId)
         .OnDelete(DeleteBehavior.Cascade);
 
-      builder.HasOne(u => u.Requester)
-        .WithMany(u => u.Requesters)
-        .HasForeignKey(u => u.RequesterId)
+      builder.HasOne(fr => fr.Sender)
+        .WithMany(u => u.Senders)
+        .HasForeignKey(fr => fr.SenderId)
         .OnDelete(DeleteBehavior.Cascade);
     }
   }

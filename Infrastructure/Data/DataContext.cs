@@ -11,10 +11,15 @@ namespace Infrastructure.Data
 
     }
 
-    public DbSet<Goal> Goals { get; set; }
+    public DbSet<UserGoal> UserGoals { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<UserFriendRequest> UserFriendRequests { get; set; }
     public DbSet<UserFriendship> UserFriendships { get; set; }
+    public DbSet<CompetitionGoal> CompetitionGoals { get; set; }
+    public DbSet<CompetitionParticipant> CompetitionParticipants { get; set; }
+    public DbSet<CompetitionAdmin> CompetitionAdmins { get; set; }
+    public DbSet<CompetitionLetter> CompetitionLetters { get; set; }
+    public DbSet<CompetitionComment> CompetitionComments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
