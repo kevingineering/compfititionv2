@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import GoalCompInputs from '../../sharedComponents/GoalCompInputs';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddGoal } from '../../redux/goal/actions';
 import { TGoalDTO } from '../../redux/DTOs';
 import { RootStore } from '../../redux/Store';
 import { useHistory } from 'react-router-dom';
 import { ADD_GOAL_BUTTON } from '../../redux/buttonTypes';
+import GCInputs from '../../sharedComponents/goalCompPage/GCInputs';
 
 const AddGoalPage = () => {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const AddGoalPage = () => {
   }, [goalState.selectedGoal, history]);
 
   return (
-    <GoalCompInputs
+    <GCInputs
       isGoal={true}
       isUpdate={false}
       dispatchAction={dispatchAction}

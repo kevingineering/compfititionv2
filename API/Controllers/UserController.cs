@@ -181,6 +181,7 @@ namespace API.Controllers
       return NoContent();
     }
 
+    //using post because haveing issues sending body with axios
     [HttpPost("delete")]
     public async Task<ActionResult> DeleteUser(PasswordInputDTO password)
     {

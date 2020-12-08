@@ -8,8 +8,6 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(EntityTypeBuilder<CompetitionAdmin> builder)
     {
-      builder.HasComment("Competition Admin");
-
       //combination key
       builder.HasKey(k => new { k.CompId, k.UserId });
 

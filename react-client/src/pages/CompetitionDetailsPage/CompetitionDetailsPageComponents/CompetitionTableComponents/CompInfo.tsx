@@ -3,6 +3,10 @@ import { TCompetition, EGoalType } from '../../../../types';
 import { cleanNumber } from '../../../../util/dateFunctions';
 import moment from 'moment';
 import { getGoalScore } from '../../../../util/goalFunctions';
+import {
+  TableInfo,
+  WhiteSpaceSpan,
+} from '../../../../sharedComponents/styledComponents/Misc';
 
 interface IProps {
   competition: TCompetition;
@@ -11,6 +15,7 @@ interface IProps {
   initialValue?: number;
   target?: number;
   isStarted: boolean;
+  isFinished: boolean;
 }
 
 //TODO
@@ -22,10 +27,20 @@ const CompInfo: React.FC<IProps> = ({
   initialValue,
   target,
   isStarted,
+  isFinished,
 }) => {
-  const { duration, startDate, description, units, type } = competition;
-  const isFinished = time === duration;
-  const formattedDate = moment.utc(startDate).format('MMMM Do, YYYY');
+  const {
+    duration,
+    startTime,
+    description,
+    units,
+    type,
+    frequency,
+  } = competition;
+  const formattedDate = moment.utc(startTime).format('MMMM Do, YYYY');
+  const formattedDateTime = moment
+    .utc(startTime)
+    .format('MMMM Do, YYYY, h:mm a');
   const score = cleanNumber(getGoalScore(type, record, initialValue));
 
   //for clarity - if target exists, user is participant
@@ -48,6 +63,10 @@ const CompInfo: React.FC<IProps> = ({
     topLeftTag = 'Start Date: ';
     topLeftMsg = formattedDate;
     if (type === EGoalType.passfail) {
+      middleLeftTag = 'Success Total: ';
+      middleLeftMsg = `${score} / ${(duration * frequency!) / 7} (${Math.round(
+        (score / ((duration * frequency!) / 7)) * 100
+      )}%)`;
     } else if (type === EGoalType.cumulative) {
       topRightTag = 'Duration: ';
       if (isParticipant) {
@@ -71,10 +90,19 @@ const CompInfo: React.FC<IProps> = ({
         bottomRightMsg = `${score > 0 ? '+' : ''}${score} ${units}`;
       }
     }
+    //TEST
   } else if (isStarted) {
     topLeftTag = 'Start Date: ';
     topLeftMsg = formattedDate;
     if (type === EGoalType.passfail) {
+      middleLeftTag = 'Success To Date: ';
+      middleLeftMsg = `${score} / ${time + 1} (${Math.round(
+        (score / (time + 1)) * 100
+      )}%)`;
+      bottomLeftTag = 'Success Total: ';
+      bottomLeftMsg = `${score} / ${(duration * frequency!) / 7} (${Math.round(
+        (score / ((duration * frequency!) / 7)) * 100
+      )}%)`;
     } else if (type === EGoalType.cumulative) {
       topRightTag = 'Day: ';
       topRightMsg = `${time + 1} / ${duration}`;
@@ -100,7 +128,7 @@ const CompInfo: React.FC<IProps> = ({
     }
   } else {
     topLeftTag = 'Begins: ';
-    topLeftMsg = formattedDate;
+    topLeftMsg = formattedDateTime;
     topRightTag = 'Duration: ';
     topRightMsg = `${duration} days`;
     if (type === EGoalType.passfail) {
@@ -109,7 +137,7 @@ const CompInfo: React.FC<IProps> = ({
       middleLeftMsg = `${target!} ${units}`;
     } else if (type === EGoalType.difference && isParticipant) {
       middleLeftTag = 'My Start: ';
-      middleLeftMsg = `${initialValue!} ${units}`;
+      middleLeftMsg = initialValue ? `${initialValue!} ${units}` : 'Set below!';
       middleRightTag = 'My Goal: ';
       middleRightMsg = `${target!} ${units}`;
     }
@@ -118,54 +146,52 @@ const CompInfo: React.FC<IProps> = ({
   return (
     <React.Fragment>
       {description && (
-        <React.Fragment>
-          <li className='table-info lr-border'>
-            <span className='block'>
-              <strong>Description: </strong>
-              {description}
-            </span>
-          </li>
-        </React.Fragment>
+        <TableInfo>
+          <p>
+            <strong>Description: </strong>
+            <WhiteSpaceSpan>{description}</WhiteSpaceSpan>
+          </p>
+        </TableInfo>
       )}
-      <li className='table-info lr-border'>
-        <div className='space-between'>
+      <TableInfo>
+        <div>
           <span>
             <strong>{topLeftTag}</strong>
             {topLeftMsg}
           </span>
-          <span className='right'>
+          <span>
             <strong>{topRightTag}</strong>
             {topRightMsg}
           </span>
         </div>
-      </li>
+      </TableInfo>
       {middleLeftTag === '' ? null : (
-        <li className='table-info lr-border'>
-          <div className='space-between'>
+        <TableInfo>
+          <div>
             <span>
               <strong>{middleLeftTag}</strong>
               {middleLeftMsg}
             </span>
-            <span className='right'>
+            <span>
               <strong>{middleRightTag}</strong>
               {middleRightMsg}
             </span>
           </div>
-        </li>
+        </TableInfo>
       )}
       {bottomLeftTag === '' ? null : (
-        <li className='table-info lr-border'>
-          <div className='space-between'>
+        <TableInfo>
+          <div>
             <span>
               <strong>{bottomLeftTag}</strong>
               {bottomLeftMsg}
             </span>
-            <span className='right'>
+            <span>
               <strong>{bottomRightTag}</strong>
               {bottomRightMsg}
             </span>
           </div>
-        </li>
+        </TableInfo>
       )}
     </React.Fragment>
   );

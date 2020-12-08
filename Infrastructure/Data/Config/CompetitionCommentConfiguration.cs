@@ -8,8 +8,6 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(EntityTypeBuilder<CompetitionComment> builder)
     {
-      builder.HasComment("Competition Comment");
-
       builder.Property(p => p.Id).IsRequired();
       builder.Property(p => p.CompId).IsRequired();
       builder.Property(p => p.Body).IsRequired();

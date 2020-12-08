@@ -15,6 +15,10 @@ import { UpdateUser } from '../../../redux/user/actions';
 import LoadingButton from '../../../sharedComponents/forms/LoadingButton';
 import { TUpdateDTO } from '../../../redux/DTOs';
 import { UPDATE_USER_BUTTON } from '../../../redux/buttonTypes';
+import {
+  StandardContainer,
+  StandardForm,
+} from '../../../sharedComponents/styledComponents/Misc';
 
 interface IProps {
   userState: IUserState;
@@ -57,8 +61,8 @@ const EditModule: React.FC<IProps> = ({ userState, closeEdit }) => {
   let isLoading = userState.loadingButton === UPDATE_USER_BUTTON;
 
   return (
-    <div className='form-container'>
-      <form autoComplete='off' className='form'>
+    <StandardContainer>
+      <StandardForm autoComplete='off'>
         <Input
           label='Name'
           type='text'
@@ -109,13 +113,13 @@ const EditModule: React.FC<IProps> = ({ userState, closeEdit }) => {
           isLoading={isLoading}
           isDisabled={!formState.isValid || isLoading}
         />
-      </form>
+      </StandardForm>
       <LoadingButton
         message='Cancel'
         isDisabled={isLoading}
         handleClick={closeEdit}
       />
-    </div>
+    </StandardContainer>
   );
 };
 

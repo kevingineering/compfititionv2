@@ -8,8 +8,6 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(EntityTypeBuilder<UserFriendRequest> builder)
     {
-      builder.HasComment("User Friend Request");
-
       //combination key
       builder.HasKey(k => new { k.SenderId, k.ReceiverId });
 

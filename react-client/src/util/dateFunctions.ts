@@ -1,24 +1,31 @@
 import moment from 'moment';
 
-//determines if a date occured before today
-export const dateIsBeforeToday = (inputDate: string) => {
+//determines if input time is in past
+export const timeIsInPast = (inputTime: string) => {
   const today = new Date();
-  const todayDate = new Date(
+
+  const todayTime = new Date(
     today.getFullYear(),
     today.getMonth(),
-    today.getDate()
+    today.getDate(),
+    today.getHours(),
+    today.getMinutes()
   );
-  const parsedInputDate = new Date(
-    parseInt(inputDate.substr(0, 4)),
-    parseInt(inputDate.substr(5, 7)) - 1,
-    parseInt(inputDate.substr(8, 10))
+
+  const parsedInputTime = new Date(
+    parseInt(inputTime.substr(0, 4)),
+    parseInt(inputTime.substr(5, 7)) - 1,
+    parseInt(inputTime.substr(8, 10)),
+    parseInt(inputTime.substr(11, 13)),
+    parseInt(inputTime.substr(14, 16))
   );
-  return todayDate > parsedInputDate;
+
+  return todayTime > parsedInputTime;
 };
 
 //determines if a date is after year 2100
 export const dateIsAfter2100 = (inputDate: string) => {
-  const lastDate = new Date(2099, 11, 31);
+  const lastDate = new Date(2100, 0, 1);
   if (inputDate[4] !== '-') {
     return true;
   }
@@ -27,17 +34,26 @@ export const dateIsAfter2100 = (inputDate: string) => {
     parseInt(inputDate.substr(5, 7)) - 1,
     parseInt(inputDate.substr(8, 10))
   );
-  return lastDate < parsedInputDate;
+  return lastDate <= parsedInputDate;
 };
 
 //returns an object with current date of goal and booleans saying if goal has started and if goal is complete
-export const getGoalTime = (startDate: Date, duration: number) => {
-  const isStarted = moment().startOf('day').diff(startDate, 'hours') >= 0;
-  let time = Math.min(moment().endOf('day').diff(startDate, 'days'), duration);
+export const getGoalTime = (startTime: Date, duration: number) => {
+  const isStarted = moment().isAfter(startTime);
 
-  const isComplete = time === duration;
+  let time = Math.min(
+    moment().endOf('day').diff(moment(startTime), 'days'),
+    duration
+  );
 
-  return { isStarted, time, isComplete };
+  console.log('eotoday', moment().endOf('day'));
+  console.log('bostart', moment(startTime).startOf('day'));
+
+  console.log(time);
+
+  const isFinished = time === duration;
+
+  return { isStarted, time, isFinished };
 };
 
 //removes unnecessary decimals from a number

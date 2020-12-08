@@ -8,12 +8,13 @@ interface ICreateParams {
 //TODO - competition
 //creates map of form values used with useForm hook for adding goals and competitions
 export const createFormValuesMap = ({ goal }: ICreateParams) => {
+  console.log(goal && goal.startTime!.toString().substr(0, 16));
   let formValues: Map<string, FormInput> =
     goal === undefined
       ? new Map([
           ['name', new FormInput()],
           ['description', new FormInput('', true, EFormInputType.string)],
-          ['startDate', new FormInput()],
+          ['startTime', new FormInput()],
           ['duration', new FormInput('', false, EFormInputType.number)],
           [
             'type',
@@ -29,8 +30,8 @@ export const createFormValuesMap = ({ goal }: ICreateParams) => {
             new FormInput(goal.description, true, EFormInputType.string),
           ],
           [
-            'startDate',
-            new FormInput(goal.startDate!.toString().substring(0, 10), true),
+            'startTime',
+            new FormInput(goal.startTime!.toString().substr(0, 16), true),
           ],
           [
             'duration',

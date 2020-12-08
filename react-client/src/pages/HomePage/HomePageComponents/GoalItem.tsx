@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { getGoalScore, getGoalRecord } from '../../../util/goalFunctions';
 import { EGoalType, TGoal } from '../../../types';
+import { FlexContainer } from '../../../sharedComponents/styledComponents/Misc';
+import styled from 'styled-components';
 
 interface IProps {
   goal: TGoal;
@@ -12,8 +14,8 @@ interface IProps {
 }
 
 const GoalItem: React.FC<IProps> = ({ goal, isOwner, isComp }) => {
-  const { startDate, duration, type, units, id, name } = goal;
-  const { isStarted, time, isComplete } = getGoalTime(startDate, duration);
+  const { startTime, duration, type, units, id, name } = goal;
+  const { isStarted, time, isFinished } = getGoalTime(startTime, duration);
 
   //calc progress
   let progressTag = '';
@@ -25,7 +27,7 @@ const GoalItem: React.FC<IProps> = ({ goal, isOwner, isComp }) => {
 
   if (type === EGoalType.passfail) {
     progressTag = 'Success: ';
-    progressMessage = `${score} / ${isComplete ? record.length : time + 1}`;
+    progressMessage = `${score} / ${isFinished ? record.length : time + 1}`;
   } else if (type === EGoalType.cumulative) {
     progressTag = 'Total: ';
     progressMessage = `${score} ${units}`;
@@ -35,54 +37,84 @@ const GoalItem: React.FC<IProps> = ({ goal, isOwner, isComp }) => {
   }
 
   return (
-    <li className='collection-item'>
-      <div className='flex'>
-        <h3 className='vertical-center'>
-          <Link
-            to={
-              isComp
-                ? '/competition/' + id
-                : isOwner
-                ? '/goal/' + id
-                : '/friend/goal/' + id
-            }
-          >
-            {name}
-          </Link>
-        </h3>
-      </div>
-      {!isComplete ? (
-        <div className='hide-sm'>
+    <CollectionItem>
+      <FlexContainer>
+        <ItemName
+          to={
+            isComp
+              ? '/competition/' + id
+              : isOwner
+              ? '/goal/' + id
+              : '/friend/goal/' + id
+          }
+        >
+          {name}
+        </ItemName>
+      </FlexContainer>
+      {!isFinished ? (
+        <RightContainer>
+          {/* TEST */}
           {isStarted ? (
             <React.Fragment>
-              <span className='right'>
+              <SpanRight>
                 <strong>Day: </strong>
                 {time + 1} / {duration}
-              </span>
+              </SpanRight>
               <br />
-              <span className='right'>
+              <SpanRight>
                 <strong>{progressTag}</strong>
                 {progressMessage}
-              </span>
+              </SpanRight>
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <span className='right'>Begins </span>
+              <SpanRight>Begins </SpanRight>
               <br />
-              <span className='right'>
-                {moment.utc(startDate).format('MMM Do')}
-              </span>
+              <SpanRight>{moment.utc(startTime).format('MMM Do')}</SpanRight>
             </React.Fragment>
           )}
-        </div>
+        </RightContainer>
       ) : (
-        <span className='right hide-sm'>
+        <RightContainer>
           <strong>Final {progressTag}</strong>
-          {progressMessage}
-        </span>
+          <span>{progressMessage}</span>
+        </RightContainer>
       )}
-    </li>
+    </CollectionItem>
   );
 };
 
 export default GoalItem;
+
+export const SpanRight = styled.span`
+  float: right;
+  white-space: nowrap;
+`;
+
+export const RightContainer = styled.div`
+  margin: auto 0;
+  padding-left: 0.5rem;
+  text-align: right;
+  span {
+    white-space: nowrap;
+  }
+  @media (max-width: 32rem) {
+    display: none;
+  }
+`;
+
+const CollectionItem = styled.div`
+  padding: 0.4rem 0.8rem;
+  border: 0.125rem solid var(--primary-color);
+  border-top: 0;
+  display: inline-flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+`;
+
+const ItemName = styled(Link)`
+  margin: auto;
+  font-size: 1.17em;
+  font-weight: bold;
+`;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { TParticipant } from '../../../../types';
-import CollapsibleListContainer from '../../../../sharedComponents/CollapsibleListContainer';
+import CollapsibleListContainer from '../../../../sharedComponents/misc/CollapsibleListContainer';
 import ParticipantItem from './ParticipantItem';
 
 interface IProps {
@@ -14,16 +14,18 @@ const Participants: React.FC<IProps> = ({
   admins,
   // adminLetters,
 }) => {
-  const participantList = participants.map((participant) => {
-    let isAdmin = admins.findIndex((x) => x === participant.userId) !== -1;
+  const participantList = participants.map((participant, index) => {
+    let isAdmin =
+      admins.findIndex((admin) => admin === participant.userId) !== -1;
     // let letter = adminLetters.find(
     //   (letter) => letter.userId === participant.userId
     // );
     return (
       <ParticipantItem
-        key={participant.userId}
+        key={index}
         participant={participant}
         isAdmin={isAdmin}
+        isLast={index === participants.length - 1}
         // letter={letter}
       />
     );
@@ -36,7 +38,6 @@ const Participants: React.FC<IProps> = ({
       isH3={true}
     >
       {participantList}
-      <hr />
     </CollapsibleListContainer>
   );
 };

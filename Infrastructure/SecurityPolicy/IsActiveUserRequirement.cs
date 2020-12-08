@@ -26,8 +26,8 @@ namespace Infrastructure.SecurityPolicy
     {
       System.Console.WriteLine("CHECKING IF USER IS ACTIVE...");
 
-      var userId = context.User?.Claims?.SingleOrDefault(
-        x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+      var userId = context.User?.Claims?
+        .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
       if (userId != null)
       {

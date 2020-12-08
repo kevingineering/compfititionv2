@@ -17,14 +17,26 @@ export type TChangePasswordDTO = {
 export type TGoalDTO = {
   name: string;
   duration: string;
-  startDate: Date;
+  startTime: Date;
   type: string;
   description: string;
   units?: string;
   target: number;
   isPrivate: boolean;
   initialValue?: number;
-  ledger: null;
+};
+
+export type TCompDTO = {
+  name: string;
+  duration: string;
+  startTime: Date;
+  type: string;
+  description: string;
+  units?: string;
+  frequency?: number;
+  isHighestScoreWins: boolean;
+  isPrivate: boolean;
+  initialValue?: number;
 };
 
 export type TLedgerDTO = {
@@ -35,12 +47,4 @@ export type TLedgerDTO = {
 export type TUpdateParticipantDTO = {
   compId: string;
   value: number;
-};
-
-//TODO
-export type TLetterDTO = {
-  compId: string;
-  receiverId: string;
-  senderId: string;
-  type: string;
 };

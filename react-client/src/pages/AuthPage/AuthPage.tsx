@@ -18,6 +18,12 @@ import LoadingButton from '../../sharedComponents/forms/LoadingButton';
 import { TLoginDTO, TRegisterDTO } from '../../redux/DTOs';
 import { ClearAlert } from '../../redux/alert/actions';
 import { LOGIN_OR_REGISTER_BUTTON } from '../../redux/buttonTypes';
+import {
+  StandardForm,
+  PageTitle,
+} from '../../sharedComponents/styledComponents/Misc';
+import { StandardContainer } from '../../sharedComponents/styledComponents/Misc';
+import styled from 'styled-components';
 
 //both login and register page
 const AuthPage = () => {
@@ -29,7 +35,7 @@ const AuthPage = () => {
   //Go to user home page ('/') if token exists in local storage
   useEffect(() => {
     if (userState.isAuthenticated) {
-      console.log('redirect from not auth page');
+      console.log('redirect from auth page');
       history.push('/');
     }
   }, [userState.isAuthenticated, history]);
@@ -90,9 +96,9 @@ const AuthPage = () => {
 
   //fields vary depending on login / register
   return (
-    <div className='login-container'>
-      <h1>Account {isLogin ? 'Login' : 'Register'}</h1>
-      <form autoComplete='off' className='form'>
+    <AuthContainer>
+      <PageTitle>Account {isLogin ? 'Login' : 'Register'}</PageTitle>
+      <StandardForm autoComplete='off'>
         {!isLogin && (
           <Input
             label='Name'
@@ -164,14 +170,18 @@ const AuthPage = () => {
           message={isLogin ? 'Login' : 'Register'}
           handleClick={handleSubmit}
         />
-      </form>
+      </StandardForm>
       <LoadingButton
         message={isLogin ? 'Not a member? Register' : 'Already joined? Login'}
         handleClick={handleLoginToggle}
         isDisabled={isLoading}
       />
-    </div>
+    </AuthContainer>
   );
 };
 
 export default AuthPage;
+
+const AuthContainer = styled(StandardContainer)`
+  max-width: 25rem;
+`;

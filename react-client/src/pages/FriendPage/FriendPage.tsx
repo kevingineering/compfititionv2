@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import GoalAndCompetitionContainer from '../HomePage/HomePageComponents/GoalAndCompetitionContainer';
-import FriendAndNotificationContainer from '../HomePage/HomePageComponents/FriendAndNotificationContainer';
+import GoalAndCompetitionContainer from '../../sharedComponents/userDashboard/GoalAndCompetitionContainer';
+import FriendAndNotificationContainer from '../../sharedComponents/userDashboard/FriendAndNotificationContainer';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../redux/Store';
 import { useParams, useHistory } from 'react-router-dom';
 import { GetFriend } from '../../redux/friend/actions';
-import LoadingSpinner from '../../sharedComponents/LoadingSpinner';
-import DeleteFriendModule from './DeleteFriendModule';
+import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
+import DeleteFriendModule from './FriendPageComponents/DeleteFriendModule';
 import {
   AddRequest,
   DeleteRequest,
   AcceptRequest,
   GetRequestsAndSearchableUsers,
   RejectRequest,
-} from '../../redux/request/actions';
+} from '../../redux/friendRequest/actions';
 import {
   DELETE_FRIEND_BUTTON,
   ADD_REQUEST_BUTTON,
@@ -24,6 +24,12 @@ import {
   NOT_LOADING,
 } from '../../redux/buttonTypes';
 import LoadingButton from '../../sharedComponents/forms/LoadingButton';
+import {
+  StandardContainer,
+  SplitGrid,
+  PageTitle,
+} from '../../sharedComponents/styledComponents/Misc';
+import styled from 'styled-components';
 
 interface IParams {
   friendId: string;
@@ -95,14 +101,12 @@ const FriendPage = () => {
   let jsx;
   if (status === RequestStatus.SENT) {
     jsx = (
-      <div className='form-container'>
-        <p className='center margin-1rem margin-top-0'>
+      <StandardContainer>
+        <RequestStatusMessage>
           You sent this user a friend request. To see their page they first must
           accept your request.
-        </p>
-        {/* TODO - LOADING SPINNER */}
+        </RequestStatusMessage>
         <LoadingButton
-          className='btn btn-block btn-primary'
           handleClick={() => dispatch(DeleteRequest(friendId))}
           message={'Delete Request'}
           isLoading={
@@ -110,18 +114,16 @@ const FriendPage = () => {
             -1
           }
         />
-      </div>
+      </StandardContainer>
     );
   } else if (status === RequestStatus.RECEIVED) {
     jsx = (
-      <div className='form-container'>
-        <p className='center margin-1rem margin-top-0'>
+      <StandardContainer>
+        <RequestStatusMessage>
           You are not friends with this user, but they sent you a friend
           request! Accept it below to see their page.
-        </p>
-        {/* TODO - LOADING SPINNER */}
+        </RequestStatusMessage>
         <LoadingButton
-          className='btn btn-block btn-primary'
           handleClick={() => dispatch(AcceptRequest(friendId))}
           message={'Accept Request'}
           isLoading={
@@ -133,10 +135,7 @@ const FriendPage = () => {
             -1
           }
         />
-        <p className='margin-1rem margin-top-0'></p>
-        {/* TODO - LOADING SPINNER */}
         <LoadingButton
-          className='btn btn-block btn-primary'
           handleClick={() => dispatch(RejectRequest(friendId))}
           message={'Reject Request'}
           isLoading={
@@ -148,24 +147,23 @@ const FriendPage = () => {
             -1
           }
         />
-      </div>
+      </StandardContainer>
     );
   } else {
     jsx = (
-      <div className='form-container'>
-        <p className='center margin-1rem margin-top-0'>
+      <StandardContainer>
+        <RequestStatusMessage>
           You are not friends with this user. If you would to see their page,
           send a friend request!
-        </p>
+        </RequestStatusMessage>
         <LoadingButton
-          className='btn btn-block btn-primary'
           handleClick={() => dispatch(AddRequest(friendId))}
           message={'Send Request'}
           isLoading={
             requestState.buttonIds.indexOf(ADD_REQUEST_BUTTON + friendId) !== -1
           }
         />
-      </div>
+      </StandardContainer>
     );
   }
 
@@ -174,25 +172,29 @@ const FriendPage = () => {
     <LoadingSpinner />
   ) : (
     <React.Fragment>
-      <h1 className='center margin-bottom-1rem'>
-        {friendState.friend!.name}'s Page
-      </h1>
+      <PageTitle>{friendState.friend!.name}'s Page</PageTitle>
       {friendState.friend!.isFriend ? (
         <React.Fragment>
-          <div className='grid-2'>
+          <SplitGrid>
             <GoalAndCompetitionContainer isOwner={false} />
             <FriendAndNotificationContainer isOwner={false} />
-          </div>
+          </SplitGrid>
           <DeleteFriendModule
             friendId={friendId}
             isLoading={friendState.loadingButton === DELETE_FRIEND_BUTTON}
           />
         </React.Fragment>
       ) : (
-        <div className='form-container'>{jsx}</div>
+        <StandardContainer>{jsx}</StandardContainer>
       )}
     </React.Fragment>
   );
 };
 
 export default FriendPage;
+
+const RequestStatusMessage = styled.p`
+  text-align: center;
+  align-items: center;
+  margin: 0 1rem 1rem 1rem;
+`;

@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import LoadingButton from '../../../../sharedComponents/forms/LoadingButton';
-import { Link } from 'react-router-dom';
 import {
   UPDATE_PARTICIPANT_LEDGER_BUTTON,
   UPDATE_PARTICIPANT_TARGET_BUTTON,
   UPDATE_PARTICIPANT_INITIAL_VALUE_BUTTON,
   DELETE_COMPETITION_BUTTON,
 } from '../../../../redux/buttonTypes';
-import ToggleButtonModule from '../../../../sharedComponents/ToggleButtonModule';
-import NumberInput from '../../../../sharedComponents/NumberInput';
+import ToggleButtonModule from '../../../../sharedComponents/misc/ToggleButtonModule';
+import NumberInput from '../../../../sharedComponents/forms/NumberInput';
 import { TCompetition, EGoalType } from '../../../../types';
 import { useDispatch } from 'react-redux';
 import {
@@ -17,6 +16,13 @@ import {
   UpdateParticipantLedger,
   UpdateParticipantInitialValue,
 } from '../../../../redux/competition/actions';
+import {
+  EmptyBorderedSpace,
+  MessageInBorderedSpace,
+  CollectionLink,
+} from '../../../../sharedComponents/styledComponents/Misc';
+import { ButtonNoMargin } from '../../../../sharedComponents/styledComponents/Button';
+import styled from 'styled-components';
 
 interface IProps {
   isStarted: boolean;
@@ -75,8 +81,7 @@ const CompButtons: React.FC<IProps> = ({
       {isStarted && isActive && (
         <React.Fragment>
           <LoadingButton
-            className='btn btn-block btn-primary'
-            isInput={false}
+            styles={ButtonNoMargin}
             handleClick={() => saveParticipantLedger()}
             message='Save Progress'
             isLoading={loadingButton === UPDATE_PARTICIPANT_LEDGER_BUTTON}
@@ -96,10 +101,14 @@ const CompButtons: React.FC<IProps> = ({
             topButton='Set Start Value'
             leftButton='Cancel'
             rightButton='Set Start Value'
+            isDanger={false}
           >
-            <div className='padding-04 lr-border'>
-              <p className='center bold'>Set Start Value</p>
-              <p className='center'>
+            <hr />
+            <ModuleMessage>
+              <p>
+                <strong>Set Start Value</strong>
+              </p>
+              <p>
                 The start value is your number at the beginning of the
                 competition. Your final value will be subtracted from your start
                 value when scoring the competition.
@@ -112,7 +121,7 @@ const CompButtons: React.FC<IProps> = ({
                 }}
                 units={competition.units}
               />
-            </div>
+            </ModuleMessage>
           </ToggleButtonModule>
         </React.Fragment>
       )}
@@ -125,10 +134,13 @@ const CompButtons: React.FC<IProps> = ({
             topButton='Modify My Goal'
             leftButton='Cancel'
             rightButton='Set Target'
+            isDanger={false}
           >
-            <div className='padding-04 lr-border'>
-              <p className='center bold'>Modify Personal Goal</p>
-              <p className='center'>
+            <ModuleMessage>
+              <p>
+                <strong>Modify Personal Goal</strong>
+              </p>
+              <p>
                 Personal goals are private and cannot be seen by other users.
               </p>
               <NumberInput
@@ -139,20 +151,17 @@ const CompButtons: React.FC<IProps> = ({
                 }}
                 units={competition.units}
               />
-            </div>
+            </ModuleMessage>
           </ToggleButtonModule>
         </React.Fragment>
       )}
       {/* Modify Button */}
       {isAdminView && isActive && (
         <React.Fragment>
-          <p className='lr-border' />
-          <Link
-            to='/updatecompetition'
-            className='btn btn-block btn-primary center'
-          >
+          <EmptyBorderedSpace />
+          <CollectionLink to='/updatecompetition'>
             Modify Competition
-          </Link>
+          </CollectionLink>
         </React.Fragment>
       )}
       {/* Delete Button */}
@@ -162,17 +171,32 @@ const CompButtons: React.FC<IProps> = ({
           isLoading={loadingButton === DELETE_COMPETITION_BUTTON}
           topButton='Delete Competition'
         >
-          <span className='alert lr-border'>
+          <MessageInBorderedSpace>
             Are you sure you want to delete this competition? Deletions cannot
             be undone.
-          </span>
+          </MessageInBorderedSpace>
         </ToggleButtonModule>
       )}
       {/* Closing line if no buttons */}
+      {/* TEST */}
       {((!isActive && !isAdminView) ||
-        (!isStarted && competition.type === EGoalType.passfail)) && <hr />}
+        (!isStarted &&
+          competition.type === EGoalType.passfail &&
+          !isAdminView)) && <hr />}
     </React.Fragment>
   );
 };
 
 export default CompButtons;
+
+const ModuleMessage = styled.div`
+  padding: 0.4rem;
+  border-left: 0.125rem solid var(--primary-color);
+  border-right: 0.125rem solid var(--primary-color);
+  margin: 0;
+  min-height: 0.5rem;
+  p {
+    text-align: center;
+    align-items: center;
+  }
+`;

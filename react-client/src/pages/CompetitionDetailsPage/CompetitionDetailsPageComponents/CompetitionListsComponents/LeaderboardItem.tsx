@@ -1,25 +1,52 @@
 import React from 'react';
-import { TCompetitionParticipantInfo } from '../../../../util/competitionFunctions';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { RootStore } from '../../../../redux/Store';
 
 interface IProps {
-  item: TCompetitionParticipantInfo;
+  name: string;
+  score: number;
+  id: string;
   place: number;
   isStarted: boolean;
 }
 
-const LeaderboardItem: React.FC<IProps> = ({ item, place, isStarted }) => {
+const LeaderboardItem: React.FC<IProps> = ({
+  name,
+  score,
+  id,
+  place,
+  isStarted,
+}) => {
+  const userState = useSelector((state: RootStore) => state.userState);
   return (
-    <div className='leaderboard-item lr-border'>
+    <LeaderboardItemContainer>
       <span>
         {isStarted && `${place}. `}
-        <Link to={`/friend/${item.userId}`} className='bold'>
-          {item.name}
-        </Link>
+        {id === userState.user!.id! ? (
+          <strong>{name}</strong>
+        ) : (
+          <Link to={`/friend/${id}`}>
+            <strong>{name}</strong>
+          </Link>
+        )}
       </span>
-      {isStarted && <span>{item.score}</span>}
-    </div>
+      {isStarted && <span>{score}</span>}
+    </LeaderboardItemContainer>
   );
 };
 
 export default LeaderboardItem;
+
+const LeaderboardItemContainer = styled.div`
+  padding: 0.1rem 0.5rem;
+  display: inline-flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  border-left: 0.125rem solid var(--primary-color);
+  border-right: 0.125rem solid var(--primary-color);
+  margin: 0;
+  min-height: 0.5rem;
+`;

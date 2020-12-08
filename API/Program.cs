@@ -26,7 +26,6 @@ namespace API
 
           await context.Database.MigrateAsync();
           await SeedData.SeedAsync(context, loggerFactory);
-          // await DataContextSeed.SeedAsync(context, loggerFactory);
         }
         catch (Exception ex)
         {

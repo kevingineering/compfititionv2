@@ -1,11 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import LoadingButton from '../../../sharedComponents/forms/LoadingButton';
 import {
   UPDATE_GOAL_LEDGER_BUTTON,
   DELETE_GOAL_BUTTON,
 } from '../../../redux/buttonTypes';
-import ToggleButtonModule from '../../../sharedComponents/ToggleButtonModule';
+import {
+  EmptyBorderedSpace,
+  CollectionLink,
+  MessageInBorderedSpace,
+} from '../../../sharedComponents/styledComponents/Misc';
+import ToggleButtonModule from '../../../sharedComponents/misc/ToggleButtonModule';
+import { ButtonNoMargin } from '../../../sharedComponents/styledComponents/Button';
 
 interface IProps {
   isStarted: boolean;
@@ -28,25 +33,22 @@ const GoalButtons: React.FC<IProps> = ({
   return (
     <React.Fragment>
       {/* SaveButton */}
+      {/* TEST */}
       {isStarted && isOwner && isActive && (
         <React.Fragment>
-          {/* TODO - LOADING SPINNER AND ALERT*/}
           <LoadingButton
-            className='btn btn-block btn-primary'
-            isInput={false}
+            styles={ButtonNoMargin}
             handleClick={handleSave}
-            message='Save Goal'
+            message='Save Progress'
             isLoading={loadingButton === UPDATE_GOAL_LEDGER_BUTTON}
           />
-          <p className='lr-border' />
+          <EmptyBorderedSpace />
         </React.Fragment>
       )}
       {/* Modify Button */}
       {isActive && (
         <React.Fragment>
-          <Link to='/updategoal' className='btn btn-block btn-primary center'>
-            Modify Goal
-          </Link>
+          <CollectionLink to='/updategoal'>Modify Goal</CollectionLink>
         </React.Fragment>
       )}
       {/* Delete Button */}
@@ -55,9 +57,9 @@ const GoalButtons: React.FC<IProps> = ({
         isLoading={loadingButton === DELETE_GOAL_BUTTON}
         topButton='Delete Goal'
       >
-        <span className='alert lr-border'>
+        <MessageInBorderedSpace>
           Are you sure you want to delete this goal? Deletions cannot be undone.
-        </span>
+        </MessageInBorderedSpace>
       </ToggleButtonModule>
     </React.Fragment>
   );

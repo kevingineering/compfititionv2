@@ -1,17 +1,19 @@
 import React from 'react';
-import FriendRequestItem from './FriendRequestItem';
 import { useSelector } from 'react-redux';
 import { RootStore } from '../../../redux/Store';
-import LoadingSpinner from '../../../sharedComponents/LoadingSpinner';
+import LoadingSpinner from '../../../sharedComponents/misc/LoadingSpinner';
 import { NO_BUTTON } from '../../../redux/buttonTypes';
+import { EmptyBorderedSpace } from '../../../sharedComponents/styledComponents/Misc';
+import OtherUserItem from '../../../sharedComponents/misc/OtherUserItem';
 
 const FriendRequestList = () => {
   const requestState = useSelector((state: RootStore) => state.requestState);
 
-  const friendRequests = requestState.receivedRequests.map((req) => (
-    <FriendRequestItem
-      key={req.id}
-      targetUser={req}
+  const friendRequests = requestState.receivedRequests.map((req, index) => (
+    <OtherUserItem
+      hasMessage={true}
+      key={index}
+      user={req}
       buttonIds={requestState.buttonIds}
     />
   ));
@@ -22,7 +24,7 @@ const FriendRequestList = () => {
         <LoadingSpinner hasContainer={true} />
       ) : (
         <React.Fragment>
-          {friendRequests.length !== 0 && <p className='lr-border' />}
+          {friendRequests.length !== 0 && <EmptyBorderedSpace />}
           {friendRequests}
         </React.Fragment>
       )}

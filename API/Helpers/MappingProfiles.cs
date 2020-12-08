@@ -11,20 +11,35 @@ namespace API.Helpers
   {
     public MappingProfiles()
     {
-      //User mappings
-      CreateMap<UserGoal, GoalReturnDTO>();
-      CreateMap<GoalOrCompInputDTO, UserGoal>();
+      //User
+      CreateMap<RegisterOrUpdateInputDTO, User>();
       CreateMap<User, UserReturnDTO>();
       CreateMap<User, DifferentUserReturnDTO>();
-      CreateMap<RegisterOrUpdateInputDTO, User>();
+
+      //Goal
+      CreateMap<GoalInputDTO, UserGoal>();
+      CreateMap<UserGoal, GoalReturnDTO>();
+
+      //Friend
+
+      //FriendRequest
       CreateMap<UserFriendRequest, UserFriendRequestReturnDTO>();
 
-      //Competition mappings
-      CreateMap<GoalOrCompInputDTO, CompetitionGoal>();
+      //Competition
+      CreateMap<CompInputDTO, CompetitionGoal>();
+
+      //Participant
       CreateMap<CompetitionParticipant, CompetitionParticipantHelperDTO>().ForMember(d => d.Name, o => o.MapFrom(s => s.User.Name));
+
+      //ParticipantRequet
+      CreateMap<CompetitionParticipantRequest, ParticipantRequestReturnDTO>();
+
+      //Admin
       CreateMap<CompetitionAdmin, Guid>().ConstructUsing(x => x.UserId);
-      CreateMap<CompetitionGoal, CompetitionReturnDTO>().ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString()));
-      CreateMap<CompetitionLetter, LetterReturnDTO>().ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString()));
+
+      //AdminRequest
+      CreateMap<CompetitionAdminRequest, AdminRequestDTO>();
+
     }
   }
 }

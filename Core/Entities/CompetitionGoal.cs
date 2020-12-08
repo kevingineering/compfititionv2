@@ -14,7 +14,7 @@ namespace Core.Entities
     public int Duration { get; set; }
 
     //Day goal starts (not created)
-    public DateTime StartDate { get; set; }
+    public DateTime StartTime { get; set; }
 
     public GoalType Type { get; set; }
 
@@ -29,13 +29,15 @@ namespace Core.Entities
 
     public bool isHighestScoreWins { get; set; } = true;
 
-    //Determines who can see goal - only user (true) or user friends (false)
+    //Determines who can see competition - only participants (true) or participant friends (false)
     public bool IsPrivate { get; set; }
 
     //relationships
     public virtual ICollection<CompetitionParticipant> Participants { get; set; }
-    public virtual ICollection<CompetitionLetter> Letters { get; set; }
     public virtual ICollection<CompetitionAdmin> Admins { get; set; }
     public virtual ICollection<CompetitionComment> Comments { get; set; }
+    public virtual ICollection<CompetitionAdminRequest> AdminRequests { get; set; }
+    public virtual ICollection<CompetitionInvite> Invites { get; set; }
+    public virtual ICollection<CompetitionParticipantRequest> ParticipantRequests { get; set; }
   }
 }

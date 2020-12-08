@@ -1,0 +1,23 @@
+{
+  "Functional React component with typescript interface": {
+    "prefix": "tsrf",
+    "body": [
+      "import React from 'react'",
+      "",
+      "interface IProps {",
+      "",
+      "}",
+      "",
+      "const ${1:componentName}: React.FC<IProps> = ({}) => {",
+      "  return (",
+      "    <div>",
+      "      <p>${1:componentName}</p>",
+      "    </div>",
+      "  )",
+      "}",
+      "",
+      "export default ${1:componentName}"
+    ],
+    "description": "Functional React component with typescript interface"
+  }
+}

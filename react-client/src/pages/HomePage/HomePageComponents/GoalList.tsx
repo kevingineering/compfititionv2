@@ -9,9 +9,9 @@ interface IProps {
 }
 
 const GoalList: React.FC<IProps> = ({ goals, isOwner, isComp }) => {
-  const goalList = goals.map((goal) => {
+  const goalList = goals.map((goal, index) => {
     return (
-      <GoalItem key={goal.id} goal={goal} isOwner={isOwner} isComp={isComp} />
+      <GoalItem key={index} goal={goal} isOwner={isOwner} isComp={isComp} />
     );
   });
   return <React.Fragment>{goalList}</React.Fragment>;

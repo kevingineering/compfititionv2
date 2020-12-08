@@ -1,18 +1,35 @@
 import React from 'react';
 import { TCompetitionParticipantInfo } from '../../../../util/competitionFunctions';
-import CollapsibleListContainer from '../../../../sharedComponents/CollapsibleListContainer';
+import CollapsibleListContainer from '../../../../sharedComponents/misc/CollapsibleListContainer';
 import LeaderboardItem from './LeaderboardItem';
 
-//TODO
 interface IProps {
   competitionArray: TCompetitionParticipantInfo[];
   isStarted: boolean;
+  isHighestScoreWins: boolean;
 }
 
-const Leaderboard: React.FC<IProps> = ({ competitionArray, isStarted }) => {
-  let items = competitionArray.map((item, index) => (
+const Leaderboard: React.FC<IProps> = ({
+  competitionArray,
+  isStarted,
+  isHighestScoreWins,
+}) => {
+  //don't sort competition array directly because passed by reference
+  let newCompetitionArray = competitionArray.map((x) => {
+    return { name: x.name, score: x.score, id: x.userId };
+  });
+
+  if (isHighestScoreWins) {
+    newCompetitionArray.sort((a, b) => b.score - a.score);
+  } else {
+    newCompetitionArray.sort((a, b) => a.score - b.score);
+  }
+
+  let items = newCompetitionArray.map((item, index) => (
     <LeaderboardItem
-      item={item}
+      name={item.name}
+      score={item.score}
+      id={item.id}
       key={index}
       place={index + 1}
       isStarted={isStarted}

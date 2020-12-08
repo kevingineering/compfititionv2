@@ -5,6 +5,7 @@ bin
 appsettings.json
 notes.txt
 checklist.txt
+seedData.txt
 s.sh
 react-client/styled-components.txt
 react-client/TODO.txt

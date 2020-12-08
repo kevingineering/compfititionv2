@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import FormGroup from './FormGroupStyledComponent';
+import styled from 'styled-components';
 
 interface IOptions {
   value: string;
@@ -33,18 +35,17 @@ const Select: React.FC<IProps> = ({
     handleInput(name, state, true);
   }, [name, state, handleInput]);
 
-  let optionsList = options.map((option) => {
+  let optionsList = options.map((option, index) => {
     return (
-      <option value={option.value} key={option.value}>
+      <option value={option.value} key={index}>
         {option.text}
       </option>
     );
   });
   return (
-    <div className={`form-group ${isDisabled && 'disabled'}`}>
+    <FormGroup isDisabled={isDisabled}>
       <label htmlFor={name}>{label}</label>
-      <select
-        className='form-no-error'
+      <SelectSelect
         value={state}
         name={name}
         onChange={(e) => setState(e.target.value)}
@@ -52,9 +53,19 @@ const Select: React.FC<IProps> = ({
         {...(autofocus && { autofocus: true })}
       >
         {optionsList}
-      </select>
-    </div>
+      </SelectSelect>
+    </FormGroup>
   );
 };
 
 export default Select;
+
+const SelectSelect = styled.select`
+  display: block;
+  width: 100%;
+  padding: 0.4rem;
+  font-size: 1.2rem;
+  border: 0.125rem solid var(--primary-color);
+  background: var(--secondary-color);
+  color: var(--primary-color);
+`;

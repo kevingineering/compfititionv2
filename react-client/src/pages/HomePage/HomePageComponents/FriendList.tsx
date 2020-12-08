@@ -1,9 +1,10 @@
 import React from 'react';
-import FriendItem from './FriendItem';
 import { useSelector } from 'react-redux';
 import { RootStore } from '../../../redux/Store';
-import LoadingSpinner from '../../../sharedComponents/LoadingSpinner';
+import LoadingSpinner from '../../../sharedComponents/misc/LoadingSpinner';
 import { NO_BUTTON } from '../../../redux/buttonTypes';
+import { EmptyCollection } from '../../../sharedComponents/styledComponents/Misc';
+import OtherUserItem from '../../../sharedComponents/misc/OtherUserItem';
 
 interface IProps {
   isOwner: boolean;
@@ -21,15 +22,20 @@ const FriendList: React.FC<IProps> = ({ isOwner }) => {
   const message = friendState.isFiltered
     ? 'No users match your search.'
     : isOwner
-    ? "You don't have any friends yet, add one below!"
+    ? 'Yo yet, add one below!'
     : "You are this user's only visible friend.";
 
   const friends =
     results.length === 0 ? (
-      <span className='empty-collection'>{message}</span>
+      <EmptyCollection>{message}</EmptyCollection>
     ) : (
-      results.map((friend) => (
-        <FriendItem key={friend.id} friend={friend}></FriendItem>
+      results.map((friend, index) => (
+        <OtherUserItem
+          key={index}
+          user={friend}
+          isLink={true}
+          hasButton={false}
+        />
       ))
     );
 

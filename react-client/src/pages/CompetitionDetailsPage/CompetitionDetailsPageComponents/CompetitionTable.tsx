@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import CompChart from './CompChart';
-import GoalProgress from '../../GoalDetailsPage/GoalDetailsPageComponent/GoalProgress';
+import CompChart from './CompetitionTableComponents/CompChart';
 import CompInfo from './CompetitionTableComponents/CompInfo';
 import CompButtons from './CompetitionTableComponents/CompButtons';
 import { TCompetition, EGoalType, TParticipant } from '../../../types';
 import { TCompetitionParticipantInfo } from '../../../util/competitionFunctions';
+import {
+  CollectionHeader,
+  StandardContainer,
+} from '../../../sharedComponents/styledComponents/Misc';
+import GCProgress from '../../../sharedComponents/goalCompPage/GCProgress';
+import styled from 'styled-components';
 
 interface IProps {
   isAdminView: boolean;
   isStarted: boolean;
-  isComplete: boolean;
+  isFinished: boolean;
   participant?: TParticipant;
   time: number;
   competitionArray: TCompetitionParticipantInfo[];
@@ -31,7 +36,7 @@ const CompetitionTable: React.FC<IProps> = ({
   setUserRecord,
   time,
   isStarted,
-  isComplete,
+  isFinished,
 }) => {
   const [target, setTarget] = useState(participant?.target?.toString() || '');
 
@@ -44,10 +49,10 @@ const CompetitionTable: React.FC<IProps> = ({
   const { name, duration, units, type } = competition;
 
   return (
-    <div className='form-container no-max-width'>
-      <h2 className='collection-header'>{name}</h2>
+    <CompetitionTableContainer>
+      <CollectionHeader>{name}</CollectionHeader>
       <ul>
-        {isStarted && (
+        {(isStarted || competition.type === EGoalType.passfail) && (
           <CompChart
             competition={competition}
             competitionArray={competitionArray}
@@ -60,7 +65,7 @@ const CompetitionTable: React.FC<IProps> = ({
           time !== duration &&
           type !== EGoalType.passfail &&
           userRecord.length !== 0 && (
-            <GoalProgress
+            <GCProgress
               record={userRecord}
               time={time}
               units={units}
@@ -75,13 +80,14 @@ const CompetitionTable: React.FC<IProps> = ({
           isStarted={isStarted}
           initialValue={participant?.initialValue}
           target={participant?.target}
+          isFinished={isFinished}
         />
       </ul>
       {participant ? (
         <CompButtons
           isStarted={isStarted}
           isAdminView={isAdminView}
-          isActive={!isComplete}
+          isActive={!isFinished}
           ledger={userRecord}
           loadingButton={loadingButton}
           target={target}
@@ -92,8 +98,12 @@ const CompetitionTable: React.FC<IProps> = ({
       ) : (
         <hr />
       )}
-    </div>
+    </CompetitionTableContainer>
   );
 };
 
 export default CompetitionTable;
+
+const CompetitionTableContainer = styled(StandardContainer)`
+  max-width: none;
+`;

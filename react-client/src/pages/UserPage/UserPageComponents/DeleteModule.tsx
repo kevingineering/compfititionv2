@@ -9,6 +9,11 @@ import {
 } from '../../../util/validators';
 import { DeleteUser } from '../../../redux/user/actions';
 import LoadingButton from '../../../sharedComponents/forms/LoadingButton';
+import {
+  StandardContainer,
+  StandardForm,
+} from '../../../sharedComponents/styledComponents/Misc';
+import styled from 'styled-components';
 
 interface IProps {
   closeDelete: () => void;
@@ -33,13 +38,13 @@ const DeleteModule: React.FC<IProps> = ({ closeDelete, isLoading }) => {
   };
 
   return (
-    <div className='form-container'>
-      <form autoComplete='off' className='form'>
-        <p className='margin-bottom-1rem'>
+    <StandardContainer>
+      <StandardForm autoComplete='off'>
+        <DeleteAccountMessage>
           Deleting your account cannot be undone and your information cannot be
           recovered. Any goals, competitions, or friendships you have will be
           permanently lost. Are you sure you want to delete your account?
-        </p>
+        </DeleteAccountMessage>
         <Input
           label='Password'
           type='password'
@@ -59,14 +64,18 @@ const DeleteModule: React.FC<IProps> = ({ closeDelete, isLoading }) => {
           message='Delete Account'
           isDisabled={!formState.isValid}
         />
-      </form>
+      </StandardForm>
       <LoadingButton
         message='Cancel'
         isDisabled={isLoading}
         handleClick={closeDelete}
       />
-    </div>
+    </StandardContainer>
   );
 };
 
 export default DeleteModule;
+
+const DeleteAccountMessage = styled.p`
+  margin-bottom: 1rem;
+`;

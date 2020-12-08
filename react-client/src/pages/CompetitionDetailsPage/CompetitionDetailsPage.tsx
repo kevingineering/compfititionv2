@@ -8,7 +8,7 @@ import {
 } from '../../redux/competition/actions';
 import { NOT_LOADING } from '../../redux/buttonTypes';
 import { getGoalTime } from '../../util/dateFunctions';
-import LoadingSpinner from '../../sharedComponents/LoadingSpinner';
+import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
 import CompetitionTable from './CompetitionDetailsPageComponents/CompetitionTable';
 import CompetitionLists from './CompetitionDetailsPageComponents/CompetitionLists';
 import {
@@ -17,6 +17,7 @@ import {
   getCompRecord,
 } from '../../util/competitionFunctions';
 import { TParticipant } from '../../types';
+import styled from 'styled-components';
 
 interface IParams {
   competitionId: string;
@@ -160,39 +161,50 @@ const CompetitionDetailsPage = () => {
     return <LoadingSpinner />;
   }
 
-  const { startDate, duration } = competitionState.selectedCompetition;
+  const { startTime, duration } = competitionState.selectedCompetition;
 
-  //determine if started/completed/what day
-  const { time, isStarted, isComplete } = getGoalTime(startDate, duration);
+  const { time, isStarted, isFinished } = getGoalTime(startTime, duration);
 
   return (
-    <div className='competition-container'>
-      <div className='grid-2-1'>
-        <CompetitionTable
-          competition={competitionState.selectedCompetition}
-          competitionArray={competitionArray}
-          participant={participant}
-          loadingButton={competitionState.loadingButton}
-          isAdminView={isAdminView}
-          userRecord={userRecord}
-          setUserRecord={setUserRecord}
-          time={time}
-          isStarted={isStarted}
-          isComplete={isComplete}
-        />
-        <CompetitionLists
-          isAdmin={isAdmin}
-          isAdminView={isAdminView}
-          setIsAdminView={setIsAdminView}
-          isStarted={isStarted}
-          competition={competitionState.selectedCompetition}
-          competitionArray={competitionArray}
-          participantId={participant?.userId}
-          loadingButton={competitionState.loadingButton}
-        />
-      </div>
-    </div>
+    <CompetitionDetailsPageContainer>
+      <CompetitionTable
+        competition={competitionState.selectedCompetition}
+        competitionArray={competitionArray}
+        participant={participant}
+        loadingButton={competitionState.loadingButton}
+        isAdminView={isAdminView}
+        userRecord={userRecord}
+        setUserRecord={setUserRecord}
+        time={time}
+        isStarted={isStarted}
+        isFinished={isFinished}
+      />
+      <CompetitionLists
+        isAdmin={isAdmin}
+        isAdminView={isAdminView}
+        setIsAdminView={setIsAdminView}
+        isStarted={isStarted}
+        competition={competitionState.selectedCompetition}
+        competitionArray={competitionArray}
+        participantId={participant?.userId}
+        loadingButton={competitionState.loadingButton}
+      />
+    </CompetitionDetailsPageContainer>
   );
 };
 
 export default CompetitionDetailsPage;
+
+const CompetitionDetailsPageContainer = styled.div`
+  max-width: 60rem;
+  margin: auto;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 18rem;
+  column-gap: 3rem;
+  row-gap: 2rem;
+  @media (max-width: 54rem) {
+    grid-template-columns: 1fr;
+    margin: auto;
+  }
+`;

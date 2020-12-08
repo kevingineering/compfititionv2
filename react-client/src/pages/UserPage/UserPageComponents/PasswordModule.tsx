@@ -10,6 +10,10 @@ import {
 } from '../../../util/validators';
 import { ChangeUserPassword } from '../../../redux/user/actions';
 import LoadingButton from '../../../sharedComponents/forms/LoadingButton';
+import {
+  StandardContainer,
+  StandardForm,
+} from '../../../sharedComponents/styledComponents/Misc';
 
 interface IProps {
   closePassword: () => void;
@@ -49,8 +53,8 @@ const PasswordModule: React.FC<IProps> = ({ closePassword, isLoading }) => {
     formState.inputs.get('newPassword2')?.value;
 
   return (
-    <div className='form-container'>
-      <form autoComplete='off' className='form'>
+    <StandardContainer>
+      <StandardForm autoComplete='off'>
         <Input
           label='Current Password'
           type='password'
@@ -100,13 +104,13 @@ const PasswordModule: React.FC<IProps> = ({ closePassword, isLoading }) => {
           message='Change Password'
           isDisabled={!formState.isValid || !isPasswordMatch || isLoading}
         />
-      </form>
+      </StandardForm>
       <LoadingButton
         message='Cancel'
         handleClick={closePassword}
         isDisabled={isLoading}
       />
-    </div>
+    </StandardContainer>
   );
 };
 

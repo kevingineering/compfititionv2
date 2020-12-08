@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../redux/Store';
-import { getGoalTime, dateIsBeforeToday } from '../../util/dateFunctions';
-import GoalChart from '../GoalDetailsPage/GoalDetailsPageComponent/GoalChart';
-import GoalInfo from '../GoalDetailsPage/GoalDetailsPageComponent/GoalInfo';
+import { getGoalTime, timeIsInPast } from '../../util/dateFunctions';
+import GoalInfo from '../../sharedComponents/goalCompPage/GoalInfo';
 import { SetFriendSelectedGoal } from '../../redux/friend/actions';
-import LoadingSpinner from '../../sharedComponents/LoadingSpinner';
+import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
 import { getGoalRecord } from '../../util/goalFunctions';
 import { EGoalType } from '../../types';
+import {
+  StandardContainer,
+  CollectionHeader,
+} from '../../sharedComponents/styledComponents/Misc';
+import GCChart from '../../sharedComponents/goalCompPage/goalcompCharts/GCChart';
 
 interface IParams {
   goalId: string;
@@ -47,24 +51,25 @@ const FriendGoalPage = () => {
     friendState.friend === undefined ||
     friendState.friend.selectedGoal === undefined ||
     (record.length === 0 &&
-      dateIsBeforeToday(friendState.friend.selectedGoal.startDate.toString()))
+      timeIsInPast(friendState.friend.selectedGoal.startTime.toString()))
   ) {
     return (
-      <div className='form-container'>
-        <LoadingSpinner />
-      </div>
+      //TODO - verify this is correct
+      <LoadingSpinner isFullPage={true} />
     );
   }
-  const { name, duration, startDate } = friendState.friend.selectedGoal;
-  const { isStarted, time } = getGoalTime(startDate, duration);
+
+  const { name, duration, startTime } = friendState.friend.selectedGoal;
+  const { isStarted, time, isFinished } = getGoalTime(startTime, duration);
 
   return (
-    <div className='form-container'>
-      <h2 className='collection-header'>{name}</h2>
+    <StandardContainer>
+      <CollectionHeader>{name}</CollectionHeader>
       <ul>
+        {/* TEST */}
         {(isStarted ||
           friendState.friend.selectedGoal.type === EGoalType.passfail) && (
-          <GoalChart
+          <GCChart
             goal={friendState.friend.selectedGoal}
             record={record}
             setRecord={() => {}}
@@ -73,13 +78,14 @@ const FriendGoalPage = () => {
           />
         )}
         <GoalInfo
+          isFinished={isFinished}
           goal={friendState.friend.selectedGoal}
           time={time}
           record={record}
         />
         <hr />
       </ul>
-    </div>
+    </StandardContainer>
   );
 };
 

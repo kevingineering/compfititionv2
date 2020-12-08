@@ -1,5 +1,7 @@
 import React, { useReducer, useEffect } from 'react';
 import { validate, IValidator } from '../../util/validators';
+import FormGroup from './FormGroupStyledComponent';
+import styled from 'styled-components';
 
 //custom input for use with validators and useForm hook
 
@@ -125,9 +127,9 @@ const Input: React.FC<IProps> = ({
   };
 
   return (
-    <div className={`form-group ${isDisabled && 'disabled'}`}>
+    <FormGroup isDisabled={isDisabled}>
       <label htmlFor={name}>{label}</label>
-      <input
+      <InputInput
         type={type}
         value={state.value}
         name={name}
@@ -139,9 +141,44 @@ const Input: React.FC<IProps> = ({
         {...(autofocus && { autofocus: true })}
         spellCheck='false'
       />
-      {<p className='invalid'>{state.isTouched ? state.errorMessage : ''}</p>}
-    </div>
+      {
+        <InvalidMessage>
+          {state.isTouched ? state.errorMessage : ''}
+        </InvalidMessage>
+      }
+    </FormGroup>
   );
 };
 
 export default Input;
+
+const InputInput = styled.input`
+  margin-bottom: 1.2rem;
+  display: block;
+  width: 100%;
+  padding: 0.4rem;
+  font-size: 1.2rem;
+  border: 0.125rem solid var(--primary-color);
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  ${(props) =>
+    props.type === 'datetime-local' &&
+    `::-webkit-datetime-edit-month-field:focus,
+    ::-webkit-datetime-edit-day-field:focus,
+    ::-webkit-datetime-edit-year-field:focus,
+    ::-webkit-datetime-edit-hour-field:focus,
+    ::-webkit-datetime-edit-minute-field:focus,
+    ::-webkit-datetime-edit-ampm-field:focus {
+      background-color: var(--today-color);
+    }
+    
+    ::-webkit-calendar-picker-indicator {
+      display: none;
+    }`}
+`;
+
+const InvalidMessage = styled.p`
+  min-height: 1.6rem;
+  font-size: 0.8rem;
+  color: var(--danger-color);
+`;

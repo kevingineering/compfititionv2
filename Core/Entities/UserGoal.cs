@@ -18,7 +18,7 @@ namespace Core.Entities
     public int Duration { get; set; }
 
     //Day goal starts (not created)
-    public DateTime StartDate { get; set; }
+    public DateTime StartTime { get; set; }
 
     public GoalType Type { get; set; }
 

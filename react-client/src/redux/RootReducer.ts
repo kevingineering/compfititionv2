@@ -3,7 +3,7 @@ import userReducer from './user/reducer';
 import goalReducer from './goal/reducer';
 import competitionReducer from './competition/reducer';
 import alertReducer from './alert/reducer';
-import requestReducer from './request/reducer';
+import requestReducer from './friendRequest/reducer';
 import friendReducer from './friend/reducer';
 import axios from 'axios';
 import { createAlertActions } from './alert/actions';
@@ -12,7 +12,7 @@ import Store from './Store';
 //TODO - remove debugging delay
 axios.interceptors.request.use(async (req) => {
   // console.log(`${req.method} ${req.url}`);
-  await Promise.all([new Promise((resolve) => setTimeout(resolve, 1000))]);
+  // await Promise.all([new Promise((resolve) => setTimeout(resolve, 1000))]);
   // console.log('delayed' + req.url);
   return req;
 });

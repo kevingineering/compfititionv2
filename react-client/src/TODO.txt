@@ -1,9 +1,33 @@
-Today:
-  Add/Modify competition page
-  Implement 'Request to Join' button
-  Participants
+Fix pass fail competition - frequency?
+use UTC time
+add new DTO and method for received friend requests on friend request reducer
 
-Home page notifications - move friend requests here?
+Today: 
+  Competition page: 
+    Letters - UserInvited, UserRequested
+    Add/Modify competition page
+
+    Implement 'Request to Join' button / 'Cancel Request'
+    Implement Kick User
+    Implement Make Admin
+    
+    Invites - add existing invites to list (even if not user's friend)
+
+  Home page: 
+    Notifications - UserInvited, UserAdded, UserKicked, CompDeleted, AdminRequested
+
+CompetitionInvites
+CompetitionRequests
+
+Competition Details:
+  CompetitionRequests
+
+Notifications:
+  CompetitionInvites
+  RequestToJoinCompetitionAccepted
+  UserRemovedFromCompetition
+  CompetitionDeleted
+  UserRequestedToBeAdmin
 
 Chat
 
@@ -18,6 +42,5 @@ Host with CI/CD
 
 Future: 
   Fix eslint-disable-next-line
-  Break CSS - styled components? css modules? 
   Break up components - further remove logic?
   Write snippets? 

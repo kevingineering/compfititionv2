@@ -11,9 +11,9 @@ import {
   DELETE_GOAL,
   UPDATE_GOAL_LEDGER,
 } from './types';
-import moment from 'moment';
 import { NOT_LOADING } from '../buttonTypes';
 import { TGoal } from '../../types';
+import { getGoalTime } from '../../util/dateFunctions';
 
 export interface IGoalState {
   loadingButton: string;
@@ -45,14 +45,10 @@ const goalReducer = (
         ...state,
         loadingButton: NOT_LOADING,
         activeGoals: fetchedGoals.filter(
-          (goal) =>
-            moment().startOf('day').diff(goal.startDate, 'days') + 1 <=
-            goal.duration
+          (goal) => !getGoalTime(goal.startTime, goal.duration).isFinished
         ),
         pastGoals: fetchedGoals.filter(
-          (goal) =>
-            moment().startOf('day').diff(goal.startDate, 'days') + 1 >
-            goal.duration
+          (goal) => getGoalTime(goal.startTime, goal.duration).isFinished
         ),
       };
     case GET_GOAL:

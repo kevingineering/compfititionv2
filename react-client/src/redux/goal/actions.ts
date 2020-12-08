@@ -29,7 +29,7 @@ export const GetUserGoals = () => async (
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: NO_BUTTON });
-    const res = await axios.get('/api/goals');
+    const res = await axios.get('/api/goal');
     dispatch({ type: GET_GOALS, payload: res.data });
   } catch (error) {
     dispatch({ type: GOAL_ERROR });
@@ -53,7 +53,7 @@ export const GetGoal = (id: string) => async (
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: NO_BUTTON });
-    const res = await axios.get('/api/goals/' + id);
+    const res = await axios.get('/api/goal/' + id);
     dispatch({ type: GET_GOAL, payload: res.data });
   } catch (error) {
     dispatch({ type: GOAL_ERROR });
@@ -65,7 +65,7 @@ export const AddGoal = (goal: TGoalDTO) => async (
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: ADD_GOAL_BUTTON });
-    const res = await axios.post('/api/goals', goal);
+    const res = await axios.post('/api/goal', goal);
     dispatch({ type: ADD_GOAL, payload: res.data });
     dispatch(SetAlert('Goal added', true));
   } catch (error) {
@@ -78,7 +78,7 @@ export const UpdateGoal = (goal: TGoalDTO, id: string) => async (
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: UPDATE_GOAL_BUTTON });
-    const res = await axios.patch('/api/goals/' + id, goal);
+    const res = await axios.patch('/api/goal/' + id, goal);
     dispatch({ type: UPDATE_GOAL, payload: res.data });
     dispatch(SetAlert('Goal updated', true));
   } catch (error) {
@@ -91,7 +91,7 @@ export const UpdateGoalLedger = (ledger: TLedgerDTO) => async (
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: UPDATE_GOAL_LEDGER_BUTTON });
-    const res = await axios.patch('/api/goals/ledger', ledger);
+    const res = await axios.patch('/api/goal/ledger', ledger);
     dispatch({ type: UPDATE_GOAL_LEDGER, payload: res.data });
     dispatch(SetAlert('Goal saved', true));
   } catch (error) {
@@ -104,7 +104,7 @@ export const DeleteGoal = (id: string) => async (
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: DELETE_GOAL_BUTTON });
-    await axios.delete('/api/goals/' + id);
+    await axios.delete('/api/goal/' + id);
     dispatch({ type: DELETE_GOAL, payload: id });
     dispatch(SetAlert('Goal deleted', true));
   } catch (error) {

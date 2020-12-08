@@ -29,7 +29,7 @@ export type TGoal = {
   id: string;
   name: string;
   duration: number;
-  startDate: Date;
+  startTime: Date;
   type: EGoalType;
   description: string;
   units?: string;
@@ -49,7 +49,7 @@ export type TCompetition = {
   id: string;
   name: string;
   duration: number;
-  startDate: Date;
+  startTime: Date;
   type: string;
   description: string;
   units?: string;
@@ -58,6 +58,9 @@ export type TCompetition = {
   isHighestScoreWins: boolean;
   participants: TParticipant[];
   admins: string[];
+  invites: string[];
+  participantRequests: string[];
+  adminRequests: string[];
 };
 
 export type TParticipant = {

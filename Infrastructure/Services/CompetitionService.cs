@@ -5,6 +5,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications.Competitions;
 using System.Linq;
+using Core.Specifications.Participants;
 
 namespace Infrastructure.Services
 {
@@ -35,36 +36,27 @@ namespace Infrastructure.Services
       return true;
     }
 
-    public async Task<bool> IsUserInCompetition(Guid compId)
-    {
-      var competition = await _unitOfWork.Repository<CompetitionGoal>().GetByIdAsync(compId);
-      return true;
-    }
-
     public async Task<IReadOnlyList<UserGoal>> GetUserCompetitionGoals(Guid userId)
     {
-      //TODO - could you use a join and make this more efficient
-      var spec = new ParticipationsWithUserIdSpec(userId);
-      var participations = await _unitOfWork.Repository<CompetitionParticipant>().ListAsync(spec);
-      var compIds = participations.Select(x => x.CompId).ToList();
-      var compSpec = new CompetitionsInIdArraySpec(compIds, false);
-      var competitions = await _unitOfWork.Repository<CompetitionGoal>().ListAsync(compSpec);
+      //get participations (includes competitions)
+      var spec = new UserParticipationsSpec(userId);
+      var participations = (await _unitOfWork.Repository<CompetitionParticipant>().ListAsync(spec)).OrderBy(x => x.CompGoal.StartTime);
       var goals = new List<UserGoal>();
-      foreach (var competition in competitions)
+      foreach (var participation in participations)
       {
         goals.Add(new UserGoal
         {
-          Id = competition.Id,
-          Name = competition.Name,
+          Id = participation.CompGoal.Id,
+          Name = participation.CompGoal.Name,
           UserId = userId,
-          Duration = competition.Duration,
-          StartDate = competition.StartDate,
-          Type = competition.Type,
-          Description = competition.Description,
-          Units = competition.Units,
-          Target = competition.Participants.First(x => x.UserId == userId).Target,
-          IsPrivate = competition.IsPrivate,
-          Ledger = competition.Participants.First(x => x.UserId == userId).Ledger
+          Duration = participation.CompGoal.Duration,
+          StartTime = participation.CompGoal.StartTime,
+          Type = participation.CompGoal.Type,
+          Description = participation.CompGoal.Description,
+          Units = participation.CompGoal.Units,
+          Target = participation.Target,
+          IsPrivate = participation.CompGoal.IsPrivate,
+          Ledger = participation.Ledger
         });
       }
 
@@ -73,10 +65,10 @@ namespace Infrastructure.Services
 
     public async Task<IReadOnlyList<UserGoal>> GetFriendPublicCompetitionGoals(Guid friendId)
     {
-      var spec = new ParticipationsWithUserIdSpec(friendId);
+      var spec = new UserParticipationsSpec(friendId);
       var participations = await _unitOfWork.Repository<CompetitionParticipant>().ListAsync(spec);
       var compIds = participations.Select(x => x.CompId).ToList();
-      var compSpec = new CompetitionsInIdArraySpec(compIds, true);
+      var compSpec = new PublicCompetitionsInIdArraySpec(compIds);
       var competitions = await _unitOfWork.Repository<CompetitionGoal>().ListAsync(compSpec);
       var goals = new List<UserGoal>();
       foreach (var competition in competitions)
@@ -87,7 +79,7 @@ namespace Infrastructure.Services
           Name = competition.Name,
           UserId = friendId,
           Duration = competition.Duration,
-          StartDate = competition.StartDate,
+          StartTime = competition.StartTime,
           Type = competition.Type,
           Description = competition.Description,
           Units = competition.Units,

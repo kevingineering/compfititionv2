@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../redux/Store';
-import LoadingSpinner from '../../sharedComponents/LoadingSpinner';
 import { useParams, RouteComponentProps, useHistory } from 'react-router-dom';
 import {
   SetSelectedGoal,
@@ -9,15 +8,20 @@ import {
   DeleteGoal,
   UpdateGoalLedger,
 } from '../../redux/goal/actions';
-import GoalChart from './GoalDetailsPageComponent/GoalChart';
-import GoalProgress from './GoalDetailsPageComponent/GoalProgress';
-import GoalInfo from './GoalDetailsPageComponent/GoalInfo';
 import GoalButtons from './GoalDetailsPageComponent/GoalButtons';
 import { getGoalTime } from '../../util/dateFunctions';
 import { getGoalRecord } from '../../util/goalFunctions';
-import { dateIsBeforeToday } from '../../util/dateFunctions';
+import { timeIsInPast } from '../../util/dateFunctions';
 import { NOT_LOADING } from '../../redux/buttonTypes';
 import { EGoalType } from '../../types';
+import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
+import {
+  StandardContainer,
+  CollectionHeader,
+} from '../../sharedComponents/styledComponents/Misc';
+import GCChart from '../../sharedComponents/goalCompPage/goalcompCharts/GCChart';
+import GCProgress from '../../sharedComponents/goalCompPage/GCProgress';
+import GoalInfo from '../../sharedComponents/goalCompPage/GoalInfo';
 
 interface IParams {
   goalId: string;
@@ -68,17 +72,16 @@ const GoalDetailsPage: React.FC<IProps> = () => {
   if (
     goalState.selectedGoal === undefined ||
     (record.length === 0 &&
-      dateIsBeforeToday(goalState.selectedGoal.startDate.toString()))
+      timeIsInPast(goalState.selectedGoal.startTime.toString()))
   ) {
     return (
-      <div className='form-container'>
-        <LoadingSpinner />
-      </div>
+      //TODO
+      <LoadingSpinner />
     );
   }
 
-  const { name, duration, startDate, units, type, id } = goalState.selectedGoal;
-  const { isStarted, time, isComplete } = getGoalTime(startDate, duration);
+  const { name, duration, startTime, units, type, id } = goalState.selectedGoal;
+  const { isStarted, time, isFinished } = getGoalTime(startTime, duration);
 
   const deleteGoal = () => {
     dispatch(DeleteGoal(goalId));
@@ -89,23 +92,24 @@ const GoalDetailsPage: React.FC<IProps> = () => {
   };
 
   return (
-    <div className='form-container'>
-      <h2 className='collection-header'>{name}</h2>
+    <StandardContainer>
+      <CollectionHeader>{name}</CollectionHeader>
       <ul>
-        {isStarted && (
-          <GoalChart
+        {/* TEST */}
+        {(isStarted || goalState.selectedGoal.type === EGoalType.passfail) && (
+          <GCChart
             goal={goalState.selectedGoal}
             record={record}
             setRecord={setRecord}
             time={time}
-            isClickable={!isComplete}
+            isClickable={!isFinished}
           />
         )}
         {isStarted &&
           time !== duration &&
           type !== EGoalType.passfail &&
           record.length !== 0 && (
-            <GoalProgress
+            <GCProgress
               record={record}
               time={time}
               units={units}
@@ -113,17 +117,22 @@ const GoalDetailsPage: React.FC<IProps> = () => {
               setRecord={setRecord}
             />
           )}
-        <GoalInfo goal={goalState.selectedGoal} time={time} record={record} />
+        <GoalInfo
+          goal={goalState.selectedGoal}
+          time={time}
+          record={record}
+          isFinished={isFinished}
+        />
       </ul>
       <GoalButtons
         isStarted={isStarted}
         isOwner={true}
-        isActive={!isComplete}
+        isActive={!isFinished}
         deleteGoal={deleteGoal}
         handleSave={handleSave}
         loadingButton={goalState.loadingButton}
       />
-    </div>
+    </StandardContainer>
   );
 };
 

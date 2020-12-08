@@ -29,8 +29,21 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CompetitionAdmins");
+                });
 
-                    b.HasComment("Competition Admin");
+            modelBuilder.Entity("Core.Entities.CompetitionAdminRequest", b =>
+                {
+                    b.Property<Guid>("CompId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ParticipantId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CompId", "ParticipantId");
+
+                    b.HasIndex("ParticipantId");
+
+                    b.ToTable("CompetitionAdminRequests");
                 });
 
             modelBuilder.Entity("Core.Entities.CompetitionComment", b =>
@@ -59,8 +72,6 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("CompId");
 
                     b.ToTable("CompetitionComments");
-
-                    b.HasComment("Competition Comment");
                 });
 
             modelBuilder.Entity("Core.Entities.CompetitionGoal", b =>
@@ -86,7 +97,7 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")
@@ -102,43 +113,21 @@ namespace Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CompetitionGoals");
-
-                    b.HasComment("Competition Goal");
                 });
 
-            modelBuilder.Entity("Core.Entities.CompetitionLetter", b =>
+            modelBuilder.Entity("Core.Entities.CompetitionInvite", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("CompId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Message")
-                        .IsRequired()
+                    b.Property<Guid>("InviteeId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("TEXT");
+                    b.HasKey("CompId", "InviteeId");
 
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("TEXT");
+                    b.HasIndex("InviteeId");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("CompetitionLetters");
-
-                    b.HasComment("Competition Letter");
+                    b.ToTable("CompetitionInvites");
                 });
 
             modelBuilder.Entity("Core.Entities.CompetitionParticipant", b =>
@@ -163,8 +152,21 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CompetitionParticipants");
+                });
 
-                    b.HasComment("Competition Participant");
+            modelBuilder.Entity("Core.Entities.CompetitionParticipantRequest", b =>
+                {
+                    b.Property<Guid>("CompId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RequesterId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CompId", "RequesterId");
+
+                    b.HasIndex("RequesterId");
+
+                    b.ToTable("CompetitionParticipantRequests");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
@@ -199,8 +201,6 @@ namespace Infrastructure.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-
-                    b.HasComment("User");
                 });
 
             modelBuilder.Entity("Core.Entities.UserFriendRequest", b =>
@@ -216,8 +216,6 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("ReceiverId");
 
                     b.ToTable("UserFriendRequests");
-
-                    b.HasComment("User Friend Request");
                 });
 
             modelBuilder.Entity("Core.Entities.UserFriendship", b =>
@@ -233,8 +231,6 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("User2Id");
 
                     b.ToTable("UserFriendships");
-
-                    b.HasComment("User Friend");
                 });
 
             modelBuilder.Entity("Core.Entities.UserGoal", b =>
@@ -263,7 +259,7 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("Target")
@@ -285,8 +281,26 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserGoals");
+                });
 
-                    b.HasComment("User Goal");
+            modelBuilder.Entity("Core.Entities.UserNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserNotifications");
                 });
 
             modelBuilder.Entity("Core.Entities.CompetitionAdmin", b =>
@@ -300,6 +314,21 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("AdminJobs")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionAdminRequest", b =>
+                {
+                    b.HasOne("Core.Entities.CompetitionGoal", "Comp")
+                        .WithMany("AdminRequests")
+                        .HasForeignKey("CompId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "Participant")
+                        .WithMany("AdminRequests")
+                        .HasForeignKey("ParticipantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -319,23 +348,17 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.Entities.CompetitionLetter", b =>
+            modelBuilder.Entity("Core.Entities.CompetitionInvite", b =>
                 {
                     b.HasOne("Core.Entities.CompetitionGoal", "Comp")
-                        .WithMany("Letters")
+                        .WithMany("Invites")
                         .HasForeignKey("CompId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.User", "Receiver")
-                        .WithMany("LettersReceived")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.User", "Sender")
-                        .WithMany("LettersSent")
-                        .HasForeignKey("SenderId")
+                    b.HasOne("Core.Entities.User", "Invitee")
+                        .WithMany("Invites")
+                        .HasForeignKey("InviteeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -351,6 +374,21 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("Participations")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.CompetitionParticipantRequest", b =>
+                {
+                    b.HasOne("Core.Entities.CompetitionGoal", "Comp")
+                        .WithMany("ParticipantRequests")
+                        .HasForeignKey("CompId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "Requester")
+                        .WithMany("ParticipantRequests")
+                        .HasForeignKey("RequesterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -389,6 +427,15 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("UserGoals")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.UserNotification", b =>
+                {
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany("Notifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

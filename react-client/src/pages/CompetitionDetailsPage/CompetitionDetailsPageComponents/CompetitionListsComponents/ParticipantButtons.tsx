@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Button } from '../../../../sharedComponents/styledComponents/Button';
+import styled from 'styled-components';
 
 interface IProps {
   // compId: string;
@@ -33,55 +35,42 @@ const ParticipantButtons: React.FC<IProps> = ({ setUserToggle }) => {
 
   let buttons = letter ? (
     <React.Fragment>
-      <button
-        className='btn btn-split btn-primary height-4rem'
-        onClick={handleDeleteLetter}
-      >
+      <ParticipantButtonLeft onClick={handleDeleteLetter}>
         Delete Admin Request
-      </button>
-      <button
-        className='btn btn-split btn-danger height-4rem'
-        onClick={() => setDeleteToggle(true)}
-      >
+      </ParticipantButtonLeft>
+      <ParticipantButtonRight onClick={() => setDeleteToggle(true)}>
         Kick User
-      </button>
+      </ParticipantButtonRight>
     </React.Fragment>
   ) : (
     <React.Fragment>
-      <button className='btn btn-split btn-primary' onClick={handleSendLetter}>
+      <ParticipantButtonLeft onClick={handleSendLetter}>
         Make Admin
-      </button>
-      <button
-        className='btn btn-split btn-danger'
-        onClick={() => setDeleteToggle(true)}
-      >
+      </ParticipantButtonLeft>
+      <ParticipantButtonRight onClick={() => setDeleteToggle(true)}>
         Kick User
-      </button>
+      </ParticipantButtonRight>
     </React.Fragment>
   );
 
   if (deleteToggle) {
     buttons = (
-      <div className='lr-border'>
-        <span className='participant-row block'>
+      <ParticipantContainer>
+        <ParticipantMessage>
           Are you sure you want to kick this user? This action cannot be undone.
-        </span>
-        <button
-          className='btn btn-primary btn-split margin-0'
-          onClick={() => setDeleteToggle(false)}
-        >
+        </ParticipantMessage>
+        <ParticipantButtonLeft onClick={() => setDeleteToggle(false)}>
           No
-        </button>
-        <button
-          className='btn btn-danger btn-split margin-0'
+        </ParticipantButtonLeft>
+        <ParticipantButtonRight
           onClick={() => {
             setDeleteToggle(false);
             // kickUserFromCompetition(compId, userId)
           }}
         >
           Yes
-        </button>
-      </div>
+        </ParticipantButtonRight>
+      </ParticipantContainer>
     );
   }
 
@@ -89,3 +78,29 @@ const ParticipantButtons: React.FC<IProps> = ({ setUserToggle }) => {
 };
 
 export default ParticipantButtons;
+
+const ParticipantButtonLeft = styled(Button)`
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  width: 50%;
+  padding: 0.4rem 0;
+`;
+
+const ParticipantButtonRight = styled(Button)`
+  background: var(--danger-color);
+  color: var(--secondary-color);
+  width: 50%;
+  padding: 0.4rem 0;
+`;
+
+const ParticipantContainer = styled.div`
+  border-left: 0.125rem solid var(--primary-color);
+  border-right: 0.125rem solid var(--primary-color);
+  margin: 0;
+  min-height: 0.5rem;
+`;
+
+const ParticipantMessage = styled.p`
+  padding-left: 0.5rem;
+  line-height: 1.8rem;
+`;

@@ -29,12 +29,13 @@ export const getGoalScore = (
 
 //parses goal ledger and returns array of goal values to date
 export const getGoalRecord = (goal: TGoal): (number | null)[] => {
-  const { isStarted, time, isComplete } = getGoalTime(
-    goal.startDate,
+  const { isStarted, time, isFinished } = getGoalTime(
+    goal.startTime,
     goal.duration
   );
   let record: (number | null)[] = goal.ledger ? JSON.parse(goal.ledger) : [];
-  if (!isStarted || isComplete) {
+  //TEST
+  if (!isStarted || isFinished) {
     return record;
   }
 
@@ -83,7 +84,7 @@ export const getGoalCumulativeDataPoints = (
     ]);
   }
 
-  return dataPoints;
+  return { dataPoints, chartYMax: runningTotal };
 };
 
 //creates array of data points for google chart
@@ -91,26 +92,27 @@ export const getGoalDifferenceDataPoints = (
   initialValue: number,
   units: string,
   time: number,
-  duration: number,
   record: (number | null)[]
 ) => {
+  let chartYMax = initialValue;
+  let chartYMin = initialValue;
+
   //initial values
   const dataPoints = [
     ['x', 'Daily', { role: 'tooltip', type: 'string', p: { html: true } }],
     [0, initialValue, `Start \n ${initialValue} ${units}`],
   ];
 
-  //many values can be null, so this value is used to keep chart width where it should be without empty values
-  const chartMax = time === duration ? duration : time + 1;
-
   //set dataPoints - time + 1 because we are storing start value in [0]
   for (let i = 0; i <= time; i++) {
     if (record[i] !== null) {
       let difference = record[i]! - initialValue;
       let sign = difference > 0 ? '+' : '';
+      chartYMax = Math.max(chartYMax, record[i]!);
+      chartYMin = Math.min(chartYMin, record[i]!);
 
       dataPoints.push([
-        i,
+        i + 1,
         record[i]!,
         `Day ${i + 1} \n Current: ${
           record[i]
@@ -119,5 +121,5 @@ export const getGoalDifferenceDataPoints = (
     }
   }
 
-  return { dataPoints, chartMax };
+  return { dataPoints, chartYMax, chartYMin };
 };

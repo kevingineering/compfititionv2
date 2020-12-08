@@ -17,10 +17,11 @@ import { GetUser } from './redux/user/actions';
 import AuthPage from './pages/AuthPage/AuthPage';
 import setAuthToken from './util/setAuthToken';
 import { RootStore } from './redux/Store';
-import LoadingSpinner from './sharedComponents/LoadingSpinner';
+import LoadingSpinner from './sharedComponents/misc/LoadingSpinner';
 import AddGoalPage from './pages/AddGoalPage/AddGoalPage';
 import UpdateGoalPage from './pages/UpdateGoalPage/UpdateGoalPage';
 import UpdateCompetitionPage from './pages/UpdateCompetitionPage/UpdateCompetitionPage';
+import styled from 'styled-components';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -36,14 +37,12 @@ const App = () => {
   }, [dispatch]);
 
   return !userState.isAuthenticated && localStorage.token ? (
-    <div className='spinner-page'>
-      <LoadingSpinner />
-    </div>
+    <LoadingSpinner isFullPage={true} />
   ) : (
     <Router>
       <Navbar />
       <Alert />
-      <div className='body-container'>
+      <AppContainer>
         <Switch>
           <Route exact path='/auth' component={AuthPage} />
           <PrivateRoute exact path='/' component={HomePage} />
@@ -83,9 +82,20 @@ const App = () => {
           />
           <Route component={NotFoundPage} />
         </Switch>
-      </div>
+      </AppContainer>
     </Router>
   );
 };
 
 export default App;
+
+const AppContainer = styled.div`
+  max-width: 70rem;
+  margin: auto;
+  overflow: hidden;
+  padding: 0 3rem 3rem 3rem;
+  margin-top: 8.5rem;
+  @media (max-width: 32rem) {
+    margin-top: 9.5rem;
+  }
+`;

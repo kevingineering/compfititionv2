@@ -22,7 +22,7 @@ export const GetFriends = () => async (
 ) => {
   try {
     dispatch({ type: FRIEND_LOADING, payload: NO_BUTTON });
-    const res = await axios.get('/api/userfriend');
+    const res = await axios.get('/api/friendship');
     dispatch({ type: GET_FRIENDS, payload: res.data });
   } catch (error) {
     dispatch({ type: FRIEND_ERROR });
@@ -34,7 +34,7 @@ export const GetFriend = (id: string) => async (
 ) => {
   try {
     dispatch({ type: FRIEND_LOADING, payload: NO_BUTTON });
-    const res = await axios.get('/api/userfriend/' + id);
+    const res = await axios.get('/api/friendship/' + id);
     dispatch({ type: GET_FRIEND, payload: res.data });
   } catch (error) {
     dispatch({ type: FRIEND_ERROR });
@@ -46,7 +46,7 @@ export const DeleteFriend = (id: string) => async (
 ) => {
   try {
     dispatch({ type: FRIEND_LOADING, payload: DELETE_FRIEND_BUTTON });
-    await axios.delete('/api/userfriend/' + id);
+    await axios.delete('/api/friendship/' + id);
     dispatch({ type: DELETE_FRIEND });
     dispatch(SetAlert('Friendship deleted', true));
   } catch (error) {

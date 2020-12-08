@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react';
-import SearchBar from './FriendRequestsPageComponents/SearchBar';
 import SearchResults from './FriendRequestsPageComponents/SearchResults';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../redux/Store';
-import CollapsibleListContainer from '../../sharedComponents/CollapsibleListContainer';
 import {
   FilterSearchableUsers,
   ClearFilteredSearchableUsers,
   GetRequestsAndSearchableUsers,
-} from '../../redux/request/actions';
-import FriendRequestItem from '../HomePage/HomePageComponents/FriendRequestItem';
+} from '../../redux/friendRequest/actions';
 import { NO_BUTTON } from '../../redux/buttonTypes';
-import LoadingSpinner from '../../sharedComponents/LoadingSpinner';
+import OtherUserItem from '../../sharedComponents/misc/OtherUserItem';
+import CollapsibleListContainer from '../../sharedComponents/misc/CollapsibleListContainer';
+import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
+import SearchBar from '../../sharedComponents/misc/SearchBar';
+import {
+  SplitGrid,
+  EmptyCollection,
+} from '../../sharedComponents/styledComponents/Misc';
 
 //shows requests and other users to whom a user can send requests
 const FriendRequestsPage = () => {
@@ -30,23 +34,23 @@ const FriendRequestsPage = () => {
     ? requestState.filteredSearchableUsers
     : requestState.searchableUsers;
 
-  const receivedFriendRequests = requestState.receivedRequests.map((req) => (
-    <FriendRequestItem
-      key={req.id}
-      targetUser={req}
-      isHome={false}
-      buttonIds={requestState.buttonIds}
-    ></FriendRequestItem>
-  ));
+  const receivedFriendRequests = requestState.receivedRequests.map(
+    (req, index) => (
+      <OtherUserItem
+        key={index}
+        user={req}
+        buttonIds={requestState.buttonIds}
+      ></OtherUserItem>
+    )
+  );
 
-  const sentFriendRequests = requestState.sentRequests.map((req) => (
-    <FriendRequestItem
-      key={req.id}
-      targetUser={req}
-      isHome={false}
+  const sentFriendRequests = requestState.sentRequests.map((req, index) => (
+    <OtherUserItem
+      key={index}
+      user={req}
       isSent={true}
       buttonIds={requestState.buttonIds}
-    ></FriendRequestItem>
+    ></OtherUserItem>
   ));
 
   const searchJsx = (
@@ -66,7 +70,7 @@ const FriendRequestsPage = () => {
   );
 
   return (
-    <div className='grid-2'>
+    <SplitGrid>
       <div>
         <CollapsibleListContainer title='Received Requests'>
           {requestState.loadingButton === NO_BUTTON ? (
@@ -74,9 +78,7 @@ const FriendRequestsPage = () => {
           ) : requestState.receivedRequests.length !== 0 ? (
             receivedFriendRequests
           ) : (
-            <span className='empty-collection'>
-              You have no received requests.
-            </span>
+            <EmptyCollection>You have no received requests.</EmptyCollection>
           )}
         </CollapsibleListContainer>
         <CollapsibleListContainer title='Sent Requests'>
@@ -85,12 +87,12 @@ const FriendRequestsPage = () => {
           ) : requestState.sentRequests.length !== 0 ? (
             sentFriendRequests
           ) : (
-            <span className='empty-collection'>You have no sent requests.</span>
+            <EmptyCollection>You have no sent requests.</EmptyCollection>
           )}
         </CollapsibleListContainer>
       </div>
       {searchJsx}
-    </div>
+    </SplitGrid>
   );
 };
 

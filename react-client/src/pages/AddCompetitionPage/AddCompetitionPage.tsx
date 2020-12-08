@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootStore } from '../../redux/Store';
 import { useHistory } from 'react-router-dom';
-import GoalCompInputs from '../../sharedComponents/GoalCompInputs';
 import { ADD_COMPETITION_BUTTON } from '../../redux/buttonTypes';
-import { TGoalDTO } from '../../redux/DTOs';
+import { TCompDTO } from '../../redux/DTOs';
 import { AddCompetition } from '../../redux/competition/actions';
+import GCInputs from '../../sharedComponents/goalCompPage/GCInputs';
 
 const AddCompetitionPage = () => {
   const dispatch = useDispatch();
@@ -14,9 +14,11 @@ const AddCompetitionPage = () => {
   );
   let history = useHistory();
 
-  const dispatchAction = (competition: TGoalDTO) => {
+  const dispatchAction = (competition: TCompDTO) => {
     dispatch(AddCompetition(competition));
   };
+
+  console.log('CompetitionState', competitionState);
 
   //redirects to competition page after successful submission
   useEffect(() => {
@@ -26,7 +28,7 @@ const AddCompetitionPage = () => {
   }, [competitionState.selectedCompetition, history]);
 
   return (
-    <GoalCompInputs
+    <GCInputs
       isGoal={false}
       isUpdate={false}
       dispatchAction={dispatchAction}

@@ -4,9 +4,9 @@ import { RootStore } from '../../redux/Store';
 import { useHistory } from 'react-router-dom';
 import { TGoalDTO } from '../../redux/DTOs';
 import { UpdateGoal } from '../../redux/goal/actions';
-import GoalCompInputs from '../../sharedComponents/GoalCompInputs';
+import GCInputs from '../../sharedComponents/goalCompPage/GCInputs';
 import { SetAlert } from '../../redux/alert/actions';
-import { dateIsBeforeToday } from '../../util/dateFunctions';
+import { timeIsInPast } from '../../util/dateFunctions';
 import { UPDATE_GOAL_BUTTON } from '../../redux/buttonTypes';
 
 //page for changing goal parameters
@@ -32,7 +32,7 @@ const UpdateGoalPage = () => {
   useEffect(() => {
     if (
       goalState.selectedGoal !== undefined &&
-      dateIsBeforeToday(goalState.selectedGoal!.startDate!.toString())
+      timeIsInPast(goalState.selectedGoal!.startTime!.toString())
     ) {
       dispatch(
         SetAlert(
@@ -54,7 +54,7 @@ const UpdateGoalPage = () => {
   }, [goalState.selectedGoal, history]);
 
   return (
-    <GoalCompInputs
+    <GCInputs
       isGoal={true}
       isUpdate={true}
       dispatchAction={dispatchAction}

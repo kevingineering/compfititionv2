@@ -27,10 +27,11 @@ namespace Core.Entities
     public virtual ICollection<UserFriendRequest> Senders { get; set; }
     public virtual ICollection<UserFriendRequest> Receivers { get; set; }
     public virtual ICollection<CompetitionParticipant> Participations { get; set; }
-    public virtual ICollection<CompetitionLetter> LettersSent { get; set; }
-    public virtual ICollection<CompetitionLetter> LettersReceived { get; set; }
     public virtual ICollection<CompetitionComment> Comments { get; set; }
     public virtual ICollection<CompetitionAdmin> AdminJobs { get; set; }
-
+    public virtual ICollection<CompetitionParticipantRequest> ParticipantRequests { get; set; }
+    public virtual ICollection<CompetitionAdminRequest> AdminRequests { get; set; }
+    public virtual ICollection<CompetitionInvite> Invites { get; set; }
+    public virtual ICollection<UserNotification> Notifications { get; set; }
   }
 }

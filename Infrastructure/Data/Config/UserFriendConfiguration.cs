@@ -7,8 +7,6 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<UserFriendship> builder)
     {
-      builder.HasComment("User Friend");
-
       //combination key
       builder.HasKey(k => new { k.User1Id, k.User2Id });
 

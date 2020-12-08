@@ -1,9 +1,7 @@
 import React from 'react';
-import SearchItem from './SearchItem';
-import { ADD_REQUEST_BUTTON } from '../../../redux/buttonTypes';
 import { TDifferentUser } from '../../../types';
-// import { RootStore } from '../../../redux/Store';
-// import { useSelector } from 'react-redux';
+import { EmptyCollection } from '../../../sharedComponents/styledComponents/Misc';
+import OtherUserItem from '../../../sharedComponents/misc/OtherUserItem';
 
 interface IProps {
   results: TDifferentUser[];
@@ -13,13 +11,15 @@ interface IProps {
 const SearchResults: React.FC<IProps> = ({ results, buttonIds }) => {
   let users =
     results.length === 0 ? (
-      <span className='empty-collection'>No users match your search.</span>
+      <EmptyCollection>No users match your search.</EmptyCollection>
     ) : (
-      results.map((user) => (
-        <SearchItem
+      results.map((user, index) => (
+        <OtherUserItem
+          key={index}
           user={user}
-          key={user.id}
-          isLoading={buttonIds.indexOf(ADD_REQUEST_BUTTON + user.id) !== -1}
+          hasButton={true}
+          isAdd={true}
+          buttonIds={buttonIds}
         />
       ))
     );

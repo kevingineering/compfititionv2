@@ -1,5 +1,7 @@
 import React from 'react';
 import { TUser } from '../../../types';
+import { FlexContainer } from '../../../sharedComponents/styledComponents/Misc';
+import styled from 'styled-components';
 
 interface IProps {
   user: TUser;
@@ -23,44 +25,57 @@ const UserInfo: React.FC<IProps> = ({
     <React.Fragment>
       <ul>
         <li>
-          <span className='width-6rem'>
+          <UserInfoSpan>
             <strong>Name:</strong>
-          </span>
+          </UserInfoSpan>
           <span>{user.name!}</span>
         </li>
         <li>
-          <span className='width-6rem'>
+          <UserInfoSpan>
             <strong>Email:</strong>
-          </span>
+          </UserInfoSpan>
           <span>{user.email!}</span>
         </li>
-        <li className='flex'>
-          <span className='width-6rem'>
+        <FlexContainer>
+          <UserInfoSpan>
             <strong>Privacy:</strong>
-          </span>
+          </UserInfoSpan>
           <span>{message}</span>
-        </li>
+        </FlexContainer>
       </ul>
-      <input
-        type='button'
-        value='Edit User'
-        className='btn btn-block btn-primary'
-        onClick={() => setEditToggle(true)}
-      />
-      <input
-        type='button'
-        value='Change Password'
-        className='btn btn-block btn-primary'
-        onClick={() => setPasswordToggle(true)}
-      />
-      <input
-        type='button'
-        value='Delete User'
-        className='btn btn-block btn-primary'
-        onClick={() => setDeleteToggle(true)}
-      />
+      <UserInfoButton onClick={() => setEditToggle(true)}>
+        Edit User
+      </UserInfoButton>
+      <UserInfoButton onClick={() => setPasswordToggle(true)}>
+        Change Password
+      </UserInfoButton>
+      <UserInfoButton onClick={() => setDeleteToggle(true)}>
+        Delete User
+      </UserInfoButton>
     </React.Fragment>
   );
 };
 
 export default UserInfo;
+
+const UserInfoButton = styled.button`
+  display: inline-block;
+  padding: 0.4rem 1.3rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  line-height: 1.6rem;
+  display: block;
+  width: 100%;
+  background: var(--primary-color);
+  color: var(--secondary-color);
+`;
+
+const UserInfoSpan = styled.div`
+  width: 6rem;
+  flex-shrink: 0;
+  display: inline-block;
+  text-align: left;
+`;

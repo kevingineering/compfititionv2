@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace Core.Specifications
@@ -11,9 +10,12 @@ namespace Core.Specifications
     //Includes is for .Include()
     //For expressions without criteria use empty constructor
 
-    public BaseSpecification(Expression<Func<T, bool>> criteria)
+    public BaseSpecification(Expression<Func<T, bool>> criteria = null, Expression<Func<T, bool>> first = null)
     {
-      Criteria = criteria;
+      if (criteria != null)
+      {
+        Criteria = criteria;
+      }
     }
 
     public BaseSpecification() { }

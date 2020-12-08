@@ -1,5 +1,4 @@
-competition controller
-letter controller
+controllers
 
 Partial delete for comments
 When deleting competition, create goals
@@ -7,6 +6,8 @@ Determine if competition has no more users and delete
 Determine if competition has no more admins and promote oldest participant
 
 Swagger for all controllers
+
+Add start time and end time to goals/competitions?
 
 FUTURE:
 Chat

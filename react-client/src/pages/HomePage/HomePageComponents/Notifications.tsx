@@ -1,11 +1,12 @@
 import React from 'react';
+import { EmptyCollection } from '../../../sharedComponents/styledComponents/Misc';
 
 //TODO
 
 const Notifications = () => {
   return (
     <div>
-      <p className='empty-collection'>Notifications</p>
+      <EmptyCollection>Notifications</EmptyCollection>
     </div>
   );
 };

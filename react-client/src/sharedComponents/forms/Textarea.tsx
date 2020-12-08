@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import FormGroup from './FormGroupStyledComponent';
+import styled from 'styled-components';
 
 interface IProps {
   label: string;
   name: string;
   value: string;
   handleInput: (name: string, newValue: string, isValid: boolean) => void;
-  disabled?: boolean;
+  isDisabled?: boolean;
   autofocus?: boolean;
 }
 
@@ -15,7 +17,7 @@ const Textarea: React.FC<IProps> = ({
   name,
   value,
   handleInput,
-  disabled = false,
+  isDisabled = false,
   autofocus = false,
 }) => {
   const [state, setState] = useState(value);
@@ -25,19 +27,28 @@ const Textarea: React.FC<IProps> = ({
   }, [name, state, handleInput]);
 
   return (
-    <div className={`form-group ${disabled && 'disabled'}`}>
+    <FormGroup isDisabled={isDisabled}>
       <label htmlFor={name}>{label}</label>
-      <textarea
-        className='form-no-error'
+      <TextareaTextarea
         value={state}
         name={name}
         rows={3}
         onChange={(e) => setState(e.target.value)}
-        {...(disabled && { disabled: true })}
+        {...(isDisabled && { disabled: true })}
         {...(autofocus && { autofocus: true })}
       />
-    </div>
+    </FormGroup>
   );
 };
 
 export default Textarea;
+
+const TextareaTextarea = styled.textarea`
+  display: block;
+  width: 100%;
+  padding: 0.4rem;
+  font-size: 1.2rem;
+  border: 0.125rem solid var(--primary-color);
+  background: var(--secondary-color);
+  color: var(--primary-color);
+`;

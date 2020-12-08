@@ -21,6 +21,7 @@ namespace Infrastructure.Data
       }
 
       //aggregate query with includes into a single query
+      //problem exists when trying to .ThenInclude() - not possible with current specificiation pattern
       query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
 
       return query;

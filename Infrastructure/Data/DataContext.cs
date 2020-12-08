@@ -18,8 +18,11 @@ namespace Infrastructure.Data
     public DbSet<CompetitionGoal> CompetitionGoals { get; set; }
     public DbSet<CompetitionParticipant> CompetitionParticipants { get; set; }
     public DbSet<CompetitionAdmin> CompetitionAdmins { get; set; }
-    public DbSet<CompetitionLetter> CompetitionLetters { get; set; }
     public DbSet<CompetitionComment> CompetitionComments { get; set; }
+    public DbSet<CompetitionParticipantRequest> CompetitionParticipantRequests { get; set; }
+    public DbSet<CompetitionAdminRequest> CompetitionAdminRequests { get; set; }
+    public DbSet<CompetitionInvite> CompetitionInvites { get; set; }
+    public DbSet<UserNotification> UserNotifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -9,6 +9,11 @@ import {
   DELETE_USER_BUTTON,
   CHANGE_PASSWORD_BUTTON,
 } from '../../redux/buttonTypes';
+import {
+  StandardContainer,
+  PageTitle,
+} from '../../sharedComponents/styledComponents/Misc';
+import styled from 'styled-components';
 
 //page where user can edit their information, change password, and delete account
 const UserPage = () => {
@@ -28,8 +33,8 @@ const UserPage = () => {
   }, [userState.isModified]);
 
   return (
-    <div className='form-container'>
-      <h1 className='header'>User Profile</h1>
+    <AuthContainer>
+      <PageTitle>User Profile</PageTitle>
       {editToggle && (
         <EditModule
           userState={userState}
@@ -56,8 +61,12 @@ const UserPage = () => {
           setDeleteToggle={setDeleteToggle}
         />
       )}
-    </div>
+    </AuthContainer>
   );
 };
 
 export default UserPage;
+
+const AuthContainer = styled(StandardContainer)`
+  max-width: 25rem;
+`;

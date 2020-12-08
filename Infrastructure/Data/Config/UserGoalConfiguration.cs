@@ -8,12 +8,10 @@ namespace Infrastructure.Data.Config
   {
     public void Configure(EntityTypeBuilder<UserGoal> builder)
     {
-      builder.HasComment("User Goal");
-
       builder.Property(g => g.Id).IsRequired();
       builder.Property(g => g.Name).IsRequired().HasMaxLength(50);
       builder.Property(g => g.Duration).IsRequired();
-      builder.Property(g => g.StartDate).IsRequired();
+      builder.Property(g => g.StartTime).IsRequired();
       builder.Property(g => g.Type).IsRequired();
       builder.Property(g => g.Description);
       builder.Property(g => g.Units).HasMaxLength(20);

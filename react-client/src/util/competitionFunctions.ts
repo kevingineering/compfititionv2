@@ -15,14 +15,15 @@ export const getCompRecord = (
   competition: TCompetition,
   ledger: string | null
 ) => {
-  const { isStarted, time, isComplete } = getGoalTime(
-    competition.startDate,
+  const { isStarted, time, isFinished } = getGoalTime(
+    competition.startTime,
     competition.duration
   );
 
   let record: (number | null)[] = ledger ? JSON.parse(ledger) : [];
 
-  if (!isStarted || isComplete) {
+  // TEST
+  if (!isStarted || isFinished) {
     return record;
   }
 
@@ -71,15 +72,6 @@ export const getCompetitionArray = (
     }
   );
 
-  //sort array
-  if (competition.type !== EGoalType.passfail) {
-    if (competition.isHighestScoreWins) {
-      competitionArray.sort((a, b) => b.score - a.score);
-    } else {
-      competitionArray.sort((a, b) => a.score - b.score);
-    }
-  }
-
   return competitionArray;
 };
 
@@ -120,7 +112,6 @@ export const getCompScores = (
   return { score, dataArray };
 };
 
-//creates array of data points for google chart and chart max
 //TODO - optimize so only user data points update
 export const getCompDataPoints = (
   competitionArray: TCompetitionParticipantInfo[],
@@ -149,13 +140,13 @@ export const getCompDataPoints = (
     //all difference goals start at zero
     dataPointsOne.push(
       type === EGoalType.cumulative ? competitionArray[i].initialValue : 0,
-      `Start ${
-        type === EGoalType.cumulative
-          ? ''
-          : `\n ${competitionArray[i].initialValue} ${units}`
-      }`
+      'Start'
     );
   }
+
+  //values at edge of chart
+  let chartYMax = 0;
+  let chartYMin = 0;
 
   //configure rest of dataPoints
   for (let i = 0; i < dataLength; i++) {
@@ -167,6 +158,18 @@ export const getCompDataPoints = (
             (competitionArray[j].dataArray[i - 1] || 0)
           : competitionArray[j].dataArray[i] - competitionArray[j].initialValue;
       let sign = difference > 0 ? '+' : '';
+
+      chartYMax = Math.max(
+        chartYMax,
+        type === EGoalType.cumulative
+          ? competitionArray[j].dataArray[i]
+          : difference
+      );
+
+      chartYMin =
+        type === EGoalType.difference && competitionArray[j].dataArray[i]
+          ? Math.min(chartYMin, difference)
+          : 0;
 
       //show running total for cumulative goal, difference from start (or null with interpolation) for difference goal
       list.push(
@@ -187,5 +190,5 @@ export const getCompDataPoints = (
   }
 
   let dataPoints = [dataPointsZero, dataPointsOne, ...dataPointsBeyond];
-  return dataPoints;
+  return { dataPoints, chartYMax, chartYMin };
 };

@@ -28,8 +28,8 @@ namespace Infrastructure.SecurityPolicy
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsCompetitionAdminRequirement requirement)
     {
       System.Console.WriteLine("CHECKING IF USER IS COMPETITION ADMIN...");
-      var userId = context.User?.Claims?.SingleOrDefault(
-        x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+      var userId = context.User?.Claims?
+        .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
       var path = _httpContextAccessor.HttpContext.Request.Path.ToString();
 
@@ -40,12 +40,13 @@ namespace Infrastructure.SecurityPolicy
         var userIdGuid = Guid.Parse(userId);
         var compIdGuid = Guid.Parse(compId);
 
-        var spec = new CompetitionWithAdminAndParticipantsSpec(compIdGuid);
+        var spec = new CompetitionAsAdminSpec(compIdGuid);
         var competition = _competitionService.GetEntityWithSpecAsync(spec).Result;
 
         if (competition != null)
         {
-          var isAdmin = competition.Admins.SingleOrDefault(x => x.CompId == compIdGuid && x.UserId == userIdGuid) != null;
+          var isAdmin = competition.Admins
+            .SingleOrDefault(x => x.CompId == compIdGuid && x.UserId == userIdGuid) != null;
 
           if (isAdmin) context.Succeed(requirement);
           System.Console.WriteLine("USER IS COMPETITION ADMIN!");

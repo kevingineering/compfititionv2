@@ -1,4 +1,4 @@
-import { dateIsBeforeToday, dateIsAfter2100 } from './dateFunctions';
+import { timeIsInPast, dateIsAfter2100 } from './dateFunctions';
 
 export interface IValidator {
   type: string;
@@ -78,7 +78,7 @@ export const validate = (
         }
         break;
       case 'DATENOTPAST':
-        if (dateIsBeforeToday(inputValue)) {
+        if (timeIsInPast(inputValue)) {
           isValid = false;
           errorMessage = `${title} cannot be in the past.`;
           return { isValid, errorMessage };
