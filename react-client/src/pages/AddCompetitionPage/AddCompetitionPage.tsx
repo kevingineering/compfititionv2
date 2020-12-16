@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootStore } from '../../redux/Store';
 import { useHistory } from 'react-router-dom';
 import { ADD_COMPETITION_BUTTON } from '../../redux/buttonTypes';
-import { TCompDTO } from '../../redux/DTOs';
+import { TCompetitionRequest } from '../../redux/Models';
 import { AddCompetition } from '../../redux/competition/actions';
 import GCInputs from '../../sharedComponents/goalCompPage/GCInputs';
 
@@ -14,16 +14,16 @@ const AddCompetitionPage = () => {
   );
   let history = useHistory();
 
-  const dispatchAction = (competition: TCompDTO) => {
+  const dispatchAction = (competition: TCompetitionRequest) => {
     dispatch(AddCompetition(competition));
   };
-
-  console.log('CompetitionState', competitionState);
 
   //redirects to competition page after successful submission
   useEffect(() => {
     if (competitionState.selectedCompetition !== undefined) {
-      history.push('/competition/' + competitionState.selectedCompetition!.id);
+      history.push(
+        '/competition/' + competitionState.selectedCompetition!.competitionId
+      );
     }
   }, [competitionState.selectedCompetition, history]);
 

@@ -16,42 +16,42 @@ namespace Infrastructure.SecurityPolicy
 
   public class IsCompetitionAdminRequirementHandler : AuthorizationHandler<IsCompetitionAdminRequirement>
   {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ICompetitionService _competitionService;
+    // private readonly IHttpContextAccessor _httpContextAccessor;
+    // private readonly ICompetitionService _competitionService;
 
-    public IsCompetitionAdminRequirementHandler(IHttpContextAccessor httpContextAccessor, ICompetitionService competitionService)
-    {
-      _competitionService = competitionService;
-      _httpContextAccessor = httpContextAccessor;
-    }
+    // public IsCompetitionAdminRequirementHandler(IHttpContextAccessor httpContextAccessor, ICompetitionService competitionService)
+    // {
+    //   _competitionService = competitionService;
+    //   _httpContextAccessor = httpContextAccessor;
+    // }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsCompetitionAdminRequirement requirement)
     {
-      System.Console.WriteLine("CHECKING IF USER IS COMPETITION ADMIN...");
-      var userId = context.User?.Claims?
-        .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+      // System.Console.WriteLine("CHECKING IF USER IS COMPETITION ADMIN...");
+      // var userId = context.User?.Claims?
+      //   .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-      var path = _httpContextAccessor.HttpContext.Request.Path.ToString();
+      // var path = _httpContextAccessor.HttpContext.Request.Path.ToString();
 
-      var compId = path.Split('/').Last();
+      // var competitionId = path.Split('/').Last();
 
-      if (userId != null && compId != null)
-      {
-        var userIdGuid = Guid.Parse(userId);
-        var compIdGuid = Guid.Parse(compId);
+      // if (userId != null && competitionId != null)
+      // {
+      //   var userIdGuid = Guid.Parse(userId);
+      //   var competitionIdGuid = Guid.Parse(competitionId);
 
-        var spec = new CompetitionAsAdminSpec(compIdGuid);
-        var competition = _competitionService.GetEntityWithSpecAsync(spec).Result;
+      //   var spec = new CompetitionAsAdminSpec(competitionIdGuid);
+      //   var competition = _competitionService.GetEntityWithSpecAsync(spec).Result;
 
-        if (competition != null)
-        {
-          var isAdmin = competition.Admins
-            .SingleOrDefault(x => x.CompId == compIdGuid && x.UserId == userIdGuid) != null;
+      //   if (competition != null)
+      //   {
+      //     var isAdmin = competition.Admins
+      //       .SingleOrDefault(x => x.CompId == competitionIdGuid && x.UserId == userIdGuid) != null;
 
-          if (isAdmin) context.Succeed(requirement);
-          System.Console.WriteLine("USER IS COMPETITION ADMIN!");
-        }
-      }
+      //     if (isAdmin) context.Succeed(requirement);
+      //     System.Console.WriteLine("USER IS COMPETITION ADMIN!");
+      //   }
+      // }
 
       return Task.CompletedTask;
     }

@@ -13,7 +13,7 @@ import { getGoalTime } from '../../util/dateFunctions';
 import { getGoalRecord } from '../../util/goalFunctions';
 import { timeIsInPast } from '../../util/dateFunctions';
 import { NOT_LOADING } from '../../redux/buttonTypes';
-import { EGoalType } from '../../types';
+import { EGoalCategory } from '../../types';
 import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
 import {
   StandardContainer,
@@ -74,13 +74,10 @@ const GoalDetailsPage: React.FC<IProps> = () => {
     (record.length === 0 &&
       timeIsInPast(goalState.selectedGoal.startTime.toString()))
   ) {
-    return (
-      //TODO
-      <LoadingSpinner />
-    );
+    return <LoadingSpinner />;
   }
 
-  const { name, duration, startTime, units, type, id } = goalState.selectedGoal;
+  const { name, duration, startTime, units, category } = goalState.selectedGoal;
   const { isStarted, time, isFinished } = getGoalTime(startTime, duration);
 
   const deleteGoal = () => {
@@ -88,15 +85,18 @@ const GoalDetailsPage: React.FC<IProps> = () => {
   };
 
   const handleSave = () => {
-    dispatch(UpdateGoalLedger({ id: id, ledger: record }));
+    dispatch(UpdateGoalLedger({ goalId: goalId, ledger: record }));
   };
+
+  console.log(record);
 
   return (
     <StandardContainer>
       <CollectionHeader>{name}</CollectionHeader>
       <ul>
         {/* TEST */}
-        {(isStarted || goalState.selectedGoal.type === EGoalType.passfail) && (
+        {(isStarted ||
+          goalState.selectedGoal.category === EGoalCategory.passfail) && (
           <GCChart
             goal={goalState.selectedGoal}
             record={record}
@@ -107,13 +107,13 @@ const GoalDetailsPage: React.FC<IProps> = () => {
         )}
         {isStarted &&
           time !== duration &&
-          type !== EGoalType.passfail &&
+          category !== EGoalCategory.passfail &&
           record.length !== 0 && (
             <GCProgress
               record={record}
               time={time}
               units={units}
-              type={type}
+              category={category}
               setRecord={setRecord}
             />
           )}

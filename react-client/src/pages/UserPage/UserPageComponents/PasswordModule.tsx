@@ -8,7 +8,7 @@ import {
   VALIDATOR_PASSWORD,
   VALIDATOR_MATCH,
 } from '../../../util/validators';
-import { ChangeUserPassword } from '../../../redux/user/actions';
+import { ChangePassword } from '../../../redux/user/actions';
 import LoadingButton from '../../../sharedComponents/forms/LoadingButton';
 import {
   StandardContainer,
@@ -40,7 +40,7 @@ const PasswordModule: React.FC<IProps> = ({ closePassword, isLoading }) => {
   const handleSubmit = () => {
     if (isPasswordMatch) {
       dispatch(
-        ChangeUserPassword({
+        ChangePassword({
           oldPassword: formState.inputs.get('oldPassword')!.value,
           newPassword: formState.inputs.get('newPassword2')!.value,
         })

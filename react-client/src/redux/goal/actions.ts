@@ -14,7 +14,7 @@ import {
 } from './types';
 import axios from 'axios';
 import { Dispatch } from 'redux';
-import { TGoalDTO, TLedgerDTO } from '../DTOs';
+import { TGoalRequest, TLedgerRequest } from '../Models';
 import { SetAlert } from '../alert/actions';
 import {
   NO_BUTTON,
@@ -24,7 +24,7 @@ import {
   DELETE_GOAL_BUTTON,
 } from '../buttonTypes';
 
-export const GetUserGoals = () => async (
+export const GetGoals = () => async (
   dispatch: ThunkDispatch<{}, {}, GoalDispatchTypes>
 ) => {
   try {
@@ -36,10 +36,10 @@ export const GetUserGoals = () => async (
   }
 };
 
-export const SetSelectedGoal = (id: string) => (
+export const SetSelectedGoal = (goalId: string) => (
   dispatch: Dispatch<GoalDispatchTypes>
 ) => {
-  dispatch({ type: SET_CURRENT_GOAL, payload: id });
+  dispatch({ type: SET_CURRENT_GOAL, payload: goalId });
 };
 
 export const ClearSelectedGoal = () => (
@@ -48,19 +48,19 @@ export const ClearSelectedGoal = () => (
   dispatch({ type: CLEAR_CURRENT_GOAL });
 };
 
-export const GetGoal = (id: string) => async (
+export const GetGoal = (goalId: string) => async (
   dispatch: ThunkDispatch<{}, {}, GoalDispatchTypes>
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: NO_BUTTON });
-    const res = await axios.get('/api/goal/' + id);
+    const res = await axios.get('/api/goal/' + goalId);
     dispatch({ type: GET_GOAL, payload: res.data });
   } catch (error) {
     dispatch({ type: GOAL_ERROR });
   }
 };
 
-export const AddGoal = (goal: TGoalDTO) => async (
+export const AddGoal = (goal: TGoalRequest) => async (
   dispatch: ThunkDispatch<{}, {}, GoalDispatchTypes>
 ) => {
   try {
@@ -73,12 +73,12 @@ export const AddGoal = (goal: TGoalDTO) => async (
   }
 };
 
-export const UpdateGoal = (goal: TGoalDTO, id: string) => async (
+export const UpdateGoal = (goal: TGoalRequest, goalId: string) => async (
   dispatch: ThunkDispatch<{}, {}, GoalDispatchTypes>
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: UPDATE_GOAL_BUTTON });
-    const res = await axios.patch('/api/goal/' + id, goal);
+    const res = await axios.patch('/api/goal/' + goalId, goal);
     dispatch({ type: UPDATE_GOAL, payload: res.data });
     dispatch(SetAlert('Goal updated', true));
   } catch (error) {
@@ -86,7 +86,7 @@ export const UpdateGoal = (goal: TGoalDTO, id: string) => async (
   }
 };
 
-export const UpdateGoalLedger = (ledger: TLedgerDTO) => async (
+export const UpdateGoalLedger = (ledger: TLedgerRequest) => async (
   dispatch: ThunkDispatch<{}, {}, GoalDispatchTypes>
 ) => {
   try {
@@ -99,13 +99,13 @@ export const UpdateGoalLedger = (ledger: TLedgerDTO) => async (
   }
 };
 
-export const DeleteGoal = (id: string) => async (
+export const DeleteGoal = (goalId: string) => async (
   dispatch: ThunkDispatch<{}, {}, GoalDispatchTypes>
 ) => {
   try {
     dispatch({ type: GOAL_LOADING, payload: DELETE_GOAL_BUTTON });
-    await axios.delete('/api/goal/' + id);
-    dispatch({ type: DELETE_GOAL, payload: id });
+    await axios.delete('/api/goal/' + goalId);
+    dispatch({ type: DELETE_GOAL, payload: goalId });
     dispatch(SetAlert('Goal deleted', true));
   } catch (error) {
     dispatch({ type: GOAL_ERROR });

@@ -6,7 +6,7 @@ import {
   getGoalCumulativeDataPoints,
   getGoalDifferenceDataPoints,
 } from '../../../util/goalFunctions';
-import { EGoalType, TGoal } from '../../../types';
+import { EGoalCategory, TGoal } from '../../../types';
 
 interface IProps {
   goal: TGoal;
@@ -24,14 +24,14 @@ const GCChart: React.FC<IProps> = ({
   isClickable,
 }) => {
   let jsx: any = '';
-  if (goal.type === EGoalType.cumulative) {
+  if (goal.category === EGoalCategory.cumulative) {
     let { dataPoints, chartYMax } = getGoalCumulativeDataPoints(
       record,
       time,
       goal.units!
     );
     jsx = <GCChartCumulative dataPoints={dataPoints} chartYMax={chartYMax} />;
-  } else if (goal.type === EGoalType.difference) {
+  } else if (goal.category === EGoalCategory.difference) {
     //many values can be null, so this value is used to keep chart width where it should be without empty values
     const chartXMax = time;
     let { dataPoints, chartYMax, chartYMin } = getGoalDifferenceDataPoints(
@@ -57,7 +57,7 @@ const GCChart: React.FC<IProps> = ({
         setRecord={setRecord}
         duration={goal.duration}
         startTime={goal.startTime}
-        target={goal.target}
+        daysPerWeek={goal.daysPerWeek!}
         isFinished={time === goal.duration}
       />
     );

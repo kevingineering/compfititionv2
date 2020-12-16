@@ -1,76 +1,114 @@
 import React, { useState } from 'react';
-import { Button } from '../../../../sharedComponents/styledComponents/Button';
+import {
+  Button,
+  ButtonSplitPrimary,
+  ButtonSplitDanger,
+} from '../../../../sharedComponents/styledComponents/Button';
 import styled from 'styled-components';
+import {
+  KickUserFromCompetition,
+  AddAdminRequest,
+} from '../../../../redux/competition/actions';
+import { useDispatch } from 'react-redux';
+import LoadingButton from '../../../../sharedComponents/forms/LoadingButton';
+import {
+  ADMIN_ADD_ADMIN_REQUEST_BUTTON,
+  ADMIN_KICK_USER_FROM_COMPETITION_BUTTON,
+} from '../../../../redux/buttonTypes';
+import { FlexContainer } from '../../../../sharedComponents/styledComponents/Misc';
 
 interface IProps {
-  // compId: string;
-  setUserToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  // setUserToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  buttonIds: string[];
+  userId: string;
+  competitionId: string;
 }
 
-const ParticipantButtons: React.FC<IProps> = ({ setUserToggle }) => {
+const ParticipantButtons: React.FC<IProps> = ({
+  userId,
+  competitionId,
+  buttonIds,
+}) => {
+  const dispatch = useDispatch();
+
   const [deleteToggle, setDeleteToggle] = useState(false);
+  const [adminToggle, setAdminToggle] = useState(false);
 
-  // const { kickUserFromCompetition } = useContext(CompetitionContext)
-
-  // const { addLetter, deleteLetter } = useContext(LetterContext)
-
-  const handleDeleteLetter = () => {
-    // setUserToggle(false)
-    // deleteLetter(letter._id)
+  const handleRequestAdmin = () => {
+    dispatch(AddAdminRequest(userId, competitionId));
   };
 
-  const handleSendLetter = () => {
-    // setUserToggle(false)
-    // const fields = {
-    //   type: 'LetterAdmin',
-    //   compId: compId,
-    //   compName: compName,
-    //   userId: userId,
-    // }
-    // addLetter(fields)
+  const handleKickUser = () => {
+    dispatch(KickUserFromCompetition(userId, competitionId));
   };
 
-  //TODO
-  let letter = false;
+  var adminLoading =
+    buttonIds.findIndex(
+      (x) => x === ADMIN_ADD_ADMIN_REQUEST_BUTTON + userId
+    ) !== -1;
 
-  let buttons = letter ? (
-    <React.Fragment>
-      <ParticipantButtonLeft onClick={handleDeleteLetter}>
-        Delete Admin Request
-      </ParticipantButtonLeft>
-      <ParticipantButtonRight onClick={() => setDeleteToggle(true)}>
-        Kick User
-      </ParticipantButtonRight>
-    </React.Fragment>
-  ) : (
-    <React.Fragment>
-      <ParticipantButtonLeft onClick={handleSendLetter}>
+  var kickLoading =
+    buttonIds.findIndex(
+      (x) => x === ADMIN_KICK_USER_FROM_COMPETITION_BUTTON + userId
+    ) !== -1;
+
+  let buttons = (
+    <ParticipantButtonContainer>
+      <ParticipantButtonLeft onClick={() => setAdminToggle(true)}>
         Make Admin
       </ParticipantButtonLeft>
       <ParticipantButtonRight onClick={() => setDeleteToggle(true)}>
         Kick User
       </ParticipantButtonRight>
-    </React.Fragment>
+    </ParticipantButtonContainer>
   );
 
   if (deleteToggle) {
     buttons = (
-      <ParticipantContainer>
+      <ParticipantToggleContainer>
         <ParticipantMessage>
           Are you sure you want to kick this user? This action cannot be undone.
         </ParticipantMessage>
-        <ParticipantButtonLeft onClick={() => setDeleteToggle(false)}>
-          No
-        </ParticipantButtonLeft>
-        <ParticipantButtonRight
-          onClick={() => {
-            setDeleteToggle(false);
-            // kickUserFromCompetition(compId, userId)
-          }}
-        >
-          Yes
-        </ParticipantButtonRight>
-      </ParticipantContainer>
+        <FlexContainer>
+          <LoadingButton
+            handleClick={() => setDeleteToggle(false)}
+            message='No'
+            styles={ButtonSplitPrimary}
+            isDisabled={kickLoading}
+          />
+          <LoadingButton
+            handleClick={handleKickUser}
+            message='Yes'
+            styles={ButtonSplitDanger}
+            isLoading={kickLoading}
+          />
+        </FlexContainer>
+      </ParticipantToggleContainer>
+    );
+  }
+
+  if (adminToggle) {
+    buttons = (
+      <ParticipantToggleContainer>
+        <ParticipantMessage>
+          Are you sure? Admins can modify and delete competitions, invite or
+          kick users, and promote other users to admin.
+        </ParticipantMessage>
+        <FlexContainer>
+          <LoadingButton
+            handleClick={() => setAdminToggle(false)}
+            message='No'
+            styles={ButtonSplitPrimary}
+            isDisabled={adminLoading}
+          />
+          <LoadingButton
+            handleClick={handleRequestAdmin}
+            message='Yes'
+            styles={ButtonSplitDanger}
+            isLoading={adminLoading}
+          />
+        </FlexContainer>
+      </ParticipantToggleContainer>
     );
   }
 
@@ -93,14 +131,22 @@ const ParticipantButtonRight = styled(Button)`
   padding: 0.4rem 0;
 `;
 
-const ParticipantContainer = styled.div`
+const ParticipantToggleContainer = styled.div`
+  margin: 0;
+  min-height: 0.5rem;
   border-left: 0.125rem solid var(--primary-color);
   border-right: 0.125rem solid var(--primary-color);
+`;
+
+const ParticipantMessage = styled.p`
+  padding: 0.4rem 0.8rem;
+  font-size: 1rem;
   margin: 0;
   min-height: 0.5rem;
 `;
 
-const ParticipantMessage = styled.p`
-  padding-left: 0.5rem;
-  line-height: 1.8rem;
+const ParticipantButtonContainer = styled.div`
+  display: flex;
+  border-left: 0.125rem solid var(--primary-color);
+  border-right: 0.125rem solid var(--primary-color);
 `;

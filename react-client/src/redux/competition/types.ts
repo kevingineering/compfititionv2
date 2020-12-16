@@ -15,7 +15,7 @@ export interface ICompetitionLoading {
   type: typeof COMPETITION_LOADING;
   payload: {
     type: CompetitionButtonTypes;
-    id?: string;
+    userId?: string;
   };
 }
 
@@ -46,6 +46,7 @@ export interface IAdminDeleteCompetition {
 
 export interface ICompetitionError {
   type: typeof COMPETITION_ERROR;
+  payload?: string;
 }
 
 export interface IClearCurrentCompetition {
@@ -72,7 +73,7 @@ export interface IAcceptInvite {
 
 export interface IAdminAcceptParticipantRequest {
   type: typeof ADMIN_ACCEPT_PARTICIPANT_REQUEST;
-  payload: TParticipant
+  payload: TParticipant;
 }
 
 export interface IUpdateParticipantLedger {

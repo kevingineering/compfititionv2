@@ -1,11 +1,12 @@
 using System;
-using Core.Entities;
+using Core.Entity;
 
 namespace Core.Specifications.Participants
 {
-  public class ParticipantSpec : BaseSpecification<CompetitionParticipant>
+  public class ParticipantSpec
   {
-    public ParticipantSpec(Guid userId, Guid compId) : base(x => x.UserId == userId && x.CompId == compId)
+    public ParticipantSpec(Guid userId, Guid competitionId)
+    //: base(x => x.UserId == userId && x.CompId == competitionId)
     {
 
     }

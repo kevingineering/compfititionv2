@@ -1,32 +1,32 @@
 import React from 'react';
-import { TParticipant } from '../../../../types';
+import { TCompetition } from '../../../../types';
 import CollapsibleListContainer from '../../../../sharedComponents/misc/CollapsibleListContainer';
 import ParticipantItem from './ParticipantItem';
 
 interface IProps {
-  participants: TParticipant[];
-  admins: string[];
-  // adminLetters: string[];
+  competition: TCompetition;
+  buttonIds: string[];
 }
 
-const Participants: React.FC<IProps> = ({
-  participants,
-  admins,
-  // adminLetters,
-}) => {
-  const participantList = participants.map((participant, index) => {
+const Participants: React.FC<IProps> = ({ competition, buttonIds }) => {
+  const participantList = competition.participants.map((participant, index) => {
     let isAdmin =
-      admins.findIndex((admin) => admin === participant.userId) !== -1;
-    // let letter = adminLetters.find(
-    //   (letter) => letter.userId === participant.userId
-    // );
+      competition.admins.findIndex((admin) => admin === participant.userId) !==
+      -1;
+    let hasAdminRequest =
+      competition.adminRequests.findIndex(
+        (request) => request === participant.userId
+      ) !== -1;
+
     return (
       <ParticipantItem
         key={index}
         participant={participant}
         isAdmin={isAdmin}
-        isLast={index === participants.length - 1}
-        // letter={letter}
+        isLast={index === competition.participants.length - 1}
+        hasAdminRequest={hasAdminRequest}
+        competitionId={competition.competitionId}
+        buttonIds={buttonIds}
       />
     );
   });
@@ -38,6 +38,7 @@ const Participants: React.FC<IProps> = ({
       isH3={true}
     >
       {participantList}
+      <hr />
     </CollapsibleListContainer>
   );
 };

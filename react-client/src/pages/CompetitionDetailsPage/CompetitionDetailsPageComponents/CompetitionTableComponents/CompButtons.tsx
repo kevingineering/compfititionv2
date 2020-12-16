@@ -8,7 +8,7 @@ import {
 } from '../../../../redux/buttonTypes';
 import ToggleButtonModule from '../../../../sharedComponents/misc/ToggleButtonModule';
 import NumberInput from '../../../../sharedComponents/forms/NumberInput';
-import { TCompetition, EGoalType } from '../../../../types';
+import { TCompetition, EGoalCategory } from '../../../../types';
 import { useDispatch } from 'react-redux';
 import {
   DeleteCompetition,
@@ -53,26 +53,34 @@ const CompButtons: React.FC<IProps> = ({
   const dispatch = useDispatch();
 
   const saveParticipantLedger = () => {
-    dispatch(UpdateParticipantLedger({ ledger: ledger, id: competition.id }));
+    dispatch(
+      UpdateParticipantLedger({
+        ledger: ledger,
+        goalId: competition.competitionId,
+      })
+    );
   };
 
   const setParticipantTarget = () => {
     dispatch(
-      UpdateParticipantTarget({ compId: competition.id, value: +target })
+      UpdateParticipantTarget({
+        competitionId: competition.competitionId,
+        value: +target,
+      })
     );
   };
 
   const saveParticipantInitialValue = () => {
     dispatch(
       UpdateParticipantInitialValue({
-        compId: competition.id,
+        competitionId: competition.competitionId,
         value: +startValue,
       })
     );
   };
 
   const deleteCompetition = () => {
-    dispatch(DeleteCompetition(competition.id));
+    dispatch(DeleteCompetition(competition.competitionId));
   };
 
   return (
@@ -89,44 +97,45 @@ const CompButtons: React.FC<IProps> = ({
         </React.Fragment>
       )}
       {/* Initial Value Button */}
-      {initialValue === null && competition.type === EGoalType.difference && (
-        <React.Fragment>
-          <ToggleButtonModule
-            handleClick={() => {
-              startValue !== '' && saveParticipantInitialValue();
-            }}
-            isLoading={
-              loadingButton === UPDATE_PARTICIPANT_INITIAL_VALUE_BUTTON
-            }
-            topButton='Set Start Value'
-            leftButton='Cancel'
-            rightButton='Set Start Value'
-            isDanger={false}
-          >
-            <hr />
-            <ModuleMessage>
-              <p>
-                <strong>Set Start Value</strong>
-              </p>
-              <p>
-                The start value is your number at the beginning of the
-                competition. Your final value will be subtracted from your start
-                value when scoring the competition.
-              </p>
-              <NumberInput
-                message='Start Value: '
-                value={startValue}
-                handleValue={(input) => {
-                  setStartValue(input);
-                }}
-                units={competition.units}
-              />
-            </ModuleMessage>
-          </ToggleButtonModule>
-        </React.Fragment>
-      )}
+      {initialValue === null &&
+        competition.category === EGoalCategory.difference && (
+          <React.Fragment>
+            <ToggleButtonModule
+              handleClick={() => {
+                startValue !== '' && saveParticipantInitialValue();
+              }}
+              isLoading={
+                loadingButton === UPDATE_PARTICIPANT_INITIAL_VALUE_BUTTON
+              }
+              topButton='Set Start Value'
+              leftButton='Cancel'
+              rightButton='Set Start Value'
+              isDanger={false}
+            >
+              <hr />
+              <ModuleMessage>
+                <p>
+                  <strong>Set Start Value</strong>
+                </p>
+                <p>
+                  The start value is your number at the beginning of the
+                  competition. Your final value will be subtracted from your
+                  start value when scoring the competition.
+                </p>
+                <NumberInput
+                  message='Start Value: '
+                  value={startValue}
+                  handleValue={(input) => {
+                    setStartValue(input);
+                  }}
+                  units={competition.units}
+                />
+              </ModuleMessage>
+            </ToggleButtonModule>
+          </React.Fragment>
+        )}
       {/* Personal Goal Button */}
-      {isActive && competition.type !== EGoalType.passfail && (
+      {isActive && competition.category !== EGoalCategory.passfail && (
         <React.Fragment>
           <ToggleButtonModule
             handleClick={setParticipantTarget}
@@ -181,7 +190,7 @@ const CompButtons: React.FC<IProps> = ({
       {/* TEST */}
       {((!isActive && !isAdminView) ||
         (!isStarted &&
-          competition.type === EGoalType.passfail &&
+          competition.category === EGoalCategory.passfail &&
           !isAdminView)) && <hr />}
     </React.Fragment>
   );

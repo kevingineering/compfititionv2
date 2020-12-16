@@ -1,11 +1,12 @@
 using System;
-using Core.Entities;
+using Core.Entity;
 
 namespace Core.Specifications.Invites
 {
-  public class InviteSpec : BaseSpecification<CompetitionInvite>
+  public class InviteSpec
   {
-    public InviteSpec(Guid userId, Guid compId) : base(x => x.InviteeId == userId && x.CompId == compId)
+    public InviteSpec(Guid userId, Guid competitionId)
+    //: base(x => x.InviteeId == userId && x.CompId == competitionId)
     {
 
     }

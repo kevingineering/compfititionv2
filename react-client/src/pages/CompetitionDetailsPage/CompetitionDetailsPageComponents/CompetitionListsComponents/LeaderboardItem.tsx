@@ -7,7 +7,7 @@ import { RootStore } from '../../../../redux/Store';
 interface IProps {
   name: string;
   score: number;
-  id: string;
+  userId: string;
   place: number;
   isStarted: boolean;
 }
@@ -15,7 +15,7 @@ interface IProps {
 const LeaderboardItem: React.FC<IProps> = ({
   name,
   score,
-  id,
+  userId,
   place,
   isStarted,
 }) => {
@@ -24,10 +24,10 @@ const LeaderboardItem: React.FC<IProps> = ({
     <LeaderboardItemContainer>
       <span>
         {isStarted && `${place}. `}
-        {id === userState.user!.id! ? (
+        {userId === userState.user!.userId! ? (
           <strong>{name}</strong>
         ) : (
-          <Link to={`/friend/${id}`}>
+          <Link to={`/friend/${userId}`}>
             <strong>{name}</strong>
           </Link>
         )}

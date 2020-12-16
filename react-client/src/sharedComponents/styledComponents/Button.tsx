@@ -49,3 +49,19 @@ export const ButtonRequestToJoin = `
   font-weight: bold;
   font-size: 1.17em;
 `;
+
+export const InviteButtonDelete = `
+  background: var(--danger-color);
+  color: var(--secondary-color);
+  width: 5rem;
+  margin: 0;
+  padding: 0;
+`;
+
+export const InviteButtonSend = `
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  width: 5rem;
+  margin: 0;
+  padding: 0;
+`;

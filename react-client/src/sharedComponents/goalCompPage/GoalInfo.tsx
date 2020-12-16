@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { getGoalScore } from '../../util/goalFunctions';
 import { getGoalTime, cleanNumber } from '../../util/dateFunctions';
-import { TGoal, EGoalType } from '../../types';
+import { TGoal, EGoalCategory } from '../../types';
 import { TableInfo, WhiteSpaceSpan } from '../styledComponents/Misc';
 
 interface IProps {
@@ -12,7 +12,7 @@ interface IProps {
   isFinished: boolean;
 }
 
-//messaging to describe goal - varies greatly depending on type and time status
+//messaging to describe goal - varies greatly depending on category and time status
 const GoalInfo: React.FC<IProps> = ({ goal, time, record, isFinished }) => {
   const {
     duration,
@@ -20,7 +20,8 @@ const GoalInfo: React.FC<IProps> = ({ goal, time, record, isFinished }) => {
     description,
     units,
     target,
-    type,
+    daysPerWeek,
+    category,
     initialValue,
   } = goal;
   const { isStarted } = getGoalTime(startTime, duration);
@@ -28,7 +29,7 @@ const GoalInfo: React.FC<IProps> = ({ goal, time, record, isFinished }) => {
   const formattedDateTime = moment
     .utc(startTime)
     .format('MMMM Do, YYYY, h:mm a');
-  const score = cleanNumber(getGoalScore(type, record, initialValue));
+  const score = cleanNumber(getGoalScore(category, record, initialValue));
 
   let topLeftTag = '';
   let topLeftMsg = '';
@@ -46,19 +47,19 @@ const GoalInfo: React.FC<IProps> = ({ goal, time, record, isFinished }) => {
   if (isFinished) {
     topLeftTag = 'Start Date: ';
     topLeftMsg = formattedDate;
-    if (type === EGoalType.passfail) {
+    if (category === EGoalCategory.passfail) {
       middleLeftTag = 'Success Total: ';
-      middleLeftMsg = `${score} / ${(duration * target) / 7} (${Math.round(
-        (score / ((duration * target) / 7)) * 100
-      )}%)`;
-    } else if (type === EGoalType.cumulative) {
+      middleLeftMsg = `${score} / ${
+        (duration * daysPerWeek!) / 7
+      } (${Math.round((score / ((duration * daysPerWeek!) / 7)) * 100)}%)`;
+    } else if (category === EGoalCategory.cumulative) {
       topRightTag = 'Duration: ';
       topRightMsg = `${duration} days`;
       middleLeftTag = 'Total: ';
       middleLeftMsg = `${score} / ${target} ${units}`;
       middleRightTag = 'Goal Completion: ';
-      middleRightMsg = `${Math.round((score / target) * 100)}%`;
-    } else if (type === EGoalType.difference) {
+      middleRightMsg = `${Math.round((score / target!) * 100)}%`;
+    } else if (category === EGoalCategory.difference) {
       topRightTag = 'Duration: ';
       topRightMsg = `${duration} days`;
       middleLeftTag = 'Start: ';
@@ -74,23 +75,23 @@ const GoalInfo: React.FC<IProps> = ({ goal, time, record, isFinished }) => {
   } else if (isStarted) {
     topLeftTag = 'Start Date: ';
     topLeftMsg = formattedDate;
-    if (type === EGoalType.passfail) {
+    if (category === EGoalCategory.passfail) {
       middleLeftTag = 'Success To Date: ';
       middleLeftMsg = `${score} / ${time + 1} (${Math.round(
         (score / (time + 1)) * 100
       )}%)`;
       bottomLeftTag = 'Success Total: ';
-      bottomLeftMsg = `${score} / ${(duration * target) / 7} (${Math.round(
-        (score / ((duration * target) / 7)) * 100
-      )}%)`;
-    } else if (type === EGoalType.cumulative) {
+      bottomLeftMsg = `${score} / ${
+        (duration * daysPerWeek!) / 7
+      } (${Math.round((score / ((duration * daysPerWeek!) / 7)) * 100)}%)`;
+    } else if (category === EGoalCategory.cumulative) {
       topRightTag = 'Day: ';
       topRightMsg = `${time + 1} / ${duration}`;
       middleLeftTag = 'Total: ';
       middleLeftMsg = `${score} / ${target} ${units}`;
       middleRightTag = 'Goal Completion: ';
-      middleRightMsg = `${Math.round((score / target) * 100)}%`;
-    } else if (type === EGoalType.difference) {
+      middleRightMsg = `${Math.round((score / target!) * 100)}%`;
+    } else if (category === EGoalCategory.difference) {
       topRightTag = 'Day: ';
       topRightMsg = `${time + 1} / ${duration}`;
       middleLeftTag = 'Start: ';
@@ -107,11 +108,11 @@ const GoalInfo: React.FC<IProps> = ({ goal, time, record, isFinished }) => {
     topLeftMsg = formattedDateTime;
     topRightTag = 'Duration: ';
     topRightMsg = `${duration} days`;
-    if (type === EGoalType.passfail) {
-    } else if (type === EGoalType.cumulative) {
+    if (category === EGoalCategory.passfail) {
+    } else if (category === EGoalCategory.cumulative) {
       middleLeftTag = 'Goal: ';
       middleLeftMsg = `${target} ${units}`;
-    } else if (type === EGoalType.difference) {
+    } else if (category === EGoalCategory.difference) {
       middleLeftTag = 'Start: ';
       middleLeftMsg = `${initialValue!} ${units}`;
       middleRightTag = 'Goal: ';

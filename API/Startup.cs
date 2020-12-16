@@ -1,8 +1,6 @@
 using API.Extensions;
-using API.Helpers;
 using API.Middleware;
-using AutoMapper;
-using Infrastructure.Data;
+using Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -45,8 +43,6 @@ namespace API
       //   options.Filters.Add(new AuthorizeFilter(policy));
       // });
 
-      services.AddAutoMapper(typeof(MappingProfiles));
-
       services.AddDbContext<DataContext>(x =>
       {
         x.UseSqlite(_config.GetConnectionString("DefaultConnection"));
@@ -55,8 +51,6 @@ namespace API
       services.AddAuthPolicies(_config);
 
       services.AddApplicationServices();
-
-      services.AddSwaggerDocumentation();
     }
 
     //Middleware for request pipeline
@@ -78,8 +72,6 @@ namespace API
       app.UseAuthentication();
 
       app.UseAuthorization();
-
-      app.UseSwaggerDocumentation();
 
       app.UseEndpoints(endpoints =>
       {

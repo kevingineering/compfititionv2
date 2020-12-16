@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using API.Errors;
+using Core.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -29,25 +29,40 @@ namespace API.Middleware
       {
         await _next(context);
       }
+      //ApiError is child of Exception 
+      //We primarily throw ApiError, but Exceptions may also be thrown
+      //either way we want status code if it exists
+      catch (ApiError ex)
+      {
+        await ConfigureResponse(context, ex.StatusCode, ex);
+      }
       catch (Exception ex)
       {
-        _logger.LogError(ex, ex.Message); //log to console
+        //we are primarily throwing ApiError which has status code and message
+        //if 
+        var ae = ex.InnerException as ApiError;
+        var statusCode = ae != null ? ae.StatusCode : (int)HttpStatusCode.InternalServerError;
+        var exception = ae != null ? ae : ex;
 
-        //configure response
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-        //send back stack trace if in dev
-        var response = _env.IsDevelopment()
-            ? new ApiServerErrorWithStackTrace((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
-            : new ApiServerErrorWithStackTrace((int)HttpStatusCode.InternalServerError);
-
-        //use camelCase to match other errors, otherwise returns PascalCase
-        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-
-        var json = JsonSerializer.Serialize(response, options);
-        await context.Response.WriteAsync(json);
+        await ConfigureResponse(context, statusCode, exception);
       }
+    }
+
+    private async Task ConfigureResponse(HttpContext context, int statusCode, Exception ex)
+    {
+      _logger.LogError(ex, ex.Message);
+      context.Response.ContentType = "application/json";
+      context.Response.StatusCode = statusCode;
+
+      //send back stack trace if in dev
+      var response = _env.IsDevelopment()
+          ? new ApiServerErrorWithStackTrace(statusCode, ex.Message, ex.StackTrace.ToString())
+          : new ApiServerErrorWithStackTrace(statusCode);
+
+      //use camelCase to match other errors, otherwise returns PascalCase
+      var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+      var json = JsonSerializer.Serialize(response, options);
+      await context.Response.WriteAsync(json);
     }
   }
 }

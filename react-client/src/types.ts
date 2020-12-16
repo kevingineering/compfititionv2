@@ -1,60 +1,51 @@
-export type TUser = {
-  email?: string;
-  id?: string;
-  name?: string;
+export type TDifferentUser = {
+  email: string;
+  userId: string;
+  name: string;
+};
+
+export type TUser = TDifferentUser & {
   token?: string;
   isSearchable?: boolean;
 };
 
-export type TDifferentUser = {
-  email: string;
-  id: string;
-  name: string;
-};
-
-export type TFriend = {
-  id: string;
-  email: string;
-  name: string;
-  activeGoals: TGoal[];
+export type TOtherUser = TDifferentUser & {
   pastGoals: TGoal[];
-  activeCompetitions: TGoal[];
+  activeGoals: TGoal[];
   pastCompetitions: TGoal[];
+  activeCompetitions: TGoal[];
   selectedGoal?: TGoal;
   friends: TDifferentUser[];
   isFriend: boolean;
 };
 
-export type TGoal = {
-  id: string;
+export type TChallenge = {
   name: string;
   duration: number;
   startTime: Date;
-  type: EGoalType;
+  category: string;
   description: string;
   units?: string;
+  daysPerWeek?: number;
+};
+
+export type TGoal = TChallenge & {
+  goalId: string;
   isPrivate: boolean;
-  target: number;
+  target?: number;
   ledger: string | null;
   initialValue?: number;
 };
 
-export enum EGoalType {
+export enum EGoalCategory {
   cumulative = 'cumulative',
   difference = 'difference',
   passfail = 'passfail',
 }
 
-export type TCompetition = {
-  id: string;
-  name: string;
-  duration: number;
-  startTime: Date;
-  type: string;
-  description: string;
-  units?: string;
+export type TCompetition = TChallenge & {
+  competitionId: string;
   isPrivate: boolean;
-  frequency?: number;
   isHighestScoreWins: boolean;
   participants: TParticipant[];
   admins: string[];
@@ -67,7 +58,7 @@ export type TParticipant = {
   userId: string;
   ledger: string | null;
   name: string;
-  target: number;
+  target?: number;
   initialValue?: number;
 };
 

@@ -1,26 +1,22 @@
-Fix pass fail competition - frequency?
-use UTC time
-add new DTO and method for received friend requests on friend request reducer
+Fix Time - see pass fail goal when time hasn't started yet
 
-Today: 
-  Competition page: 
-    Letters - UserInvited, UserRequested
-    Add/Modify competition page
+Competition page: 
+  Add/Modify competition page
 
-    Implement 'Request to Join' button / 'Cancel Request'
-    Implement Kick User
-    Implement Make Admin
-    
-    Invites - add existing invites to list (even if not user's friend)
+  Implement 'Request to Join' button / 'Cancel Request'
+  Fix Kick User buttons
+  Implement leave competition button
+  
+  Invites - add existing invites to list (even if not user's friend)
 
-  Home page: 
-    Notifications - UserInvited, UserAdded, UserKicked, CompDeleted, AdminRequested
+Home page: 
+  Notifications - UserInvited, UserAdded, UserKicked, CompDeleted, AdminRequested
 
 CompetitionInvites
-CompetitionRequests
+ParticipantRequests
 
 Competition Details:
-  CompetitionRequests
+  ParticipantRequests
 
 Notifications:
   CompetitionInvites

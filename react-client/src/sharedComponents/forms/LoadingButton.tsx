@@ -9,6 +9,7 @@ interface IProps {
   isDisabled?: boolean;
   //for styling
   isInline?: boolean;
+  isFlex?: boolean;
   styles?: string;
 }
 
@@ -19,10 +20,11 @@ const LoadingButton: React.FC<IProps> = ({
   isLoading = false,
   isDisabled = false,
   isInline = false,
+  isFlex = true,
   styles = '',
 }) => {
   return (
-    <LoadingButtonContainer isInline={isInline}>
+    <LoadingButtonContainer isInline={isInline} isFlex={isFlex}>
       {isLoading && <InputSpinner />}
       <LoadingButtonButton
         styles={styles}
@@ -62,10 +64,13 @@ const InputSpinner = styled.div`
   }
 `;
 
-const LoadingButtonContainer = styled.div<{ isInline: boolean }>`
+const LoadingButtonContainer = styled.div<{
+  isInline: boolean;
+  isFlex: boolean;
+}>`
   position: relative;
-  flex: 1;
-  ${(props) => props.isInline && 'display: inline'}
+  ${(props) => props.isFlex && 'flex: 1;'}
+  ${(props) => props.isInline && 'display: inline;'}
 `;
 
 const LoadingButtonButton = styled.button<{

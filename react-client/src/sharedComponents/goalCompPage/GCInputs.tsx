@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useForm } from '../../util/formHook';
 import Input from '../forms/Input';
 import Textarea from '../forms/Textarea';
@@ -14,13 +14,10 @@ import {
 } from '../../util/validators';
 import LoadingButton from '../forms/LoadingButton';
 import Select from '../forms/Select';
-import { TGoalDTO } from '../../redux/DTOs';
-import {
-  createFormValuesMap,
-  updateFormValuesMap,
-} from '../../util/mapFunctions';
+import { TGoalRequest, TCompetitionRequest } from '../../redux/Models';
+import { createFormValuesMap } from '../../util/mapFunctions';
 import { getGoalTime, timeIsInPast } from '../../util/dateFunctions';
-import { EGoalType, TGoal, TCompetition } from '../../types';
+import { EGoalCategory, TGoal, TCompetition } from '../../types';
 import { StandardContainer, PageTitle } from '../styledComponents/Misc';
 import styled from 'styled-components';
 
@@ -42,28 +39,39 @@ const GCInputs: React.FC<IProps> = ({
   isLoading,
 }) => {
   //gets initial values for useForm hook
-  let formValues;
-  // if (isGoal) {
-  formValues = createFormValuesMap({ goal });
-  // } else {
-  //   createFormValuesMap({competition})
-  // }
+  let formValues = useMemo(() => createFormValuesMap({ goal, competition }), [
+    competition,
+    goal,
+  ]);
 
-  //custom hook
-  const { handleInput, formState, setFormState, createFormObject } = useForm({
+  //custom hook - memoize?
+  const { handleInput, formState, createFormObject } = useForm({
     inputs: formValues,
     isValid: false,
   });
 
-  const isStarted = goal ? timeIsInPast(goal.startTime.toString()) : false;
+  //startTime and duration are used in validation
+  let startTime = goal
+    ? goal.startTime
+    : competition
+    ? competition.startTime
+    : null;
+  let duration = goal
+    ? goal.duration
+    : competition
+    ? competition.duration
+    : null;
 
-  const isPassFail = formState.inputs.get('type')!.value === EGoalType.passfail;
+  const isStarted = startTime ? timeIsInPast(startTime.toString()) : false;
+
+  const isPassFail =
+    formState.inputs.get('category')!.value === EGoalCategory.passfail;
 
   const isDifference =
-    formState.inputs.get('type')!.value === EGoalType.difference;
+    formState.inputs.get('category')!.value === EGoalCategory.difference;
 
   const isEveryDay =
-    isPassFail && formState.inputs.get('target')!.value === '7';
+    isPassFail && formState.inputs.get('daysPerWeek')!.value === '7';
 
   const handleSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -78,23 +86,15 @@ const GCInputs: React.FC<IProps> = ({
         );
       }
     }
-    const goal: TGoalDTO = createFormObject();
-    dispatchAction(goal);
-  };
 
-  //special input handler to add or remove fields when type changes
-  const typeInputHandler = useCallback(
-    (name: string, newValue: string, isValid: boolean): void => {
-      let formValues = updateFormValuesMap({
-        map: formState.inputs,
-        isGoal: isGoal,
-        type: newValue,
-      });
-      setFormState(formValues);
-    },
-    //eslint-disable-next-line
-    []
-  );
+    if (isGoal) {
+      let newGoal: TGoalRequest = createFormObject();
+      dispatchAction(newGoal);
+    } else {
+      let newCompetition: TCompetitionRequest = createFormObject();
+      dispatchAction(newCompetition);
+    }
+  };
 
   return (
     <StandardContainer>
@@ -117,7 +117,6 @@ const GCInputs: React.FC<IProps> = ({
           handleInput={handleInput}
           value={formState.inputs.get('description')!.value}
         />
-        {/* TEST */}
         <Input
           label='Start Date and Time (Local)'
           name='startTime'
@@ -141,7 +140,6 @@ const GCInputs: React.FC<IProps> = ({
                 ]),
           ]}
         />
-        {/* TEST */}
         <Input
           label='Duration (days)'
           name='duration'
@@ -153,53 +151,53 @@ const GCInputs: React.FC<IProps> = ({
           validators={[
             VALIDATOR_REQUIRE(),
             VALIDATOR_MIN(1),
+            VALIDATOR_MAX(3653),
             ...(isStarted
               ? [
                   VALIDATOR_DURATION_NOT_PAST(
-                    getGoalTime(goal!.startTime, goal!.duration).time
+                    getGoalTime(startTime!, duration!).time
                   ),
                 ]
               : []),
             ...(isPassFail && !isEveryDay ? [VALIDATOR_WHOLE_WEEK()] : []),
           ]}
-          //whole week validation necessary if type changes to passfail and it is not an everyday type
+          //whole week validation necessary if category changes to passfail and it is not an everyday category
           isRevalidate={isPassFail && !isEveryDay}
         />
-        {/* TEST */}
         <Select
-          label={`What type of ${
+          label={`What kind of ${
             isGoal ? 'goal' : 'competition'
           } would you like?`}
-          name='type'
-          handleInput={typeInputHandler}
+          name='category'
+          handleInput={handleInput}
           isDisabled={isStarted}
           options={[
             {
-              value: EGoalType.passfail,
+              value: EGoalCategory.passfail,
               text: `Pass/Fail (e.g. ${
                 isGoal ? 'Stretch every morning' : 'Run the most days'
               })`,
             },
             {
-              value: EGoalType.cumulative,
+              value: EGoalCategory.cumulative,
               text: `Total (e.g. ${
                 isGoal ? 'Run 100 miles' : 'Run the most miles'
               })`,
             },
             {
-              value: EGoalType.difference,
+              value: EGoalCategory.difference,
               text: `Difference (e.g. ${
                 isGoal ? 'Lose 10 lbs' : 'Lose the most weight'
               })`,
             },
           ]}
-          initialValue={formState.inputs.get('type')!.value}
+          initialValue={formState.inputs.get('category')!.value}
         />
-        {/* TEST */}
-        {isDifference && (
+        {isDifference && isGoal && (
           <Input
-            label={`What is your ${isGoal ? '' : 'personal '}starting number?`}
+            label={`What is your starting number?`}
             name='initialValue'
+            alias='Starting value'
             type='text'
             pattern={/^\d{1,8}(?:()|(\.\d{0,2}))$/}
             isDisabled={isStarted}
@@ -210,22 +208,21 @@ const GCInputs: React.FC<IProps> = ({
               ...(isDifference
                 ? [
                     VALIDATOR_REQUIRE(),
-                    VALIDATOR_MIN(1),
+                    VALIDATOR_MIN(0),
                     VALIDATOR_MAX(0x7fffffff),
                   ]
                 : []),
             ]}
-            //whole week validation necessary if type changes to passfail and it is not an everyday type
-            isRevalidate={isDifference}
           />
         )}
         {isPassFail && (
           <Select
             label={`How many days per week do you want ${
-              isGoal ? '' : 'participants '
+              isGoal ? 'participants ' : ''
             }to achieve the goal?`}
-            name='target'
+            name='daysPerWeek'
             handleInput={handleInput}
+            isDisabled={isStarted}
             options={[
               { value: '7', text: 'Every day' },
               { value: '6', text: 'Six days a week' },
@@ -235,7 +232,7 @@ const GCInputs: React.FC<IProps> = ({
               { value: '2', text: 'Two days a week' },
               { value: '1', text: 'One day a week' },
             ]}
-            initialValue={formState.inputs.get('target')!.value}
+            initialValue={formState.inputs.get('daysPerWeek')!.value}
           />
         )}
         {!isPassFail && isGoal && (
@@ -254,8 +251,6 @@ const GCInputs: React.FC<IProps> = ({
               VALIDATOR_MIN(0),
               VALIDATOR_MAX(0x7fffffff),
             ]}
-            //whole week validation necessary if type changes to passfail and it is not an everyday type
-            isRevalidate={isPassFail && !isEveryDay}
           />
         )}
         {!isPassFail && (
@@ -293,9 +288,8 @@ const GCInputs: React.FC<IProps> = ({
           initialValue={formState.inputs.get('isPrivate')!.value}
         />
         {!isGoal && !isPassFail && (
-          //TODO
           <Select
-            name='target'
+            name='isHighestScoreWins'
             label={'Scoring'}
             options={[
               {

@@ -22,7 +22,7 @@ const FriendList: React.FC<IProps> = ({ isOwner }) => {
   const message = friendState.isFiltered
     ? 'No users match your search.'
     : isOwner
-    ? 'Yo yet, add one below!'
+    ? "You don't have any friends yet, add one below!"
     : "You are this user's only visible friend.";
 
   const friends =

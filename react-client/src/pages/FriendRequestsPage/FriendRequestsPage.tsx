@@ -5,7 +5,7 @@ import { RootStore } from '../../redux/Store';
 import {
   FilterSearchableUsers,
   ClearFilteredSearchableUsers,
-  GetRequestsAndSearchableUsers,
+  GetFriendRequestUserInfo,
 } from '../../redux/friendRequest/actions';
 import { NO_BUTTON } from '../../redux/buttonTypes';
 import OtherUserItem from '../../sharedComponents/misc/OtherUserItem';
@@ -23,7 +23,7 @@ const FriendRequestsPage = () => {
   const requestState = useSelector((state: RootStore) => state.requestState);
 
   useEffect(() => {
-    dispatch(GetRequestsAndSearchableUsers());
+    dispatch(GetFriendRequestUserInfo());
     return () => {
       dispatch(ClearFilteredSearchableUsers());
     };
@@ -34,24 +34,26 @@ const FriendRequestsPage = () => {
     ? requestState.filteredSearchableUsers
     : requestState.searchableUsers;
 
-  const receivedFriendRequests = requestState.receivedRequests.map(
+  const receivedFriendRequests = requestState.usersWhoSentFriendRequest.map(
     (req, index) => (
       <OtherUserItem
         key={index}
         user={req}
         buttonIds={requestState.buttonIds}
-      ></OtherUserItem>
+      />
     )
   );
 
-  const sentFriendRequests = requestState.sentRequests.map((req, index) => (
-    <OtherUserItem
-      key={index}
-      user={req}
-      isSent={true}
-      buttonIds={requestState.buttonIds}
-    ></OtherUserItem>
-  ));
+  const sentFriendRequests = requestState.usersWhoReceivedFriendRequest.map(
+    (req, index) => (
+      <OtherUserItem
+        key={index}
+        user={req}
+        isSent={true}
+        buttonIds={requestState.buttonIds}
+      />
+    )
+  );
 
   const searchJsx = (
     <CollapsibleListContainer title='Users' isCollapsible={false}>
@@ -75,7 +77,7 @@ const FriendRequestsPage = () => {
         <CollapsibleListContainer title='Received Requests'>
           {requestState.loadingButton === NO_BUTTON ? (
             <LoadingSpinner hasContainer={true} />
-          ) : requestState.receivedRequests.length !== 0 ? (
+          ) : requestState.usersWhoSentFriendRequest.length !== 0 ? (
             receivedFriendRequests
           ) : (
             <EmptyCollection>You have no received requests.</EmptyCollection>
@@ -84,7 +86,7 @@ const FriendRequestsPage = () => {
         <CollapsibleListContainer title='Sent Requests'>
           {requestState.loadingButton === NO_BUTTON ? (
             <LoadingSpinner hasContainer={true} />
-          ) : requestState.sentRequests.length !== 0 ? (
+          ) : requestState.usersWhoReceivedFriendRequest.length !== 0 ? (
             sentFriendRequests
           ) : (
             <EmptyCollection>You have no sent requests.</EmptyCollection>

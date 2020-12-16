@@ -1,9 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using API.DTOs.ReturnDTOs;
-using API.Errors;
-using Core.Entities;
+using Infrastructure.Models.Response;
+using Core.Entity;
 using Core.Interfaces;
 using Core.Specifications.AdminRequests;
 using Core.Specifications.Admins;
@@ -14,93 +13,97 @@ using API.Helpers;
 
 namespace API.Controllers
 {
-  public class AdminController : BaseController
+  public class AdminController : ParentController
   {
     // /admin
-    //   POST    /:compId              add admin (search for request and delete)
-    //   DELETE  /:compId              delete admin
+    //   POST    /:competitionId              add admin (search for request and delete)
+    //   DELETE  /:competitionId              delete admin
 
-    private readonly IUnitOfWork _unitOfWork;
+    // private readonly IUnitOfWork _unitOfWork;
 
-    public AdminController(IUnitOfWork unitOfWork)
+    // public AdminController(IUnitOfWork unitOfWork)
+    // {
+    //   _unitOfWork = unitOfWork;
+    // }
+
+    [HttpPost("{competitionId}")]
+    public Task<ActionResult<CompetitionResponse>> AddAdminToCompetition(Guid competitionId)
     {
-      _unitOfWork = unitOfWork;
-    }
+      throw new NotImplementedException();
 
-    [HttpPost("{compId}")]
-    public async Task<ActionResult<CompetitionReturnDTO>> AddAdminToCompetition(Guid compId)
-    {
-      var userId = GetUserIdFromClaims();
+      // var userId = GetUserIdFromClaims();
 
-      //verify request exists
-      var spec = new AdminRequestSpec(userId, compId);
-      var request = await _unitOfWork.Repository<CompetitionAdminRequest>().GetEntityWithSpec(spec);
+      // //verify request exists
+      // var spec = new AdminRequestSpec(userId, competitionId);
+      // var request = await _unitOfWork.Repository<CompetitionAdminRequest>().GetEntityWithSpec(spec);
 
-      if (request == null)
-      {
-        return NotFound(new ApiError(404, "Request does not exist."));
-      }
+      // if (request == null)
+      // {
+      //   return NotFound(new ApiError(404, "Request does not exist."));
+      // }
 
-      //add admin and delete request
-      var admin = new CompetitionAdmin(compId, userId);
-      _unitOfWork.Repository<CompetitionAdmin>().Add(admin);
-      _unitOfWork.Repository<CompetitionAdminRequest>().Delete(request);
+      // //add admin and delete request
+      // var admin = new CompetitionAdmin(userId, competitionId);
+      // _unitOfWork.Repository<CompetitionAdmin>().Add(admin);
+      // _unitOfWork.Repository<CompetitionAdminRequest>().Delete(request);
 
-      var isAdded = await _unitOfWork.Complete();
-      if (isAdded <= 0)
-      {
-        return BadRequest("Error adding admin.");
-      }
+      // var isAdded = await _unitOfWork.Complete();
+      // if (isAdded <= 0)
+      // {
+      //   return BadRequest("Error adding admin.");
+      // }
 
-      var compSpec = new CompetitionAsAdminSpec(compId);
-      var competition = await _unitOfWork.Repository<CompetitionGoal>().GetEntityWithSpec(compSpec);
+      // var compSpec = new CompetitionAsAdminSpec(competitionId);
+      // var competition = await _unitOfWork.Repository<Competition>().GetEntityWithSpec(compSpec);
 
-      return Ok(CompetitionMapper.MapCompetition(true, competition, userId));
+      // return Ok(CompetitionMapper.MapCompetition(true, competition, userId));
     }
 
     [Authorize(Policy = "IsCompetitionAdmin")]
-    [HttpDelete("{compId}")]
-    public async Task<ActionResult<CompetitionReturnDTO>> RemoveAdminFromCompetition(Guid compId)
+    [HttpDelete("{competitionId}")]
+    public Task<ActionResult<CompetitionResponse>> RemoveAdminFromCompetition(Guid competitionId)
     {
-      var userId = GetUserIdFromClaims();
+      throw new NotImplementedException();
 
-      //get admins
-      var adminsSpec = new CompetitionAdminsSpec(compId);
-      var admins = await _unitOfWork.Repository<CompetitionAdmin>().ListAsync(adminsSpec);
+      //   var userId = GetUserIdFromClaims();
 
-      //if user is only admin, either:
-      //  promote user who has been asked to be admin OR
-      //  inform user they must pass the responsibilites to someone else
-      if (admins.Count == 1)
-      {
-        var spec = new AdminRequestsSpec(compId);
-        var adminRequests = await _unitOfWork.Repository<CompetitionAdminRequest>().ListAsync(spec);
+      //   //get admins
+      //   var adminsSpec = new CompetitionAdminsSpec(competitionId);
+      //   var admins = await _unitOfWork.Repository<CompetitionAdmin>().ListAsync(adminsSpec);
 
-        if (adminRequests.Count == 0)
-        {
-          return Unauthorized(new ApiError(403, "You are the only admin in this competition. Ask someone else to be an admin before relinquishing your responsibilitites."));
-        }
+      //   //if user is only admin, either:
+      //   //  promote user who has been asked to be admin OR
+      //   //  inform user they must pass the responsibilites to someone else
+      //   if (admins.Count == 1)
+      //   {
+      //     var spec = new AdminRequestsSpec(competitionId);
+      //     var adminRequests = await _unitOfWork.Repository<CompetitionAdminRequest>().ListAsync(spec);
 
-        var newAdmin = new CompetitionAdmin(compId, adminRequests[0].ParticipantId);
-        _unitOfWork.Repository<CompetitionAdmin>().Add(newAdmin);
-        _unitOfWork.Repository<CompetitionAdminRequest>().Delete(adminRequests[0]);
-      }
+      //     if (adminRequests.Count == 0)
+      //     {
+      //       return Unauthorized(new ApiError(403, "You are the only admin in this competition. Ask someone else to be an admin before relinquishing your responsibilitites."));
+      //     }
 
-      var admin = admins.First(x => x.UserId == userId);
+      //     var newAdmin = new CompetitionAdmin(adminRequests[0].ParticipantId, competitionId);
+      //     _unitOfWork.Repository<CompetitionAdmin>().Add(newAdmin);
+      //     _unitOfWork.Repository<CompetitionAdminRequest>().Delete(adminRequests[0]);
+      //   }
 
-      _unitOfWork.Repository<CompetitionAdmin>().Delete(admin);
+      //   var admin = admins.First(x => x.UserId == userId);
 
-      var isDeleted = await _unitOfWork.Complete();
+      //   _unitOfWork.Repository<CompetitionAdmin>().Delete(admin);
 
-      if (isDeleted <= 0)
-      {
-        return BadRequest(new ApiError(400, "Error removing participant."));
-      }
+      //   var isDeleted = await _unitOfWork.Complete();
 
-      var compSpec = new CompetitionAsAdminSpec(compId);
-      var competition = await _unitOfWork.Repository<CompetitionGoal>().GetEntityWithSpec(compSpec);
+      //   if (isDeleted <= 0)
+      //   {
+      //     return BadRequest(new ApiError(400, "Error removing participant."));
+      //   }
 
-      return Ok(CompetitionMapper.MapCompetition(false, competition, userId));
+      //   var compSpec = new CompetitionAsAdminSpec(competitionId);
+      //   var competition = await _unitOfWork.Repository<Competition>().GetEntityWithSpec(compSpec);
+
+      //   return Ok(CompetitionMapper.MapCompetition(false, competition, userId));
     }
   }
 }

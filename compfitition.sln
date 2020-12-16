@@ -7,7 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{68B76C20-972B-4D27-9E31-261D655B32C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{DB92D882-3EA5-4E13-8099-255309B9B9A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{DB92D882-3EA5-4E13-8099-255309B9B9A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{7E9F5155-1DFA-4970-BDE9-46719EF9303D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,5 +60,17 @@ Global
 		{DB92D882-3EA5-4E13-8099-255309B9B9A0}.Release|x64.Build.0 = Release|Any CPU
 		{DB92D882-3EA5-4E13-8099-255309B9B9A0}.Release|x86.ActiveCfg = Release|Any CPU
 		{DB92D882-3EA5-4E13-8099-255309B9B9A0}.Release|x86.Build.0 = Release|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Debug|x64.Build.0 = Debug|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Debug|x86.Build.0 = Debug|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Release|x64.ActiveCfg = Release|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Release|x64.Build.0 = Release|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Release|x86.ActiveCfg = Release|Any CPU
+		{7E9F5155-1DFA-4970-BDE9-46719EF9303D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

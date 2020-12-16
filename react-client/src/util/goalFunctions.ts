@@ -1,5 +1,5 @@
 import { getGoalTime } from './dateFunctions';
-import { EGoalType, TGoal } from '../types';
+import { EGoalCategory, TGoal } from '../types';
 
 //returns cumulative score of goal to date
 export const getGoalScore = (
@@ -11,7 +11,7 @@ export const getGoalScore = (
     return 0;
   }
   let score = 0;
-  if (type === EGoalType.difference) {
+  if (type === EGoalCategory.difference) {
     record.forEach((day) => {
       if (day !== null) {
         //change from day one
@@ -41,9 +41,9 @@ export const getGoalRecord = (goal: TGoal): (number | null)[] => {
 
   //fills record with ledger or default values
   for (let i = 0; i <= time; i++) {
-    if (goal.type === EGoalType.passfail) {
+    if (goal.category === EGoalCategory.passfail) {
       record[i] = record[i] ? 1 : 0;
-    } else if (goal.type === EGoalType.cumulative) {
+    } else if (goal.category === EGoalCategory.cumulative) {
       record[i] = record[i] || 0;
     } else {
       record[i] = record[i] || null;

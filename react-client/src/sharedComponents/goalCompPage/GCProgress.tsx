@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import NumberInput from '../forms/NumberInput';
-import { EGoalType } from '../../types';
+import { EGoalCategory } from '../../types';
 import styled from 'styled-components';
 
 interface IProps {
   record: (number | null)[];
   time: number;
   units: string | undefined;
-  type: string;
+  category: string;
   setRecord: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
@@ -16,7 +16,7 @@ const GCProgress: React.FC<IProps> = ({
   record,
   time,
   units,
-  type,
+  category,
   setRecord,
 }) => {
   //note that with ==, null = undefined
@@ -35,7 +35,7 @@ const GCProgress: React.FC<IProps> = ({
       record.map((value, index) => {
         if (index === time) {
           if (input === '') {
-            return type === EGoalType.difference ? null : 0;
+            return category === EGoalCategory.difference ? null : 0;
           } else {
             return +input;
           }
@@ -70,7 +70,7 @@ const GCProgress: React.FC<IProps> = ({
         handleValue={handleToday}
         units={units}
       />
-      {time > 0 && type === EGoalType.cumulative && (
+      {time > 0 && category === EGoalCategory.cumulative && (
         <NumberInput
           message='Yesterday: '
           value={yesterday}

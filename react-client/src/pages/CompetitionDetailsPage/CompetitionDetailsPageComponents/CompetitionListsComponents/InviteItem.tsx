@@ -1,17 +1,40 @@
 import React from 'react';
 import { TDifferentUser } from '../../../../types';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { AddInvite, DeleteInvite } from '../../../../redux/competition/actions';
+import LoadingButton from '../../../../sharedComponents/forms/LoadingButton';
+import {
+  InviteButtonDelete,
+  InviteButtonSend,
+} from '../../../../sharedComponents/styledComponents/Button';
+import {
+  ADMIN_ADD_INVITE_BUTTON,
+  ADMIN_DELETE_INVITE_BUTTON,
+} from '../../../../redux/buttonTypes';
 
 interface IProps {
   user: TDifferentUser;
-  isLast: boolean;
+  competitionId: string;
   isInvitePending: boolean;
+  buttonIds: string[];
 }
 
-const InviteItem: React.FC<IProps> = ({ user, isLast, isInvitePending }) => {
-  const handleSendInvite = () => {};
+const InviteItem: React.FC<IProps> = ({
+  user,
+  competitionId,
+  isInvitePending,
+  buttonIds,
+}) => {
+  const dispatch = useDispatch();
 
-  const handleDeleteInvite = () => {};
+  const handleSendInvite = () => {
+    dispatch(AddInvite(user.userId, competitionId));
+  };
+
+  const handleDeleteInvite = () => {
+    dispatch(DeleteInvite(user.userId, competitionId));
+  };
 
   let name = user.name;
 
@@ -19,13 +42,25 @@ const InviteItem: React.FC<IProps> = ({ user, isLast, isInvitePending }) => {
     <React.Fragment>
       <span>{name}</span>
       {isInvitePending ? (
-        <InviteButton onClick={handleDeleteInvite} isDanger={true}>
-          <i className='fas fa-times' />
-        </InviteButton>
+        <LoadingButton
+          styles={InviteButtonDelete}
+          handleClick={handleDeleteInvite}
+          isLoading={
+            buttonIds.indexOf(ADMIN_DELETE_INVITE_BUTTON + user.userId) !== -1
+          }
+          message='Delete'
+          isFlex={false}
+        />
       ) : (
-        <InviteButton onClick={handleSendInvite} isDanger={false}>
-          <i className='fas fa-plus' />
-        </InviteButton>
+        <LoadingButton
+          styles={InviteButtonSend}
+          handleClick={handleSendInvite}
+          isLoading={
+            buttonIds.indexOf(ADMIN_ADD_INVITE_BUTTON + user.userId) !== -1
+          }
+          message='Send'
+          isFlex={false}
+        />
       )}
     </React.Fragment>
   );
@@ -45,12 +80,4 @@ const InviteItemContainer = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-`;
-
-const InviteButton = styled.button<{ isDanger: boolean }>`
-  background: var(--secondary-color);
-  color: ${(props) =>
-    props.isDanger ? 'var(--danger-color);' : 'var(--primary-color);'}
-  width: 2rem;
-  border: none;
 `;

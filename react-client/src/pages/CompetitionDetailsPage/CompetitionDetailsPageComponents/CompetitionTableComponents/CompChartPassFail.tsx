@@ -23,14 +23,20 @@ const CompChartPassFail: React.FC<IProps> = ({
   setRecord,
   time,
 }) => {
-  const userId = useSelector((state: RootStore) => state.userState.user!.id);
+  const userId = useSelector(
+    (state: RootStore) => state.userState.user!.userId
+  );
 
   //week items
   let weekItems: JSX.Element[] = [];
   for (let i = 0; i < competition.duration / 7; i++) {
     weekItems.push(
-      <CompPFTableWeek days={competition.frequency!} isFirst={i === 0} key={i}>
-        {competition.frequency! > 2 ? `Week ${i + 1}` : `W${i + 1}`}
+      <CompPFTableWeek
+        days={competition.daysPerWeek!}
+        isFirst={i === 0}
+        key={i}
+      >
+        {competition.daysPerWeek! > 2 ? `Week ${i + 1}` : `W${i + 1}`}
       </CompPFTableWeek>
     );
   }
@@ -43,7 +49,7 @@ const CompChartPassFail: React.FC<IProps> = ({
     )
   );
 
-  let days = (competition.duration / 7) * competition.frequency!;
+  let days = (competition.duration / 7) * competition.daysPerWeek!;
 
   //record for each participant
   let participantButtons = competitionArray.map((participant, index) => {

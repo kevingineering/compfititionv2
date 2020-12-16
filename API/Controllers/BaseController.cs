@@ -1,24 +1,27 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
+using Core.Errors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
-  public class BaseController : ControllerBase
+  public class ParentController : ControllerBase
   {
-    //Note: if userId or token don't exist, request won't pass authentication
-    protected Guid GetUserIdFromClaims()
+    internal Guid UserId
     {
-      var userId = this.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-      return Guid.Parse(userId);
-    }
+      get
+      {
+        var userId = this.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+          throw new ApiError(401, "Token not valid.");
+        }
 
-    protected string GetEmailFromClaims()
-    {
-      return this.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+        return (Guid.Parse(userId));
+      }
     }
   }
 }

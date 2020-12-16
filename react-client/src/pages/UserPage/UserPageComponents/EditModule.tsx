@@ -13,7 +13,7 @@ import { IUserState } from '../../../redux/user/reducer';
 import Checkbox from '../../../sharedComponents/forms/Checkbox';
 import { UpdateUser } from '../../../redux/user/actions';
 import LoadingButton from '../../../sharedComponents/forms/LoadingButton';
-import { TUpdateDTO } from '../../../redux/DTOs';
+import { TUpdateRequest } from '../../../redux/Models';
 import { UPDATE_USER_BUTTON } from '../../../redux/buttonTypes';
 import {
   StandardContainer,
@@ -54,7 +54,7 @@ const EditModule: React.FC<IProps> = ({ userState, closeEdit }) => {
   });
 
   const handleSubmit = () => {
-    const updateDTO: TUpdateDTO = createFormObject();
+    const updateDTO: TUpdateRequest = createFormObject();
     dispatch(UpdateUser(updateDTO));
   };
 

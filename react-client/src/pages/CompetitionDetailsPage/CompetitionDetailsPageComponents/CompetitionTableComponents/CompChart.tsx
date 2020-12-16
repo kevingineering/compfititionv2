@@ -1,5 +1,5 @@
 import React from 'react';
-import { TCompetition, EGoalType } from '../../../../types';
+import { TCompetition, EGoalCategory } from '../../../../types';
 import {
   getCompDataPoints,
   TCompetitionParticipantInfo,
@@ -24,17 +24,17 @@ const CompChart: React.FC<IProps> = ({
   time,
 }) => {
   let jsx: any = '';
-  if (competition.type === EGoalType.cumulative) {
+  if (competition.category === EGoalCategory.cumulative) {
     let { dataPoints, chartYMax } = getCompDataPoints(
       competitionArray,
-      competition.type,
+      competition.category,
       competition.units!
     );
     jsx = <GCChartCumulative dataPoints={dataPoints} chartYMax={chartYMax} />;
-  } else if (competition.type === EGoalType.difference) {
+  } else if (competition.category === EGoalCategory.difference) {
     let { dataPoints, chartYMax, chartYMin } = getCompDataPoints(
       competitionArray,
-      competition.type,
+      competition.category,
       competition.units!
     );
     jsx = (

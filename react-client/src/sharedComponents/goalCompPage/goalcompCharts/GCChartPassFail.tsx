@@ -12,18 +12,18 @@ interface IProps {
   setRecord: React.Dispatch<React.SetStateAction<(number | null)[]>>;
   duration: number;
   startTime: Date;
-  target: number;
+  daysPerWeek: number;
   isFinished: boolean;
 }
 
-const GoalChartPassFail: React.FC<IProps> = ({
+const GCChartPassFail: React.FC<IProps> = ({
   isClickable,
   time,
   record,
   setRecord,
   duration,
   startTime,
-  target,
+  daysPerWeek,
   isFinished,
 }) => {
   const dispatch = useDispatch();
@@ -80,18 +80,19 @@ const GoalChartPassFail: React.FC<IProps> = ({
   //create buttons for table
   const buttons = (week: number) => {
     let list = [];
-    for (let i = 0; i < target; i++) {
-      let loc = week * target + i;
+    for (let i = 0; i < daysPerWeek; i++) {
+      let loc = week * daysPerWeek + i;
       if (duration <= loc) {
-        list.push(<TableButton isFilled={true} key={loc}></TableButton>);
+        list.push(<TableButton isFilled={true} key={loc} />);
       } else {
         list.push(
           <TableButton
-            isToday={time === loc && isClickable}
+            isToday={time === loc}
             isYesterday={time !== duration && time === loc + 1}
             onClick={isClickable ? handleClick : () => {}}
             key={loc}
             name={loc.toString()}
+            isClickable={isClickable}
           >
             {record[loc] === 1 ? (
               <PFButton className='fas fa-check' isSuccess={true} />
@@ -110,7 +111,7 @@ const GoalChartPassFail: React.FC<IProps> = ({
   return <li>{table()}</li>;
 };
 
-export default GoalChartPassFail;
+export default GCChartPassFail;
 
 //#region Styled Components
 const TableRow = styled.span`
@@ -139,6 +140,7 @@ const TableButton = styled.button<{
   isToday?: boolean;
   isYesterday?: boolean;
   isFilled?: boolean;
+  isClickable?: boolean;
 }>`
   display: inline-block;
   background-color: var(--secondary-color);
@@ -147,7 +149,11 @@ const TableButton = styled.button<{
   font-size: 1.1rem;
   border: none;
   border-left: 0.125rem solid var(--primary-color);
-  cursor: pointer;
+  cursor: default;
+  ${(props) =>
+    (props.isToday || props.isYesterday) &&
+    props.isClickable &&
+    'cursor: pointer;'}
   vertical-align: top;
   ${(props) =>
     props.isToday

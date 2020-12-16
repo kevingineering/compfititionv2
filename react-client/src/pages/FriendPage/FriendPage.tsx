@@ -4,22 +4,22 @@ import FriendAndNotificationContainer from '../../sharedComponents/userDashboard
 import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../redux/Store';
 import { useParams, useHistory } from 'react-router-dom';
-import { GetFriend } from '../../redux/friend/actions';
+import { GetOtherUserInfo } from '../../redux/friendship/actions';
 import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
 import DeleteFriendModule from './FriendPageComponents/DeleteFriendModule';
 import {
-  AddRequest,
-  DeleteRequest,
-  AcceptRequest,
-  GetRequestsAndSearchableUsers,
-  RejectRequest,
+  AddFriendRequest,
+  DeleteFriendRequest,
+  AcceptFriendRequest,
+  GetFriendRequestUserInfo,
+  RejectFriendRequest,
 } from '../../redux/friendRequest/actions';
 import {
   DELETE_FRIEND_BUTTON,
-  ADD_REQUEST_BUTTON,
-  REJECT_REQUEST_BUTTON,
-  ACCEPT_REQUEST_BUTTON,
-  DELETE_REQUEST_BUTTON,
+  ADD_FRIEND_REQUEST_BUTTON,
+  REJECT_FRIEND_REQUEST_BUTTON,
+  ACCEPT_FRIEND_REQUEST_BUTTON,
+  DELETE_FRIEND_REQUEST_BUTTON,
   NO_BUTTON,
   NOT_LOADING,
 } from '../../redux/buttonTypes';
@@ -53,8 +53,8 @@ const FriendPage = () => {
 
   //runs on page load
   useEffect(() => {
-    dispatch(GetRequestsAndSearchableUsers());
-    dispatch(GetFriend(friendId));
+    dispatch(GetFriendRequestUserInfo());
+    dispatch(GetOtherUserInfo(friendId));
     setIsLoaded(true);
   }, [dispatch, friendId]);
 
@@ -73,25 +73,31 @@ const FriendPage = () => {
   //runs when user accepts request
   useEffect(() => {
     if (friendState.friends.length !== 0 && isLoaded) {
-      dispatch(GetFriend(friendId));
+      dispatch(GetOtherUserInfo(friendId));
     }
     //eslint-disable-next-line
   }, [friendState.friends.length]);
 
   //runs on page load, when GetRequestsAndSearchableUsers dispatch is resolved, and when user clicks any request button
   useEffect(() => {
-    if (requestState.sentRequests.findIndex((x) => x.id === friendId) !== -1) {
+    if (
+      requestState.usersWhoReceivedFriendRequest.findIndex(
+        (user) => user.userId === friendId
+      ) !== -1
+    ) {
       setStatus(RequestStatus.SENT);
     } else if (
-      requestState.receivedRequests.findIndex((x) => x.id === friendId) !== -1
+      requestState.usersWhoSentFriendRequest.findIndex(
+        (user) => user.userId === friendId
+      ) !== -1
     ) {
       setStatus(RequestStatus.RECEIVED);
     } else {
       setStatus(RequestStatus.NONE);
     }
   }, [
-    requestState.sentRequests,
-    requestState.receivedRequests,
+    requestState.usersWhoReceivedFriendRequest,
+    requestState.usersWhoSentFriendRequest,
     friendId,
     dispatch,
     friendState.friends,
@@ -107,11 +113,12 @@ const FriendPage = () => {
           accept your request.
         </RequestStatusMessage>
         <LoadingButton
-          handleClick={() => dispatch(DeleteRequest(friendId))}
+          handleClick={() => dispatch(DeleteFriendRequest(friendId))}
           message={'Delete Request'}
           isLoading={
-            requestState.buttonIds.indexOf(DELETE_REQUEST_BUTTON + friendId) !==
-            -1
+            requestState.buttonIds.indexOf(
+              DELETE_FRIEND_REQUEST_BUTTON + friendId
+            ) !== -1
           }
         />
       </StandardContainer>
@@ -124,27 +131,31 @@ const FriendPage = () => {
           request! Accept it below to see their page.
         </RequestStatusMessage>
         <LoadingButton
-          handleClick={() => dispatch(AcceptRequest(friendId))}
+          handleClick={() => dispatch(AcceptFriendRequest(friendId))}
           message={'Accept Request'}
           isLoading={
-            requestState.buttonIds.indexOf(ACCEPT_REQUEST_BUTTON + friendId) !==
-            -1
+            requestState.buttonIds.indexOf(
+              ACCEPT_FRIEND_REQUEST_BUTTON + friendId
+            ) !== -1
           }
           isDisabled={
-            requestState.buttonIds.indexOf(REJECT_REQUEST_BUTTON + friendId) !==
-            -1
+            requestState.buttonIds.indexOf(
+              REJECT_FRIEND_REQUEST_BUTTON + friendId
+            ) !== -1
           }
         />
         <LoadingButton
-          handleClick={() => dispatch(RejectRequest(friendId))}
+          handleClick={() => dispatch(RejectFriendRequest(friendId))}
           message={'Reject Request'}
           isLoading={
-            requestState.buttonIds.indexOf(REJECT_REQUEST_BUTTON + friendId) !==
-            -1
+            requestState.buttonIds.indexOf(
+              REJECT_FRIEND_REQUEST_BUTTON + friendId
+            ) !== -1
           }
           isDisabled={
-            requestState.buttonIds.indexOf(ACCEPT_REQUEST_BUTTON + friendId) !==
-            -1
+            requestState.buttonIds.indexOf(
+              ACCEPT_FRIEND_REQUEST_BUTTON + friendId
+            ) !== -1
           }
         />
       </StandardContainer>
@@ -157,10 +168,12 @@ const FriendPage = () => {
           send a friend request!
         </RequestStatusMessage>
         <LoadingButton
-          handleClick={() => dispatch(AddRequest(friendId))}
+          handleClick={() => dispatch(AddFriendRequest(friendId))}
           message={'Send Request'}
           isLoading={
-            requestState.buttonIds.indexOf(ADD_REQUEST_BUTTON + friendId) !== -1
+            requestState.buttonIds.indexOf(
+              ADD_FRIEND_REQUEST_BUTTON + friendId
+            ) !== -1
           }
         />
       </StandardContainer>

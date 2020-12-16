@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Infrastructure.Data;
+using Data.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +15,7 @@ namespace API
     {
       var host = CreateHostBuilder(args).Build();
 
-      //seed database, using destroyed once finished
+      //seed database, using destroys it once finished - this is why we don't need IDisposable on context
       using (var scope = host.Services.CreateScope())
       {
         var services = scope.ServiceProvider;

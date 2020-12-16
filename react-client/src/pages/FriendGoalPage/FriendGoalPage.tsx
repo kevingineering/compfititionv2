@@ -4,10 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../redux/Store';
 import { getGoalTime, timeIsInPast } from '../../util/dateFunctions';
 import GoalInfo from '../../sharedComponents/goalCompPage/GoalInfo';
-import { SetFriendSelectedGoal } from '../../redux/friend/actions';
+import { SetFriendSelectedGoal } from '../../redux/friendship/actions';
 import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
 import { getGoalRecord } from '../../util/goalFunctions';
-import { EGoalType } from '../../types';
+import { EGoalCategory } from '../../types';
 import {
   StandardContainer,
   CollectionHeader,
@@ -68,7 +68,8 @@ const FriendGoalPage = () => {
       <ul>
         {/* TEST */}
         {(isStarted ||
-          friendState.friend.selectedGoal.type === EGoalType.passfail) && (
+          friendState.friend.selectedGoal.category ===
+            EGoalCategory.passfail) && (
           <GCChart
             goal={friendState.friend.selectedGoal}
             record={record}

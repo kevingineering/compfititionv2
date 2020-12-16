@@ -1,4 +1,4 @@
-using API.Errors;
+using Core.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,12 +6,11 @@ namespace API.Controllers
 {
   [AllowAnonymous]
   [Route("errors/{code}")]
-  [ApiExplorerSettings(IgnoreApi = true)] //tell Swagger to ignore
-  public class ErrorController : BaseController
+  public class ErrorController : ParentController
   {
     public IActionResult Error(int code)
     {
-      return new ObjectResult(new ApiError(code));
+      throw new ApiError(code);
     }
   }
 }

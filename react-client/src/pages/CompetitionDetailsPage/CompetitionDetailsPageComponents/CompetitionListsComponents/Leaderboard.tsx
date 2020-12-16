@@ -16,7 +16,7 @@ const Leaderboard: React.FC<IProps> = ({
 }) => {
   //don't sort competition array directly because passed by reference
   let newCompetitionArray = competitionArray.map((x) => {
-    return { name: x.name, score: x.score, id: x.userId };
+    return { name: x.name, score: x.score, userId: x.userId };
   });
 
   if (isHighestScoreWins) {
@@ -29,7 +29,7 @@ const Leaderboard: React.FC<IProps> = ({
     <LeaderboardItem
       name={item.name}
       score={item.score}
-      id={item.id}
+      userId={item.userId}
       key={index}
       place={index + 1}
       isStarted={isStarted}

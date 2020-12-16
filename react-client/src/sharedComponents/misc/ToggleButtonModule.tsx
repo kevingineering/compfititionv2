@@ -33,6 +33,7 @@ const ToggleButtonModule: React.FC<IProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  //close after button clicked and resovled
   useEffect(() => {
     if (isLoading === false) {
       setIsOpen(false);

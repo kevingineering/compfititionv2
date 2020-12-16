@@ -12,16 +12,16 @@ export const CompTablePFButtons = styled.button<{
   font-size: 1.1rem;
   border: none;
   border-left: 0.125rem solid var(--primary-color);
-  ${(props) => !props.isToday && !props.isYesterday && 'cursor: default;'}
+  cursor: default;
+  ${(props) => (props.isToday || props.isYesterday) && 'cursor: pointer;'}
   vertical-align: top;
   border-bottom: 0.125rem solid var(--primary-color);
   ${(props) => props.isFirst && 'border-left: none;'}
-  ${(props) =>
-    props.isToday &&
-    'cursor: pointer; background-color: var(--today-color);'}
-  ${(props) =>
-    props.isYesterday &&
-    'cursor: pointer; background-color: var(--yesterday-color) !important;'}
+  ${(props) => props.isToday && 'background-color: var(--today-color);'}
+  ${(
+    props
+  ) =>
+    props.isYesterday && 'background-color: var(--yesterday-color) !important;'}
 `;
 
 export const ListContainer = styled.div`

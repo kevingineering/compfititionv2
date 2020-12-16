@@ -1,6 +1,6 @@
 using System;
 
-namespace API.DTOs.HelperDTOs
+namespace Infrastructure.Models.HelperDTOs
 {
   public class CompetitionParticipantHelperDTO
   {

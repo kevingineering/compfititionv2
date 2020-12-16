@@ -1,11 +1,12 @@
 using System;
-using Core.Entities;
+using Core.Entity;
 
 namespace Core.Specifications.AdminRequests
 {
-  public class AdminRequestSpec : BaseSpecification<CompetitionAdminRequest>
+  public class AdminRequestSpec
   {
-    public AdminRequestSpec(Guid userId, Guid compId) : base(x => x.CompId == compId && x.ParticipantId == userId)
+    public AdminRequestSpec(Guid userId, Guid competitionId)
+    // : base(x => x.CompId == competitionId && x.ParticipantId == userId)
     {
 
     }

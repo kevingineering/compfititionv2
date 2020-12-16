@@ -2,8 +2,10 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Core.Entities;
+using Core.Entity;
+using Core.Errors;
 using Core.Interfaces;
+using Infrastructure.Signatures;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Infrastructure.SecurityPolicy
@@ -15,34 +17,42 @@ namespace Infrastructure.SecurityPolicy
 
   public class IsActiveUserRequirementHandler : AuthorizationHandler<IsActiveUserRequirement>
   {
-    private readonly IGenericService<User> _userService;
+    private readonly IUserService _userService;
 
-    public IsActiveUserRequirementHandler(IGenericService<User> userService)
+    public IsActiveUserRequirementHandler(IUserService userService)
     {
       _userService = userService;
     }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsActiveUserRequirement requirement)
     {
-      System.Console.WriteLine("CHECKING IF USER IS ACTIVE...");
-
-      var userId = context.User?.Claims?
-        .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-
-      if (userId != null)
+      try
       {
-        var userIdGuid = Guid.Parse(userId);
 
-        var user = _userService.GetByIdAsync(userIdGuid).Result;
+        System.Console.WriteLine("CHECKING IF USER IS ACTIVE...");
 
-        if (user != null)
+        var userId = context.User?.Claims?
+          .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId != null)
         {
-          context.Succeed(requirement);
-          System.Console.WriteLine("USER IS ACTIVE!");
-        }
-      }
+          var userIdGuid = Guid.Parse(userId);
 
-      return Task.CompletedTask;
+          var user = _userService.GetUser(userIdGuid).Result;
+
+          if (user != null)
+          {
+            context.Succeed(requirement);
+            System.Console.WriteLine("USER IS ACTIVE!");
+          }
+        }
+
+        return Task.CompletedTask;
+      }
+      catch (ApiError ex)
+      {
+        throw ex;
+      }
     }
   }
 }

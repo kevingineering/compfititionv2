@@ -32,7 +32,7 @@ export class FormInput {
 }
 
 //aggregate of form inputs
-interface IFormState {
+export interface IFormState {
   inputs: Map<string, FormInput>;
   isValid: boolean;
 }

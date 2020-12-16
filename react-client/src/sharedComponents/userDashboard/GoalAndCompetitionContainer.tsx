@@ -41,6 +41,7 @@ const GoalAndCompetitionContainer: React.FC<IProps> = ({ isOwner }) => {
 
   return (
     <div>
+      {/* Active Goals */}
       <CollapsibleListContainer
         title='Active Goals'
         hasLink={isOwner && true}
@@ -59,6 +60,7 @@ const GoalAndCompetitionContainer: React.FC<IProps> = ({ isOwner }) => {
           </EmptyCollection>
         )}
       </CollapsibleListContainer>
+      {/* Active Competitions */}
       <CollapsibleListContainer
         title='Active Competitions'
         hasLink={isOwner && true}
@@ -81,11 +83,13 @@ const GoalAndCompetitionContainer: React.FC<IProps> = ({ isOwner }) => {
           </EmptyCollection>
         )}
       </CollapsibleListContainer>
+      {/* Past Goals */}
       {!isLoading && pastGoals.length !== 0 && (
         <CollapsibleListContainer title='Past Goals' hasLink={false}>
           <GoalList goals={pastGoals} isOwner={isOwner} isComp={false} />
         </CollapsibleListContainer>
       )}
+      {/* PastCompetitions */}
       {!isLoading && pastCompetitions.length !== 0 && (
         <CollapsibleListContainer title='Past Competitions' hasLink={false}>
           <GoalList goals={pastCompetitions} isOwner={isOwner} isComp={true} />

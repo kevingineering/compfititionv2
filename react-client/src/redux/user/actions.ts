@@ -20,7 +20,7 @@ import axios from 'axios';
 import { SetAlert } from '../alert/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { Dispatch } from 'redux';
-import { TLoginDTO, TRegisterDTO } from '../DTOs';
+import { TLoginRequest, TRegisterRequest } from '../Models';
 import {
   LOGIN_OR_REGISTER_BUTTON,
   UPDATE_USER_BUTTON,
@@ -28,24 +28,10 @@ import {
   CHANGE_PASSWORD_BUTTON,
   NO_BUTTON,
 } from '../buttonTypes';
+import { TChangePasswordRequest } from '../Models';
 
 //TODO - ThunkDispatch doesn't make any sense to me - it fixes my TypeScript issues, but I don't really know how
-export const LoginUser = (user: TLoginDTO) => async (
-  dispatch: ThunkDispatch<{}, {}, UserDispatchTypes>
-) => {
-  try {
-    dispatch({ type: USER_LOADING, payload: LOGIN_OR_REGISTER_BUTTON });
-    const res = await axios.post('/api/user/login', user);
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: res.data,
-    });
-  } catch (error) {
-    dispatch({ type: LOGIN_FAIL });
-  }
-};
-
-export const RegisterUser = (user: TRegisterDTO) => async (
+export const RegisterUser = (user: TRegisterRequest) => async (
   dispatch: ThunkDispatch<{}, {}, UserDispatchTypes>
 ) => {
   try {
@@ -57,6 +43,21 @@ export const RegisterUser = (user: TRegisterDTO) => async (
     });
   } catch (error) {
     dispatch({ type: REGISTER_FAIL });
+  }
+};
+
+export const LoginUser = (user: TLoginRequest) => async (
+  dispatch: ThunkDispatch<{}, {}, UserDispatchTypes>
+) => {
+  try {
+    dispatch({ type: USER_LOADING, payload: LOGIN_OR_REGISTER_BUTTON });
+    const res = await axios.post('/api/user/login', user);
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch({ type: LOGIN_FAIL });
   }
 };
 
@@ -102,6 +103,24 @@ export const UpdateUser = (user: {
   }
 };
 
+export const ChangePassword = (request: TChangePasswordRequest) => async (
+  dispatch: ThunkDispatch<{}, {}, UserDispatchTypes>
+) => {
+  try {
+    dispatch({ type: USER_LOADING, payload: CHANGE_PASSWORD_BUTTON });
+    await axios.patch('/api/user/changePassword', request);
+    dispatch({
+      type: CHANGE_PASSWORD_SUCCESS,
+    });
+    dispatch(SetAlert('Password changed', true));
+    dispatch({ type: RESET_IS_MODIFIED });
+  } catch (error) {
+    dispatch({
+      type: CHANGE_PASSWORD_FAIL,
+    });
+  }
+};
+
 export const DeleteUser = (password: string) => async (
   dispatch: ThunkDispatch<{}, {}, UserDispatchTypes>
 ) => {
@@ -116,24 +135,5 @@ export const DeleteUser = (password: string) => async (
     dispatch({ type: RESET_IS_MODIFIED });
   } catch (error) {
     dispatch({ type: DELETE_USER_FAIL });
-  }
-};
-
-export const ChangeUserPassword = (passwords: {
-  oldPassword: string;
-  newPassword: string;
-}) => async (dispatch: ThunkDispatch<{}, {}, UserDispatchTypes>) => {
-  try {
-    dispatch({ type: USER_LOADING, payload: CHANGE_PASSWORD_BUTTON });
-    await axios.patch('/api/user/changePassword', passwords);
-    dispatch({
-      type: CHANGE_PASSWORD_SUCCESS,
-    });
-    dispatch(SetAlert('Password changed', true));
-    dispatch({ type: RESET_IS_MODIFIED });
-  } catch (error) {
-    dispatch({
-      type: CHANGE_PASSWORD_FAIL,
-    });
   }
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TParticipant } from '../../../../types';
 import ParticipantButtons from './ParticipantButtons';
 import styled from 'styled-components';
@@ -8,24 +8,31 @@ interface IProps {
   isAdmin: boolean;
   //for styling bottom border
   isLast: boolean;
-  // compId: string;
+  hasAdminRequest: boolean;
+  competitionId: string;
+  buttonIds: string[];
 }
-
-//TODO - buttons for kick / admin
 
 const ParticipantItem: React.FC<IProps> = ({
   participant,
   isAdmin,
-  isLast,
+  hasAdminRequest,
+  competitionId,
+  buttonIds,
 }) => {
   const [userToggle, setUserToggle] = useState(false);
   let name = participant.name;
-  //TODO
-  let isAdminPending = false;
+
+  //closes toggle after request is sent
+  useEffect(() => {
+    if (isAdmin || hasAdminRequest) {
+      setUserToggle(false);
+    }
+  }, [isAdmin, hasAdminRequest]);
 
   let row = isAdmin ? (
     <p>{name + ' (admin)'}</p>
-  ) : isAdminPending ? (
+  ) : hasAdminRequest ? (
     <p>{name + ' (admin pending)'} </p>
   ) : (
     <React.Fragment>
@@ -43,13 +50,13 @@ const ParticipantItem: React.FC<IProps> = ({
   return (
     <React.Fragment>
       <ParticipantItemContainer>{row}</ParticipantItemContainer>
-      {userToggle ? (
+      {userToggle && (
         <ParticipantButtons
-          // letter={letter}
-          setUserToggle={setUserToggle}
+          // setUserToggle={setUserToggle}
+          userId={participant.userId}
+          competitionId={competitionId}
+          buttonIds={buttonIds}
         />
-      ) : (
-        isLast && <hr />
       )}
     </React.Fragment>
   );

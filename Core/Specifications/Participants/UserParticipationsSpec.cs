@@ -1,13 +1,14 @@
 using System;
-using Core.Entities;
+using Core.Entity;
 
 namespace Core.Specifications.Participants
 {
-  public class UserParticipationsSpec : BaseSpecification<CompetitionParticipant>
+  public class UserParticipationsSpec
   {
-    public UserParticipationsSpec(Guid userId) : base(x => x.UserId == userId)
+    public UserParticipationsSpec(Guid userId)
+    //: base(x => x.UserId == userId)
     {
-      AddInclude(x => x.CompGoal);
+      // AddInclude(x => x.CompGoal);
     }
   }
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootStore } from '../../redux/Store';
 import { useHistory } from 'react-router-dom';
-import { TGoalDTO } from '../../redux/DTOs';
+import { TGoalRequest } from '../../redux/Models';
 import { UpdateGoal } from '../../redux/goal/actions';
 import GCInputs from '../../sharedComponents/goalCompPage/GCInputs';
 import { SetAlert } from '../../redux/alert/actions';
@@ -16,8 +16,8 @@ const UpdateGoalPage = () => {
   let history = useHistory();
   const [isModified, setisModified] = useState(false);
 
-  const dispatchAction = (goal: TGoalDTO) => {
-    dispatch(UpdateGoal(goal, goalState.selectedGoal!.id));
+  const dispatchAction = (goal: TGoalRequest) => {
+    dispatch(UpdateGoal(goal, goalState.selectedGoal!.goalId));
   };
 
   //redirect if selected goal is empty - should only occur on reload
@@ -48,7 +48,7 @@ const UpdateGoalPage = () => {
     if (!isModified) {
       setisModified(true);
     } else {
-      history.push('/goal/' + goalState.selectedGoal!.id);
+      history.push('/goal/' + goalState.selectedGoal!.goalId);
     }
     //eslint-disable-next-line
   }, [goalState.selectedGoal, history]);

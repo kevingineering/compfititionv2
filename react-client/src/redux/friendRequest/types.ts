@@ -1,68 +1,65 @@
-import { IAddFriend } from '../friend/types';
-import { RequestButtonTypes } from '../buttonTypes';
-import { TDifferentUser } from '../../types';
+import { IAddFriend } from '../friendship/types';
+import { FriendRequestButtonTypes } from '../buttonTypes';
+import {
+  TUsersWhoSentFriendRequestResponse,
+  TFriendRequestUserInfoResponse,
+} from '../Models';
 
-export const REQUEST_LOADING = 'REQUEST_LOADING';
-export const GET_REQUESTS_AND_SEARCHABLE_USERS =
-  'GET_REQUESTS_AND_SEARCHABLE_USERS';
-export const GET_RECEIVED_REQUESTS = 'GET_RECEIVED_REQUESTS';
-export const ADD_REQUEST = 'ADD_REQUEST';
-export const ACCEPT_REQUEST = 'ACCEPT_REQUEST';
-export const REJECT_REQUEST = 'REJECT_REQUEST';
-export const DELETE_REQUEST = 'DELETE_REQUEST';
-export const REQUEST_ERROR = 'REQUEST_ERROR';
+export const FRIEND_REQUEST_LOADING = 'FRIEND_REQUEST_LOADING';
+export const GET_FRIEND_REQUEST_USER_INFO = 'GET_FRIEND_REQUEST_USER_INFO';
+export const GET_USERS_WHO_SENT_FRIEND_REQUESTS =
+  'GET_USERS_WHO_SENT_FRIEND_REQUESTS';
+export const ADD_FRIEND_REQUEST = 'ADD_FRIEND_REQUEST';
+export const ACCEPT_FRIEND_REQUEST = 'ACCEPT_FRIEND_REQUEST';
+export const REJECT_FRIEND_REQUEST = 'REJECT_FRIEND_REQUEST';
+export const DELETE_FRIEND_REQUEST = 'DELETE_FRIEND_REQUEST';
+export const FRIEND_REQUEST_ERROR = 'FRIEND_REQUEST_ERROR';
 // export const CLEAR_REQUESTS = 'CLEAR_REQUESTS';
 // //export const CLEAR_REQUESTS_ERROR = 'CLEAR_REQUESTS_ERROR'
 export const FILTER_SEARCHABLE_USERS = 'FILTER_SEARCHABLE_USERS';
 export const CLEAR_FILTERED_SEARCHABLE_USERS =
   'CLEAR_FILTERED_SEARCHABLE_USERS';
 
-export interface IRequestLoading {
-  type: typeof REQUEST_LOADING;
+export interface IFriendRequestLoading {
+  type: typeof FRIEND_REQUEST_LOADING;
   payload: {
-    type: RequestButtonTypes;
-    id?: string;
+    type: FriendRequestButtonTypes;
+    userId?: string;
   };
 }
 
-export interface IGetRequestsAndSearchableUsers {
-  type: typeof GET_REQUESTS_AND_SEARCHABLE_USERS;
-  payload: {
-    sentRequestUsers: TDifferentUser[];
-    receivedRequestUsers: TDifferentUser[];
-    searchableUsers: TDifferentUser[];
-  };
+export interface IGetFriendRequestUserInfo {
+  type: typeof GET_FRIEND_REQUEST_USER_INFO;
+  payload: TFriendRequestUserInfoResponse;
 }
 
-export interface IGetReceivedRequests {
-  type: typeof GET_RECEIVED_REQUESTS;
-  payload: {
-    sentRequestUsers: TDifferentUser[];
-  };
+export interface IGetUsersWhoSentFriendRequests {
+  type: typeof GET_USERS_WHO_SENT_FRIEND_REQUESTS;
+  payload: TUsersWhoSentFriendRequestResponse;
 }
 
-export interface IAddRequest {
-  type: typeof ADD_REQUEST;
-  payload: TDifferentUser;
-}
-
-export interface IDeleteRequest {
-  type: typeof DELETE_REQUEST;
+export interface IAddFriendRequest {
+  type: typeof ADD_FRIEND_REQUEST;
   payload: string;
 }
 
-export interface IRequestError {
-  type: typeof REQUEST_ERROR;
+export interface IDeleteFriendRequest {
+  type: typeof DELETE_FRIEND_REQUEST;
+  payload: string;
+}
+
+export interface IFriendRequestError {
+  type: typeof FRIEND_REQUEST_ERROR;
   payload?: string;
 }
 
-export interface IAcceptRequest {
-  type: typeof ACCEPT_REQUEST;
+export interface IAcceptFriendRequest {
+  type: typeof ACCEPT_FRIEND_REQUEST;
   payload: string;
 }
 
-export interface IRejectRequest {
-  type: typeof REJECT_REQUEST;
+export interface IRejectFriendRequest {
+  type: typeof REJECT_FRIEND_REQUEST;
   payload: string;
 }
 
@@ -76,14 +73,14 @@ export interface IClearFilteredSearchableUsers {
 }
 
 export type RequestDispatchTypes =
-  | IRequestLoading
-  | IGetRequestsAndSearchableUsers
-  | IGetReceivedRequests
-  | IAddRequest
-  | IDeleteRequest
-  | IAcceptRequest
+  | IFriendRequestLoading
+  | IGetFriendRequestUserInfo
+  | IGetUsersWhoSentFriendRequests
+  | IAddFriendRequest
+  | IDeleteFriendRequest
+  | IAcceptFriendRequest
   | IAddFriend
-  | IRejectRequest
-  | IRequestError
+  | IRejectFriendRequest
+  | IFriendRequestError
   | IFilterSearchableUsers
   | IClearFilteredSearchableUsers;

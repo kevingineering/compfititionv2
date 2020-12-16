@@ -1,29 +1,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import Input from '../../sharedComponents/forms/Input';
-import {
-  VALIDATOR_EMAIL,
-  VALIDATOR_PASSWORD,
-  VALIDATOR_REQUIRE,
-  VALIDATOR_MINLENGTH,
-  VALIDATOR_MAXLENGTH,
-  VALIDATOR_MATCH,
-} from '../../util/validators';
 import { useForm, FormInput, EFormInputType } from '../../util/formHook';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { RootStore } from '../../redux/Store';
 import { RegisterUser, LoginUser } from '../../redux/user/actions';
-import Checkbox from '../../sharedComponents/forms/Checkbox';
-import LoadingButton from '../../sharedComponents/forms/LoadingButton';
-import { TLoginDTO, TRegisterDTO } from '../../redux/DTOs';
+import { TLoginRequest, TRegisterRequest } from '../../redux/Models';
 import { ClearAlert } from '../../redux/alert/actions';
 import { LOGIN_OR_REGISTER_BUTTON } from '../../redux/buttonTypes';
-import {
-  StandardForm,
-  PageTitle,
-} from '../../sharedComponents/styledComponents/Misc';
-import { StandardContainer } from '../../sharedComponents/styledComponents/Misc';
-import styled from 'styled-components';
+import AuthPageJSX from './AuthPageJSX';
 
 //both login and register page
 const AuthPage = () => {
@@ -79,10 +63,10 @@ const AuthPage = () => {
     event.preventDefault();
     dispatch(ClearAlert());
     if (isLogin) {
-      const object: TLoginDTO = createFormObject();
+      const object: TLoginRequest = createFormObject();
       dispatch(LoginUser(object));
     } else if (isPasswordMatch) {
-      const object: TRegisterDTO = createFormObject();
+      const object: TRegisterRequest = createFormObject();
       dispatch(RegisterUser(object));
     }
   };
@@ -96,92 +80,16 @@ const AuthPage = () => {
 
   //fields vary depending on login / register
   return (
-    <AuthContainer>
-      <PageTitle>Account {isLogin ? 'Login' : 'Register'}</PageTitle>
-      <StandardForm autoComplete='off'>
-        {!isLogin && (
-          <Input
-            label='Name'
-            type='text'
-            value={formState.inputs.get('name')!.value}
-            validators={[VALIDATOR_REQUIRE(), VALIDATOR_MAXLENGTH(50)]}
-            name='name'
-            handleInput={handleInput}
-            isValid={formState.inputs.get('name')!.isValid}
-          />
-        )}
-        <Input
-          label='Email Address'
-          type='email'
-          value={formState.inputs.get('email')!.value}
-          validators={[
-            VALIDATOR_REQUIRE(),
-            VALIDATOR_EMAIL(),
-            VALIDATOR_MAXLENGTH(50),
-          ]}
-          name='email'
-          handleInput={handleInput}
-          isValid={formState.inputs.get('email')!.isValid}
-        />
-        <Input
-          label='Password'
-          type='password'
-          value={formState.inputs.get('password')!.value}
-          validators={[
-            VALIDATOR_REQUIRE(),
-            VALIDATOR_MINLENGTH(8),
-            VALIDATOR_PASSWORD(),
-          ]}
-          name='password'
-          handleInput={handleInput}
-          isValid={formState.inputs.get('password')!.isValid}
-        />
-        {!isLogin && (
-          <React.Fragment>
-            <Input
-              label='Confirm Password'
-              type='password'
-              value={formState.inputs.get('confirmPassword')!.value}
-              validators={[
-                VALIDATOR_REQUIRE(),
-                VALIDATOR_MINLENGTH(8),
-                VALIDATOR_PASSWORD(),
-                VALIDATOR_MATCH(formState.inputs.get('password')!.value),
-              ]}
-              name='confirmPassword'
-              handleInput={handleInput}
-              isValid={formState.inputs.get('confirmPassword')!.isValid}
-              alias='Password confirmation'
-              isRevalidate={!isPasswordMatch}
-            />
-            <Checkbox
-              name='isSearchable'
-              label={'Privacy'}
-              message={
-                'Users are allowed to search for my name and email so they can add me as a friend.'
-              }
-              handleInput={handleInput}
-            />
-          </React.Fragment>
-        )}
-        <LoadingButton
-          isLoading={isLoading}
-          isDisabled={!formState.isValid || !isPasswordMatch}
-          message={isLogin ? 'Login' : 'Register'}
-          handleClick={handleSubmit}
-        />
-      </StandardForm>
-      <LoadingButton
-        message={isLogin ? 'Not a member? Register' : 'Already joined? Login'}
-        handleClick={handleLoginToggle}
-        isDisabled={isLoading}
-      />
-    </AuthContainer>
+    <AuthPageJSX
+      handleInput={handleInput}
+      handleSubmit={handleSubmit}
+      handleLoginToggle={handleLoginToggle}
+      formState={formState}
+      isLogin={isLogin}
+      isPasswordMatch={isPasswordMatch}
+      isLoading={isLoading}
+    />
   );
 };
 
 export default AuthPage;
-
-const AuthContainer = styled(StandardContainer)`
-  max-width: 25rem;
-`;

@@ -51,7 +51,7 @@ const CompetitionDetailsPage = () => {
     if (isLoaded && competitionState.selectedCompetition) {
       //determine if user is participant and/or admin
       let x = competitionState.selectedCompetition.participants.findIndex(
-        (x) => x.userId === userState.user!.id
+        (x) => x.userId === userState.user!.userId
       );
       if (x === -1) {
         //set without user
@@ -68,7 +68,7 @@ const CompetitionDetailsPage = () => {
         );
         if (
           competitionState.selectedCompetition.admins.findIndex(
-            (x) => x === userState.user!.id
+            (x) => x === userState.user!.userId
           ) !== -1
         ) {
           setIsAdmin(true);
@@ -85,16 +85,16 @@ const CompetitionDetailsPage = () => {
       console.log('redirect from comp details');
       history.push('/');
     }
-    //using id prevents record/array from rerunning on same page
+    //using competitionId prevents record/array from rerunning on same page
     //eslint-disable-next-line
-  }, [competitionState.selectedCompetition?.id]);
+  }, [competitionState.selectedCompetition?.competitionId]);
 
   //determine if user is participant
   useEffect(() => {
     if (isLoaded && competitionState.selectedCompetition) {
       //determine if user is participant
       let x = competitionState.selectedCompetition.participants.findIndex(
-        (x) => x.userId === userState.user!.id
+        (x) => x.userId === userState.user!.userId
       );
       if (x === -1) {
         //set without user
@@ -122,7 +122,7 @@ const CompetitionDetailsPage = () => {
         //determine if user is admin
         if (
           competitionState.selectedCompetition.admins.findIndex(
-            (x) => x === userState.user!.id
+            (x) => x === userState.user!.userId
           ) !== -1
         ) {
           setIsAdmin(true);
@@ -180,6 +180,7 @@ const CompetitionDetailsPage = () => {
         isFinished={isFinished}
       />
       <CompetitionLists
+        userId={userState.user!.userId!}
         isAdmin={isAdmin}
         isAdminView={isAdminView}
         setIsAdminView={setIsAdminView}
@@ -188,6 +189,7 @@ const CompetitionDetailsPage = () => {
         competitionArray={competitionArray}
         participantId={participant?.userId}
         loadingButton={competitionState.loadingButton}
+        buttonIds={competitionState.buttonIds}
       />
     </CompetitionDetailsPageContainer>
   );

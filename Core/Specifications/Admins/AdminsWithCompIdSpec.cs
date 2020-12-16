@@ -1,11 +1,12 @@
 using System;
-using Core.Entities;
+using Core.Entity;
 
 namespace Core.Specifications.Admins
 {
-  public class CompetitionAdminsSpec : BaseSpecification<CompetitionAdmin>
+  public class CompetitionAdminsSpec
   {
-    public CompetitionAdminsSpec(Guid compId) : base(x => x.CompId == compId)
+    public CompetitionAdminsSpec(Guid competitionId)
+    //: base(x => x.CompId == competitionId)
     {
 
     }

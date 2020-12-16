@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CompChart from './CompetitionTableComponents/CompChart';
 import CompInfo from './CompetitionTableComponents/CompInfo';
 import CompButtons from './CompetitionTableComponents/CompButtons';
-import { TCompetition, EGoalType, TParticipant } from '../../../types';
+import { TCompetition, EGoalCategory, TParticipant } from '../../../types';
 import { TCompetitionParticipantInfo } from '../../../util/competitionFunctions';
 import {
   CollectionHeader,
@@ -11,6 +11,7 @@ import {
 import GCProgress from '../../../sharedComponents/goalCompPage/GCProgress';
 import styled from 'styled-components';
 
+//TODO - IProps
 interface IProps {
   isAdminView: boolean;
   isStarted: boolean;
@@ -46,13 +47,13 @@ const CompetitionTable: React.FC<IProps> = ({
     //eslint-disable-next-line
   }, [participant?.userId]);
 
-  const { name, duration, units, type } = competition;
+  const { name, duration, units, category } = competition;
 
   return (
     <CompetitionTableContainer>
       <CollectionHeader>{name}</CollectionHeader>
       <ul>
-        {(isStarted || competition.type === EGoalType.passfail) && (
+        {(isStarted || competition.category === EGoalCategory.passfail) && (
           <CompChart
             competition={competition}
             competitionArray={competitionArray}
@@ -63,13 +64,13 @@ const CompetitionTable: React.FC<IProps> = ({
         )}
         {isStarted &&
           time !== duration &&
-          type !== EGoalType.passfail &&
+          category !== EGoalCategory.passfail &&
           userRecord.length !== 0 && (
             <GCProgress
               record={userRecord}
               time={time}
               units={units}
-              type={type}
+              category={category}
               setRecord={setUserRecord}
             />
           )}

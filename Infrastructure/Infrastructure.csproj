@@ -1,17 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="3.1.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.7.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
+    <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -1,17 +1,18 @@
 using System;
-using Core.Entities;
+using Core.Entity;
 
 namespace Core.Specifications.Competitions
 {
-  public class CompetitionAsAdminSpec : BaseSpecification<CompetitionGoal>
+  public class CompetitionAsAdminSpec
   {
-    public CompetitionAsAdminSpec(Guid compId) : base(x => x.Id == compId)
+    public CompetitionAsAdminSpec(Guid competitionId)
+    //: base(x => x.Id == competitionId)
     {
-      AddInclude(x => x.Admins);
-      AddInclude(x => x.Participants);
-      AddInclude(x => x.Invites);
-      AddInclude(x => x.ParticipantRequests);
-      AddInclude(x => x.AdminRequests);
+      // AddInclude(x => x.Admins);
+      // AddInclude(x => x.Participants);
+      // AddInclude(x => x.Invites);
+      // AddInclude(x => x.ParticipantRequests);
+      // AddInclude(x => x.AdminRequests);
     }
   }
 }

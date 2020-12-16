@@ -1,17 +1,17 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  AcceptRequest,
-  RejectRequest,
-  DeleteRequest,
-  AddRequest,
+  AcceptFriendRequest,
+  RejectFriendRequest,
+  DeleteFriendRequest,
+  AddFriendRequest,
 } from '../../redux/friendRequest/actions';
 import LoadingButton from '../forms/LoadingButton';
 import {
-  DELETE_REQUEST_BUTTON,
-  ACCEPT_REQUEST_BUTTON,
-  REJECT_REQUEST_BUTTON,
-  ADD_REQUEST_BUTTON,
+  DELETE_FRIEND_REQUEST_BUTTON,
+  ACCEPT_FRIEND_REQUEST_BUTTON,
+  REJECT_FRIEND_REQUEST_BUTTON,
+  ADD_FRIEND_REQUEST_BUTTON,
 } from '../../redux/buttonTypes';
 import { TDifferentUser } from '../../types';
 import { Link } from 'react-router-dom';
@@ -36,12 +36,12 @@ interface IProps {
 
 interface ILinkProps {
   children: JSX.Element;
-  id: string;
+  userId: string;
 }
 
 //conditional wrapper
-const UserLink: React.FC<ILinkProps> = ({ children, id }) => {
-  return <Link to={'/friend/' + id}>{children}</Link>;
+const UserLink: React.FC<ILinkProps> = ({ children, userId }) => {
+  return <Link to={'/friend/' + userId}>{children}</Link>;
 };
 
 const OtherUserItem: React.FC<IProps> = ({
@@ -53,24 +53,24 @@ const OtherUserItem: React.FC<IProps> = ({
   isSent = false,
   buttonIds = [],
 }) => {
-  const { id, name, email } = user;
+  const { userId, name, email } = user;
 
   const dispatch = useDispatch();
 
   const handleAccept = () => {
-    dispatch(AcceptRequest(id));
+    dispatch(AcceptFriendRequest(userId));
   };
 
   const handleReject = () => {
-    dispatch(RejectRequest(id));
+    dispatch(RejectFriendRequest(userId));
   };
 
   const handleDelete = () => {
-    dispatch(DeleteRequest(id));
+    dispatch(DeleteFriendRequest(userId));
   };
 
   const handleAdd = () => {
-    dispatch(AddRequest(user.id));
+    dispatch(AddFriendRequest(userId));
   };
 
   //TODO - use real image
@@ -85,7 +85,7 @@ const OtherUserItem: React.FC<IProps> = ({
     );
 
   const image = isLink ? (
-    UserLink({ children: imageContents, id })
+    UserLink({ children: imageContents, userId })
   ) : (
     <div>{imageContents}</div>
   );
@@ -93,7 +93,7 @@ const OtherUserItem: React.FC<IProps> = ({
   const nameContents = <UserName>{name}</UserName>;
 
   const username = isLink
-    ? UserLink({ children: nameContents, id })
+    ? UserLink({ children: nameContents, userId })
     : nameContents;
 
   return (
@@ -116,7 +116,8 @@ const OtherUserItem: React.FC<IProps> = ({
                 handleClick={handleAdd}
                 message='Add'
                 isLoading={
-                  buttonIds.indexOf(ADD_REQUEST_BUTTON + user.id) !== -1
+                  buttonIds.indexOf(ADD_FRIEND_REQUEST_BUTTON + user.userId) !==
+                  -1
                 }
               />
             ) : isSent ? (
@@ -124,7 +125,10 @@ const OtherUserItem: React.FC<IProps> = ({
                 styles={ButtonUser}
                 handleClick={handleDelete}
                 message='Delete'
-                isLoading={buttonIds.indexOf(DELETE_REQUEST_BUTTON + id) !== -1}
+                isLoading={
+                  buttonIds.indexOf(DELETE_FRIEND_REQUEST_BUTTON + userId) !==
+                  -1
+                }
               />
             ) : (
               <React.Fragment>
@@ -133,10 +137,12 @@ const OtherUserItem: React.FC<IProps> = ({
                   handleClick={handleAccept}
                   message='Accept'
                   isLoading={
-                    buttonIds.indexOf(ACCEPT_REQUEST_BUTTON + id) !== -1
+                    buttonIds.indexOf(ACCEPT_FRIEND_REQUEST_BUTTON + userId) !==
+                    -1
                   }
                   isDisabled={
-                    buttonIds.indexOf(REJECT_REQUEST_BUTTON + id) !== -1
+                    buttonIds.indexOf(REJECT_FRIEND_REQUEST_BUTTON + userId) !==
+                    -1
                   }
                 />
                 <LoadingButton
@@ -144,10 +150,12 @@ const OtherUserItem: React.FC<IProps> = ({
                   handleClick={handleReject}
                   message='Reject'
                   isLoading={
-                    buttonIds.indexOf(REJECT_REQUEST_BUTTON + id) !== -1
+                    buttonIds.indexOf(REJECT_FRIEND_REQUEST_BUTTON + userId) !==
+                    -1
                   }
                   isDisabled={
-                    buttonIds.indexOf(ACCEPT_REQUEST_BUTTON + id) !== -1
+                    buttonIds.indexOf(ACCEPT_FRIEND_REQUEST_BUTTON + userId) !==
+                    -1
                   }
                 />
               </React.Fragment>

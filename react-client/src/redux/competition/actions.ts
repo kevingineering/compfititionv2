@@ -44,21 +44,25 @@ import {
   UPDATE_PARTICIPANT_TARGET_BUTTON,
   UPDATE_PARTICIPANT_INITIAL_VALUE_BUTTON,
   ACCEPT_INVITE_BUTTON,
-  ACCEPT_PARTICIPANT_REQUEST_BUTTON,
+  ADMIN_ACCEPT_PARTICIPANT_REQUEST_BUTTON,
   REMOVE_SELF_FROM_COMPETITION_BUTTON,
   ADMIN_KICK_USER_FROM_COMPETITION_BUTTON,
   ADD_PARTICIPANT_REQUEST_BUTTON,
-  REJECT_PARTICIPANT_REQUEST_BUTTON,
+  ADMIN_REJECT_PARTICIPANT_REQUEST_BUTTON,
   ADMIN_ADD_INVITE_BUTTON,
   DELETE_PARTICIPANT_REQUEST_BUTTON,
-  DELETE_INVITE_BUTTON,
+  ADMIN_DELETE_INVITE_BUTTON,
   REJECT_INVITE_BUTTON,
   ACCEPT_ADMIN_REQUEST_BUTTON,
   RELINQUISH_ADMIN_BUTTON,
   ADMIN_ADD_ADMIN_REQUEST_BUTTON,
   REJECT_ADMIN_REQUEST_BUTTON,
 } from '../buttonTypes';
-import { TCompDTO, TLedgerDTO, TUpdateParticipantDTO } from '../DTOs';
+import {
+  TCompetitionRequest,
+  TLedgerRequest,
+  TUpdateParticipantDTO,
+} from '../Models';
 import { SetAlert } from '../alert/actions';
 
 //#region general competition
@@ -74,19 +78,19 @@ export const GetCompetitionGoals = () => async (
   }
 };
 
-export const GetCompetition = (id: string) => async (
+export const GetCompetition = (competitionId: string) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
     dispatch({ type: COMPETITION_LOADING, payload: { type: NO_BUTTON } });
-    const res = await axios.get('/api/competition/' + id);
+    const res = await axios.get('/api/competition/' + competitionId);
     dispatch({ type: GET_COMPETITION, payload: res.data });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
   }
 };
 
-export const AddCompetition = (competition: TCompDTO) => async (
+export const AddCompetition = (competition: TCompetitionRequest) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
@@ -102,7 +106,7 @@ export const AddCompetition = (competition: TCompDTO) => async (
   }
 };
 
-export const UpdateCompetition = (competition: TCompDTO) => async (
+export const UpdateCompetition = (competition: TCompetitionRequest) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
@@ -118,7 +122,7 @@ export const UpdateCompetition = (competition: TCompDTO) => async (
   }
 };
 
-export const DeleteCompetition = (compId: string) => async (
+export const DeleteCompetition = (competitionId: string) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
@@ -126,9 +130,9 @@ export const DeleteCompetition = (compId: string) => async (
       type: COMPETITION_LOADING,
       payload: { type: DELETE_COMPETITION_BUTTON },
     });
-    await axios.delete('/api/competition/' + compId);
+    await axios.delete('/api/competition/' + competitionId);
     dispatch(SetAlert('Competition deleted', true));
-    dispatch({ type: ADMIN_DELETE_COMPETITION, payload: compId });
+    dispatch({ type: ADMIN_DELETE_COMPETITION, payload: competitionId });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
   }
@@ -142,7 +146,7 @@ export const ClearCurrentCompetition = () => (
 //#endregion
 
 //#region participant
-export const AcceptInvite = (compId: string) => async (
+export const AcceptInvite = (competitionId: string) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
@@ -150,7 +154,7 @@ export const AcceptInvite = (compId: string) => async (
       type: COMPETITION_LOADING,
       payload: { type: ACCEPT_INVITE_BUTTON },
     });
-    const res = await axios.post('/api/participant/' + compId);
+    const res = await axios.post('/api/participant/' + competitionId);
     //TODO - return participation
     dispatch({ type: ACCEPT_INVITE, payload: res.data });
   } catch (error) {
@@ -159,22 +163,30 @@ export const AcceptInvite = (compId: string) => async (
 };
 
 export const AcceptParticipantRequest = (
-  compId: string,
+  competitionId: string,
   userId: string
 ) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
-      payload: { type: ACCEPT_PARTICIPANT_REQUEST_BUTTON, userId },
+      payload: {
+        type: ADMIN_ACCEPT_PARTICIPANT_REQUEST_BUTTON,
+        userId: userId,
+      },
     });
-    const res = await axios.post('/api/participant/' + userId + '/' + compId);
+    const res = await axios.post(
+      '/api/participant/' + userId + '/' + competitionId
+    );
     dispatch({ type: ADMIN_ACCEPT_PARTICIPANT_REQUEST, payload: res.data });
   } catch (error) {
-    dispatch({ type: COMPETITION_ERROR });
+    dispatch({
+      type: COMPETITION_ERROR,
+      payload: ADMIN_ACCEPT_PARTICIPANT_REQUEST_BUTTON + userId,
+    });
   }
 };
 
-export const UpdateParticipantLedger = (ledger: TLedgerDTO) => async (
+export const UpdateParticipantLedger = (ledger: TLedgerRequest) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
@@ -223,7 +235,7 @@ export const UpdateParticipantInitialValue = (
 };
 
 export const RemoveSelfFromCompetition = (
-  compId: string,
+  competitionId: string,
   userId: string
 ) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
@@ -231,7 +243,7 @@ export const RemoveSelfFromCompetition = (
       type: COMPETITION_LOADING,
       payload: { type: REMOVE_SELF_FROM_COMPETITION_BUTTON },
     });
-    await axios.delete('/api/participant/' + compId);
+    await axios.delete('/api/participant/' + competitionId);
     dispatch({
       type: REMOVE_SELF_FROM_COMPETITION,
       payload: userId,
@@ -243,108 +255,125 @@ export const RemoveSelfFromCompetition = (
 
 export const KickUserFromCompetition = (
   userId: string,
-  compId: string
+  competitionId: string
 ) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
-      payload: { type: ADMIN_KICK_USER_FROM_COMPETITION_BUTTON },
+      payload: {
+        type: ADMIN_KICK_USER_FROM_COMPETITION_BUTTON,
+        userId: userId,
+      },
     });
-    await axios.delete('/api/participant/' + userId + '/' + compId);
+    await axios.delete('/api/participant/' + userId + '/' + competitionId);
     dispatch({
       type: ADMIN_KICK_USER_FROM_COMPETITION,
       payload: userId,
     });
   } catch (error) {
-    dispatch({ type: COMPETITION_ERROR });
+    dispatch({
+      type: COMPETITION_ERROR,
+      payload: ADMIN_KICK_USER_FROM_COMPETITION_BUTTON + userId,
+    });
   }
 };
 
 //#endregion
 
 //#region participant request
-export const AddParticipantRequest = (compId: string) => async (
-  dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
-) => {
+export const AddParticipantRequest = (
+  userId: string,
+  competitionId: string
+) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
       payload: { type: ADD_PARTICIPANT_REQUEST_BUTTON },
     });
-    const res = await axios.post('/api/participantrequest/' + compId);
-    dispatch({ type: ADD_PARTICIPANT_REQUEST, payload: res.data });
+    await axios.post('/api/participantrequest/' + competitionId);
+    dispatch({ type: ADD_PARTICIPANT_REQUEST, payload: userId });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
   }
 };
 
-export const DeleteParticipantRequest = (compId: string) => async (
-  dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
-) => {
+export const DeleteParticipantRequest = (
+  userId: string,
+  competitionId: string
+) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
       payload: { type: DELETE_PARTICIPANT_REQUEST_BUTTON },
     });
-    const res = await axios.delete('/api/participantrequest/' + compId);
-    dispatch({ type: DELETE_PARTICIPANT_REQUEST, payload: res.data });
+    await axios.delete('/api/participantrequest/' + competitionId);
+    dispatch({ type: DELETE_PARTICIPANT_REQUEST, payload: userId });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
   }
 };
 
 export const RejectParticipantRequest = (
-  compId: string,
+  competitionId: string,
   userId: string
 ) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
-      payload: { type: REJECT_PARTICIPANT_REQUEST_BUTTON },
+      payload: {
+        type: ADMIN_REJECT_PARTICIPANT_REQUEST_BUTTON,
+        userId: userId,
+      },
     });
-    const res = await axios.delete(
-      '/api/participantrequest/' + compId + '/' + userId
+    await axios.delete(
+      '/api/participantrequest/' + competitionId + '/' + userId
     );
-    dispatch({ type: ADMIN_REJECT_PARTICIPANT_REQUEST, payload: res.data });
+    dispatch({ type: ADMIN_REJECT_PARTICIPANT_REQUEST, payload: userId });
   } catch (error) {
-    dispatch({ type: COMPETITION_ERROR });
+    dispatch({
+      type: COMPETITION_ERROR,
+      payload: ADMIN_REJECT_PARTICIPANT_REQUEST_BUTTON + userId,
+    });
   }
 };
 
 //#endregion
 
 //#region invite
-export const AddInvite = (compId: string, userId: string) => async (
+export const AddInvite = (userId: string, competitionId: string) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
-      payload: { type: ADMIN_ADD_INVITE_BUTTON, id: userId },
+      payload: { type: ADMIN_ADD_INVITE_BUTTON, userId: userId },
     });
-    await axios.post('/api/invite/' + userId + '/' + compId);
+    await axios.post('/api/invite/' + userId + '/' + competitionId);
     dispatch({ type: ADMIN_ADD_INVITE, payload: userId });
   } catch (error) {
-    dispatch({ type: COMPETITION_ERROR });
+    dispatch({
+      type: COMPETITION_ERROR,
+      payload: ADMIN_ADD_INVITE_BUTTON + userId,
+    });
   }
 };
 
-export const DeleteInvite = (compId: string, userId: string) => async (
+export const DeleteInvite = (userId: string, competitionId: string) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
-      payload: { type: DELETE_INVITE_BUTTON },
+      payload: { type: ADMIN_DELETE_INVITE_BUTTON, userId: userId },
     });
-    await axios.delete('/api/invite/' + userId + '/' + compId);
+    await axios.delete('/api/invite/' + userId + '/' + competitionId);
     dispatch({ type: ADMIN_DELETE_INVITE, payload: userId });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
   }
 };
 
-export const RejectInvite = (compId: string) => async (
+export const RejectInvite = (competitionId: string) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
@@ -352,8 +381,8 @@ export const RejectInvite = (compId: string) => async (
       type: COMPETITION_LOADING,
       payload: { type: REJECT_INVITE_BUTTON },
     });
-    await axios.delete('/api/invite/' + compId);
-    dispatch({ type: REJECT_INVITE, payload: compId });
+    await axios.delete('/api/invite/' + competitionId);
+    dispatch({ type: REJECT_INVITE, payload: competitionId });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
   }
@@ -363,22 +392,23 @@ export const RejectInvite = (compId: string) => async (
 
 //#region admin
 //TODO - return competition with admin info?
-export const AcceptAdminRequest = (compId: string, userId: string) => async (
-  dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
-) => {
+export const AcceptAdminRequest = (
+  userId: string,
+  competitionId: string
+) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
       payload: { type: ACCEPT_ADMIN_REQUEST_BUTTON },
     });
-    const res = await axios.post('/api/admin/' + compId);
+    const res = await axios.post('/api/admin/' + competitionId);
     dispatch({ type: ACCEPT_ADMIN_REQUEST, payload: res.data });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
   }
 };
 
-export const RelinquishAdmin = (compId: string) => async (
+export const RelinquishAdmin = (competitionId: string) => async (
   dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
 ) => {
   try {
@@ -386,7 +416,7 @@ export const RelinquishAdmin = (compId: string) => async (
       type: COMPETITION_LOADING,
       payload: { type: RELINQUISH_ADMIN_BUTTON },
     });
-    const res = await axios.delete('/api/admin/' + compId);
+    const res = await axios.delete('/api/admin/' + competitionId);
     dispatch({ type: RELINQUISH_ADMIN, payload: res.data });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });
@@ -396,30 +426,35 @@ export const RelinquishAdmin = (compId: string) => async (
 //#endregion
 
 //#region admin request
-export const AddAdminRequest = (compId: string, userId: string) => async (
-  dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
-) => {
+export const AddAdminRequest = (
+  userId: string,
+  competitionId: string
+) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
-      payload: { type: ADMIN_ADD_ADMIN_REQUEST_BUTTON, id: userId },
+      payload: { type: ADMIN_ADD_ADMIN_REQUEST_BUTTON, userId: userId },
     });
-    await axios.post('/api/invite/' + compId);
+    await axios.post('/api/adminrequest/' + userId + '/' + competitionId);
     dispatch({ type: ADMIN_ADD_ADMIN_REQUEST, payload: userId });
   } catch (error) {
-    dispatch({ type: COMPETITION_ERROR });
+    dispatch({
+      type: COMPETITION_ERROR,
+      payload: ADMIN_ADD_ADMIN_REQUEST_BUTTON + userId,
+    });
   }
 };
 
-export const RejectAdminRequest = (compId: string, userId: string) => async (
-  dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>
-) => {
+export const RejectAdminRequest = (
+  userId: string,
+  competitionId: string
+) => async (dispatch: ThunkDispatch<{}, {}, CompetitionDispatchTypes>) => {
   try {
     dispatch({
       type: COMPETITION_LOADING,
       payload: { type: REJECT_ADMIN_REQUEST_BUTTON },
     });
-    await axios.delete('/api/invite/' + compId);
+    await axios.delete('/api/adminrequest/' + competitionId);
     dispatch({ type: REJECT_ADMIN_REQUEST, payload: userId });
   } catch (error) {
     dispatch({ type: COMPETITION_ERROR });

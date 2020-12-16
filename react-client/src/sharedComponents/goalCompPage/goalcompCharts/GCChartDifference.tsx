@@ -18,7 +18,6 @@ const GoalChartDifference: React.FC<IProps> = ({
   chartYMin,
   isComp = false,
 }) => {
-  console.log(dataPoints);
   return (
     <Border>
       <Chart

@@ -1,5 +1,5 @@
 import { getGoalTime } from './dateFunctions';
-import { TCompetition, EGoalType } from '../types';
+import { TCompetition, EGoalCategory } from '../types';
 
 //competition information for a single participant
 export type TCompetitionParticipantInfo = {
@@ -28,9 +28,9 @@ export const getCompRecord = (
   }
 
   for (let i = 0; i <= time; i++) {
-    if (competition.type === EGoalType.passfail) {
+    if (competition.category === EGoalCategory.passfail) {
       record[i] = record[i] ? 1 : 0;
-    } else if (competition.type === EGoalType.cumulative) {
+    } else if (competition.category === EGoalCategory.cumulative) {
       record[i] = record[i] || 0;
     } else {
       record[i] = record[i] || null;
@@ -45,24 +45,24 @@ export const getCompRecord = (
 export const getCompetitionArray = (
   competition: TCompetition,
   userRecord?: (number | null)[],
-  id?: string
+  userId?: string
 ) => {
   let competitionArray: TCompetitionParticipantInfo[] = competition.participants.map(
     (participant) => {
       let record;
-      if (participant.userId === id && userRecord) {
+      if (participant.userId === userId && userRecord) {
         record = userRecord;
       } else {
         record = getCompRecord(competition, participant.ledger);
       }
 
       let { score, dataArray } = getCompScores(
-        competition.type,
+        competition.category,
         record,
         participant.initialValue
       );
       let item: TCompetitionParticipantInfo = {
-        name: participant.name ? participant.name : 'TODO',
+        name: participant.name,
         score: score,
         dataArray,
         initialValue: participant.initialValue || 0,
@@ -77,7 +77,7 @@ export const getCompetitionArray = (
 
 //returns score and an array showing inputs to date
 export const getCompScores = (
-  type: string,
+  category: string,
   record: (number | null)[],
   initialValue?: number | undefined
 ) => {
@@ -87,7 +87,7 @@ export const getCompScores = (
 
   let score = 0;
   let dataArray = new Array<number | null>(record.length);
-  if (type === EGoalType.difference) {
+  if (category === EGoalCategory.difference) {
     record.forEach((day) => {
       if (day !== null) {
         score = day - initialValue!;
@@ -97,7 +97,7 @@ export const getCompScores = (
     if (!record[record.length - 1]) {
       dataArray[record.length - 1] = score + initialValue!;
     }
-  } else if (type === EGoalType.passfail) {
+  } else if (category === EGoalCategory.passfail) {
     record.forEach((day) => {
       score += day!;
     });
@@ -115,7 +115,7 @@ export const getCompScores = (
 //TODO - optimize so only user data points update
 export const getCompDataPoints = (
   competitionArray: TCompetitionParticipantInfo[],
-  type: string,
+  category: string,
   units: string
 ) => {
   //format data array and configure tooltip
@@ -128,8 +128,10 @@ export const getCompDataPoints = (
     dataLength = competitionArray[0].dataArray.length;
   }
 
-  let tooltipMsg1 = type === EGoalType.cumulative ? 'Daily: ' : 'Change: ';
-  let tooltipMsg2 = type === EGoalType.cumulative ? 'Total: ' : 'Current: ';
+  let tooltipMsg1 =
+    category === EGoalCategory.cumulative ? 'Daily: ' : 'Change: ';
+  let tooltipMsg2 =
+    category === EGoalCategory.cumulative ? 'Total: ' : 'Current: ';
   //configure initial values (dataPoints [0] and[1])
   for (let i = 0; i < competitionArray.length; i++) {
     dataPointsZero.push(competitionArray[i].name, {
@@ -139,7 +141,9 @@ export const getCompDataPoints = (
     });
     //all difference goals start at zero
     dataPointsOne.push(
-      type === EGoalType.cumulative ? competitionArray[i].initialValue : 0,
+      category === EGoalCategory.cumulative
+        ? competitionArray[i].initialValue
+        : 0,
       'Start'
     );
   }
@@ -153,7 +157,7 @@ export const getCompDataPoints = (
     let list: (number | string)[] = [i + 1];
     for (let j = 0; j < competitionArray.length; j++) {
       let difference =
-        type === EGoalType.cumulative
+        category === EGoalCategory.cumulative
           ? competitionArray[j].dataArray[i] -
             (competitionArray[j].dataArray[i - 1] || 0)
           : competitionArray[j].dataArray[i] - competitionArray[j].initialValue;
@@ -161,19 +165,20 @@ export const getCompDataPoints = (
 
       chartYMax = Math.max(
         chartYMax,
-        type === EGoalType.cumulative
+        category === EGoalCategory.cumulative
           ? competitionArray[j].dataArray[i]
           : difference
       );
 
       chartYMin =
-        type === EGoalType.difference && competitionArray[j].dataArray[i]
+        category === EGoalCategory.difference &&
+        competitionArray[j].dataArray[i]
           ? Math.min(chartYMin, difference)
           : 0;
 
       //show running total for cumulative goal, difference from start (or null with interpolation) for difference goal
       list.push(
-        type === EGoalType.cumulative
+        category === EGoalCategory.cumulative
           ? competitionArray[j].dataArray[i]
           : //check if null on difference goal
           competitionArray[j].dataArray[i]
@@ -181,7 +186,7 @@ export const getCompDataPoints = (
           : null,
         `Day ${i + 1} 
         ${tooltipMsg1} ${
-          type === EGoalType.cumulative ? difference : sign + difference
+          category === EGoalCategory.cumulative ? difference : sign + difference
         } ${units}
         ${tooltipMsg2} ${competitionArray[j].dataArray[i]} ${units}`
       );

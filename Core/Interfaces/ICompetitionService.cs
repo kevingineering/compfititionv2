@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core.Entities;
+using Core.Entity;
 
 namespace Core.Interfaces
 {
-  public interface ICompetitionService : IAbstractService<CompetitionGoal>
+  public interface ICompetitionService
   {
-    Task<bool> AddCompetitionAsync(CompetitionGoal comp, Guid userId);
-    Task<IReadOnlyList<UserGoal>> GetUserCompetitionGoals(Guid userId);
-    Task<IReadOnlyList<UserGoal>> GetFriendPublicCompetitionGoals(Guid userId);
+    Task<bool> AddCompetitionAsync(Competition competition, Guid userId);
+    Task<IReadOnlyList<Goal>> GetUserCompetitions(Guid userId);
+    Task<IReadOnlyList<Goal>> GetFriendPublicCompetitions(Guid userId);
   }
 }

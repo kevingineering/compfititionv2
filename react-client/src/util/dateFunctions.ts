@@ -20,7 +20,7 @@ export const timeIsInPast = (inputTime: string) => {
     parseInt(inputTime.substr(14, 16))
   );
 
-  return todayTime > parsedInputTime;
+  return todayTime >= parsedInputTime;
 };
 
 //determines if a date is after year 2100
@@ -46,10 +46,10 @@ export const getGoalTime = (startTime: Date, duration: number) => {
     duration
   );
 
-  console.log('eotoday', moment().endOf('day'));
-  console.log('bostart', moment(startTime).startOf('day'));
+  // console.log('eotoday', moment().endOf('day'));
+  // console.log('bostart', moment(startTime).startOf('day'));
 
-  console.log(time);
+  // console.log(time);
 
   const isFinished = time === duration;
 

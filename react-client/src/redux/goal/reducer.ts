@@ -59,7 +59,7 @@ const goalReducer = (
       };
     case SET_CURRENT_GOAL:
       let concatGoals = state.activeGoals.concat(state.pastGoals);
-      let goal = concatGoals.find((goal) => goal.id === action.payload);
+      let goal = concatGoals.find((goal) => goal.goalId === action.payload);
       return {
         ...state,
         selectedGoal: goal,
@@ -82,7 +82,7 @@ const goalReducer = (
         ...state,
         selectedGoal: action.payload,
         activeGoals: state.activeGoals.map((goal) =>
-          goal.id === action.payload.id ? action.payload : goal
+          goal.goalId === action.payload.goalId ? action.payload : goal
         ),
         loadingButton: NOT_LOADING,
       };
@@ -92,9 +92,11 @@ const goalReducer = (
         selectedGoal: undefined,
         loadingButton: NOT_LOADING,
         activeGoals: state.activeGoals.filter(
-          (goal) => goal.id !== action.payload
+          (goal) => goal.goalId !== action.payload
         ),
-        pastGoals: state.pastGoals.filter((goal) => goal.id !== action.payload),
+        pastGoals: state.pastGoals.filter(
+          (goal) => goal.goalId !== action.payload
+        ),
       };
     case GOAL_ERROR:
       return {

@@ -8,7 +8,7 @@ import { TCompetitionParticipantInfo } from '../../../util/competitionFunctions'
 import { RelinquishAdmin } from '../../../redux/competition/actions';
 import { useDispatch } from 'react-redux';
 import { RELINQUISH_ADMIN_BUTTON } from '../../../redux/buttonTypes';
-import CompetitionRequests from './CompetitionRequests';
+import ParticipantRequest from './ParticipantRequest';
 import { ListContainer } from '../CompetitionDetailsPageStyledComponents';
 import {
   StandardContainer,
@@ -17,7 +17,10 @@ import {
 import { Button } from '../../../sharedComponents/styledComponents/Button';
 import styled from 'styled-components';
 import Admins from './CompetitionListsComponents/Admins';
+import AdminParticipantRequests from './CompetitionListsComponents/AdminParticipantRequests';
+import AdminRequestMenu from './CompetitionListsComponents/AdminRequestMenu';
 
+//TODO - IProps
 interface IProps {
   isAdmin: boolean;
   isAdminView: boolean;
@@ -27,6 +30,8 @@ interface IProps {
   competitionArray: TCompetitionParticipantInfo[];
   participantId?: string;
   loadingButton: string;
+  buttonIds: string[];
+  userId: string;
 }
 
 const CompetitionLists: React.FC<IProps> = ({
@@ -38,21 +43,42 @@ const CompetitionLists: React.FC<IProps> = ({
   competitionArray,
   participantId,
   loadingButton,
+  buttonIds,
+  userId,
 }) => {
   const dispatch = useDispatch();
   const handleRelinquish = () => {
-    dispatch(RelinquishAdmin(competition.id));
+    dispatch(RelinquishAdmin(competition.competitionId));
   };
-
-  // Show participants leaderboard and admin list
-  // Show button for admins to toggle between participant/admin views
-  // In admin view, show admins requests, participants, and button to relinquish admin role
 
   return (
     <StandardContainer>
+      {/* Allows user to send or delete request to join competition */}
       {participantId === undefined && (
-        <CompetitionRequests loadingButton={loadingButton} />
+        <ParticipantRequest
+          loadingButton={loadingButton}
+          competitionId={competition.competitionId}
+          userId={userId}
+          hasRequest={
+            competition.participantRequests.findIndex((x) => x === userId) !==
+            -1
+          }
+          hasInvite={competition.invites.findIndex((x) => x === userId) !== -1}
+        />
       )}
+      {/* Shows participants menu if they have been asked to be an admin */}
+      {competition.adminRequests.findIndex((x) => x === userId) !== -1 && (
+        <AdminRequestMenu
+          userId={userId}
+          competitionId={competition.competitionId}
+          loadingButton={loadingButton}
+        />
+      )}
+      {/* Shows admin users who have requested to join competition */}
+      {isAdmin && competition.participantRequests.length !== 0 && (
+        <AdminParticipantRequests competition={competition} />
+      )}
+      {/* Shows admin button that allows them to toggle between admin view and user view */}
       {isAdmin && (
         <ListContainer>
           <CompetitionListButton
@@ -62,31 +88,29 @@ const CompetitionLists: React.FC<IProps> = ({
           </CompetitionListButton>
         </ListContainer>
       )}
+      {/* Shows users leaderboard and admins*/}
       {!isAdminView && (
-        <Leaderboard
-          competitionArray={competitionArray}
-          isStarted={isStarted}
-          isHighestScoreWins={competition.isHighestScoreWins}
-        />
+        <React.Fragment>
+          <Leaderboard
+            competitionArray={competitionArray}
+            isStarted={isStarted}
+            isHighestScoreWins={competition.isHighestScoreWins}
+          />
+          <Admins
+            participants={competition.participants}
+            admins={competition.admins}
+          />
+        </React.Fragment>
       )}
-      {!isAdminView && (
-        <Admins
-          participants={competition.participants}
-          admins={competition.admins}
-        />
-      )}
+      {/* Shows admin participants they can promote or remove */}
       {isAdminView && (
-        <Participants
-          participants={competition.participants}
-          admins={competition.admins}
-        />
+        <Participants competition={competition} buttonIds={buttonIds} />
       )}
+      {/* Shows admin users they can or already have invited */}
       {isAdminView && !isStarted && (
-        <Invites
-          compId={competition.id}
-          participants={competition.participants}
-        />
+        <Invites competition={competition} buttonIds={buttonIds} />
       )}
+      {/* Button to allow admins to stop being an admin */}
       {isAdminView && (
         <ListContainer>
           <ToggleButtonModule

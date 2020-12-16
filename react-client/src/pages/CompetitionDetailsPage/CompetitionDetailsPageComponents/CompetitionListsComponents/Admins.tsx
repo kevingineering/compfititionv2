@@ -14,11 +14,7 @@ const Admins: React.FC<IProps> = ({ participants, admins }) => {
       (participant) => participant.userId === admin
     );
     return (
-      <AdminItem
-        key={index}
-        name={participants[loc] ? participants[loc].name : 'TODO'}
-        id={admin}
-      />
+      <AdminItem key={index} name={participants[loc].name} userId={admin} />
     );
   });
 

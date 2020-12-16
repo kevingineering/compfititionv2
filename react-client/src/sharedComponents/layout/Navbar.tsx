@@ -42,7 +42,7 @@ const Navbar = () => {
       <li>
         <a href='#!' onClick={handleLogout}>
           <LogOutMessage>Log Out </LogOutMessage>
-          <i className='fas fa-sign-out-alt'></i>
+          <i className='fas fa-sign-out-alt' />
         </a>
       </li>
     </React.Fragment>

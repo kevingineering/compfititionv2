@@ -6,19 +6,20 @@ import { RootStore } from '../../../../redux/Store';
 
 interface IProps {
   name: string;
-  id: string;
+  userId: string;
 }
 
-const AdminItem: React.FC<IProps> = ({ name, id }) => {
+const AdminItem: React.FC<IProps> = ({ name, userId }) => {
   const userState = useSelector((state: RootStore) => state.userState);
 
   return (
     <AdminItemContainer>
       <span>
-        {id === userState.user!.id! ? (
+        {/* don't provide link to user's own page */}
+        {userId === userState.user!.userId! ? (
           <strong>{name}</strong>
         ) : (
-          <Link to={`/friend/${id}`}>
+          <Link to={`/friend/${userId}`}>
             <strong>{name}</strong>
           </Link>
         )}

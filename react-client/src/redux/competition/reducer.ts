@@ -53,19 +53,21 @@ const competitionReducer = (
   switch (action.type) {
     //#region general
     case COMPETITION_LOADING:
-      let ids = state.buttonIds;
-      if (action.payload.id !== undefined) {
-        ids.push(action.payload.type + action.payload.id);
-      }
       return {
         ...state,
         loadingButton: action.payload.type,
-        buttonIds: ids,
+        buttonIds:
+          action.payload.userId !== undefined
+            ? [...state.buttonIds, action.payload.type + action.payload.userId]
+            : state.buttonIds,
       };
     case COMPETITION_ERROR:
       return {
         ...state,
         loadingButton: NOT_LOADING,
+        buttonIds: action.payload
+          ? state.buttonIds.filter((x) => x !== action.payload)
+          : state.buttonIds,
       };
     case CLEAR_CURRENT_COMPETITION:
       return {
@@ -102,10 +104,10 @@ const competitionReducer = (
         ...state,
         selectedCompetition: undefined,
         activeCompetitionGoals: state.activeCompetitionGoals.filter(
-          (x) => x.id !== action.payload
+          (goal) => goal.goalId !== action.payload
         ),
         pastCompetitionGoals: state.pastCompetitionGoals.filter(
-          (x) => x.id !== action.payload
+          (goal) => goal.goalId !== action.payload
         ),
         loadingButton: NOT_LOADING,
       };
@@ -126,6 +128,9 @@ const competitionReducer = (
               }
             : undefined,
         loadingButton: NOT_LOADING,
+        buttonIds: state.buttonIds.filter(
+          (x) => x !== action.type + '_BUTTON' + action.payload.userId
+        ),
       };
     case UPDATE_PARTICIPANT_LEDGER:
     case UPDATE_PARTICIPANT_TARGET:
@@ -162,6 +167,9 @@ const competitionReducer = (
               }
             : undefined,
         loadingButton: NOT_LOADING,
+        buttonIds: state.buttonIds.filter(
+          (x) => x !== action.type + '_BUTTON' + action.payload
+        ),
       };
     //#endregion
     //#region participant request
@@ -194,6 +202,9 @@ const competitionReducer = (
               }
             : undefined,
         loadingButton: NOT_LOADING,
+        buttonIds: state.buttonIds.filter(
+          (x) => x !== action.type + '_BUTTON' + action.payload
+        ),
       };
     //#endregion
     //#region invite
@@ -204,13 +215,13 @@ const competitionReducer = (
           state.selectedCompetition !== undefined
             ? {
                 ...state.selectedCompetition,
-                invites: [
-                  ...state.selectedCompetition.participantRequests,
-                  action.payload,
-                ],
+                invites: [...state.selectedCompetition.invites, action.payload],
               }
             : undefined,
         loadingButton: NOT_LOADING,
+        buttonIds: state.buttonIds.filter(
+          (x) => x !== action.type + '_BUTTON' + action.payload
+        ),
       };
     case ADMIN_DELETE_INVITE:
     case REJECT_INVITE:
@@ -220,12 +231,15 @@ const competitionReducer = (
           state.selectedCompetition !== undefined
             ? {
                 ...state.selectedCompetition,
-                invites: state.selectedCompetition.participantRequests.filter(
+                invites: state.selectedCompetition.invites.filter(
                   (x) => x !== action.payload
                 ),
               }
             : undefined,
         loadingButton: NOT_LOADING,
+        buttonIds: state.buttonIds.filter(
+          (x) => x !== action.type + '_BUTTON' + action.payload
+        ),
       };
     //#endregion
     //#region admin
@@ -256,6 +270,10 @@ const competitionReducer = (
                 ],
               }
             : undefined,
+        loadingButton: NOT_LOADING,
+        buttonIds: state.buttonIds.filter(
+          (x) => x !== action.type + '_BUTTON' + action.payload
+        ),
       };
     case REJECT_ADMIN_REQUEST:
       return {

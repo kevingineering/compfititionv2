@@ -1,8 +1,11 @@
 using System.Linq;
-using API.Errors;
+using Core.Errors;
 using Core.Interfaces;
-using Infrastructure.Data;
+using Core.Interfaces.Repos;
+using Data.Repos;
 using Infrastructure.Services;
+using Infrastructure.Signatures;
+using Infrastructure.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,12 +15,23 @@ namespace API.Extensions
   {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-      services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-      services.AddScoped<IUnitOfWork, UnitOfWork>();
-      services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
-      services.AddScoped<ITokenService, TokenService>();
-      services.AddScoped<IPasswordService, PasswordService>();
-      services.AddScoped<ICompetitionService, CompetitionService>();
+      //Is there a way to automatically register these services?
+      //Repo
+      services.AddScoped<IUserRepo, UserRepo>();
+      services.AddScoped<IChallengeRepo, ChallengeRepo>();
+      services.AddScoped<IGoalRepo, GoalRepo>();
+      services.AddScoped<IFriendRequestRepo, FriendRequestRepo>();
+      services.AddScoped<IFriendshipRepo, FriendshipRepo>();
+
+      //Services
+      services.AddScoped<IUserService, UserService>();
+      services.AddScoped<IGoalService, GoalService>();
+      services.AddScoped<IFriendRequestService, FriendRequestService>();
+      services.AddScoped<IFriendshipService, FriendshipService>();
+
+      //Utilities
+      services.AddScoped<ITokenUtility, TokenUtility>();
+      services.AddScoped<IPasswordUtility, PasswordUtility>();
 
       //Configures default ApiController behavior so we can more easily handle validation errors
       //Validation errors are pulled from model state and put into single array that is returned on our custom error
@@ -33,11 +47,7 @@ namespace API.Extensions
             .SelectMany(x => x.Value.Errors)
             .Select(x => x.ErrorMessage).ToArray();
 
-          var errorResponse = new ApiValidationError
-          {
-            Errors = errors
-          };
-
+          var errorResponse = new ApiValidationError(errors);
           return new BadRequestObjectResult(errorResponse);
         };
       });

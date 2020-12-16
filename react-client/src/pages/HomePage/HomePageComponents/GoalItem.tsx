@@ -3,7 +3,7 @@ import { getGoalTime, cleanNumber } from '../../../util/dateFunctions';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { getGoalScore, getGoalRecord } from '../../../util/goalFunctions';
-import { EGoalType, TGoal } from '../../../types';
+import { EGoalCategory, TGoal } from '../../../types';
 import { FlexContainer } from '../../../sharedComponents/styledComponents/Misc';
 import styled from 'styled-components';
 
@@ -14,7 +14,7 @@ interface IProps {
 }
 
 const GoalItem: React.FC<IProps> = ({ goal, isOwner, isComp }) => {
-  const { startTime, duration, type, units, id, name } = goal;
+  const { startTime, duration, category, units, goalId, name } = goal;
   const { isStarted, time, isFinished } = getGoalTime(startTime, duration);
 
   //calc progress
@@ -23,12 +23,14 @@ const GoalItem: React.FC<IProps> = ({ goal, isOwner, isComp }) => {
 
   const record = getGoalRecord(goal);
 
-  const score = cleanNumber(getGoalScore(goal.type, record, goal.initialValue));
+  const score = cleanNumber(
+    getGoalScore(goal.category, record, goal.initialValue)
+  );
 
-  if (type === EGoalType.passfail) {
+  if (category === EGoalCategory.passfail) {
     progressTag = 'Success: ';
     progressMessage = `${score} / ${isFinished ? record.length : time + 1}`;
-  } else if (type === EGoalType.cumulative) {
+  } else if (category === EGoalCategory.cumulative) {
     progressTag = 'Total: ';
     progressMessage = `${score} ${units}`;
   } else {
@@ -42,10 +44,10 @@ const GoalItem: React.FC<IProps> = ({ goal, isOwner, isComp }) => {
         <ItemName
           to={
             isComp
-              ? '/competition/' + id
+              ? '/competition/' + goalId
               : isOwner
-              ? '/goal/' + id
-              : '/friend/goal/' + id
+              ? '/goal/' + goalId
+              : '/friend/goal/' + goalId
           }
         >
           {name}

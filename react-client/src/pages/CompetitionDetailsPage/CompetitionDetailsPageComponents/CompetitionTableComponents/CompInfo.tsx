@@ -1,5 +1,5 @@
 import React from 'react';
-import { TCompetition, EGoalType } from '../../../../types';
+import { TCompetition, EGoalCategory } from '../../../../types';
 import { cleanNumber } from '../../../../util/dateFunctions';
 import moment from 'moment';
 import { getGoalScore } from '../../../../util/goalFunctions';
@@ -34,14 +34,14 @@ const CompInfo: React.FC<IProps> = ({
     startTime,
     description,
     units,
-    type,
-    frequency,
+    category,
+    daysPerWeek,
   } = competition;
   const formattedDate = moment.utc(startTime).format('MMMM Do, YYYY');
   const formattedDateTime = moment
     .utc(startTime)
     .format('MMMM Do, YYYY, h:mm a');
-  const score = cleanNumber(getGoalScore(type, record, initialValue));
+  const score = cleanNumber(getGoalScore(category, record, initialValue));
 
   //for clarity - if target exists, user is participant
   const isParticipant = target;
@@ -62,12 +62,12 @@ const CompInfo: React.FC<IProps> = ({
   if (isFinished) {
     topLeftTag = 'Start Date: ';
     topLeftMsg = formattedDate;
-    if (type === EGoalType.passfail) {
+    if (category === EGoalCategory.passfail) {
       middleLeftTag = 'Success Total: ';
-      middleLeftMsg = `${score} / ${(duration * frequency!) / 7} (${Math.round(
-        (score / ((duration * frequency!) / 7)) * 100
-      )}%)`;
-    } else if (type === EGoalType.cumulative) {
+      middleLeftMsg = `${score} / ${
+        (duration * daysPerWeek!) / 7
+      } (${Math.round((score / ((duration * daysPerWeek!) / 7)) * 100)}%)`;
+    } else if (category === EGoalCategory.cumulative) {
       topRightTag = 'Duration: ';
       if (isParticipant) {
         topRightMsg = `${duration} days`;
@@ -76,7 +76,7 @@ const CompInfo: React.FC<IProps> = ({
         middleRightTag = 'Goal Completion: ';
         middleRightMsg = `${Math.round((score / target!) * 100)}%`;
       }
-    } else if (type === EGoalType.difference) {
+    } else if (category === EGoalCategory.difference) {
       topRightTag = 'Duration: ';
       topRightMsg = `${duration} days`;
       if (isParticipant) {
@@ -94,16 +94,16 @@ const CompInfo: React.FC<IProps> = ({
   } else if (isStarted) {
     topLeftTag = 'Start Date: ';
     topLeftMsg = formattedDate;
-    if (type === EGoalType.passfail) {
+    if (category === EGoalCategory.passfail) {
       middleLeftTag = 'Success To Date: ';
       middleLeftMsg = `${score} / ${time + 1} (${Math.round(
         (score / (time + 1)) * 100
       )}%)`;
       bottomLeftTag = 'Success Total: ';
-      bottomLeftMsg = `${score} / ${(duration * frequency!) / 7} (${Math.round(
-        (score / ((duration * frequency!) / 7)) * 100
-      )}%)`;
-    } else if (type === EGoalType.cumulative) {
+      bottomLeftMsg = `${score} / ${
+        (duration * daysPerWeek!) / 7
+      } (${Math.round((score / ((duration * daysPerWeek!) / 7)) * 100)}%)`;
+    } else if (category === EGoalCategory.cumulative) {
       topRightTag = 'Day: ';
       topRightMsg = `${time + 1} / ${duration}`;
       if (isParticipant) {
@@ -112,7 +112,7 @@ const CompInfo: React.FC<IProps> = ({
         middleRightTag = 'Goal Completion: ';
         middleRightMsg = `${Math.round((score / target!) * 100)}%`;
       }
-    } else if (type === EGoalType.difference) {
+    } else if (category === EGoalCategory.difference) {
       topRightTag = 'Day: ';
       topRightMsg = `${time + 1} / ${duration}`;
       if (isParticipant) {
@@ -131,11 +131,11 @@ const CompInfo: React.FC<IProps> = ({
     topLeftMsg = formattedDateTime;
     topRightTag = 'Duration: ';
     topRightMsg = `${duration} days`;
-    if (type === EGoalType.passfail) {
-    } else if (type === EGoalType.cumulative && isParticipant) {
+    if (category === EGoalCategory.passfail) {
+    } else if (category === EGoalCategory.cumulative && isParticipant) {
       middleLeftTag = 'My Goal: ';
       middleLeftMsg = `${target!} ${units}`;
-    } else if (type === EGoalType.difference && isParticipant) {
+    } else if (category === EGoalCategory.difference && isParticipant) {
       middleLeftTag = 'My Start: ';
       middleLeftMsg = initialValue ? `${initialValue!} ${units}` : 'Set below!';
       middleRightTag = 'My Goal: ';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { DeleteFriend } from '../../../redux/friend/actions';
+import { DeleteFriend } from '../../../redux/friendship/actions';
 import ToggleButtonModule from '../../../sharedComponents/misc/ToggleButtonModule';
 import { MessageInBorderedSpace } from '../../../sharedComponents/styledComponents/Misc';
 import styled from 'styled-components';
