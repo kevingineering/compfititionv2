@@ -13,10 +13,12 @@ namespace Data.Context.Config
       builder.Property(c => c.IsHighestScoreWins).IsRequired();
       builder.Property(c => c.IsPrivate).IsRequired();
 
-      builder.HasOne(c => c.Challenge)
-        .WithOne(ch => ch.Competition)
-        .HasForeignKey<Competition>(c => c.ChallengeId)
-        .OnDelete(DeleteBehavior.Cascade);
+      //TODO - DELETE CHALLENGE WITH COMPETITION
+      builder.HasOne(g => g.Challenge)
+      // .WithOne(ch => ch.Competition)
+      .WithOne()
+      .HasForeignKey<Competition>(c => c.ChallengeId)
+      .OnDelete(DeleteBehavior.Cascade);
     }
   }
 }

@@ -1,3 +1,8 @@
+AdminParticipationRequests
+Loading button on "You have no more friends to invite."
+
+Modify useSelector? Where only one property is selected, subscribe to only it?
+
 Fix Time - see pass fail goal when time hasn't started yet
 
 Competition page: 
@@ -7,19 +12,17 @@ Competition page:
   Fix Kick User buttons
   Implement leave competition button
   
-  Invites - add existing invites to list (even if not user's friend)
+  Invitations - add existing invitations to list (even if not user's friend)
 
 Home page: 
-  Notifications - UserInvited, UserAdded, UserKicked, CompDeleted, AdminRequested
+  Notifications - UserInvitation, UserAdded, UserKicked, CompDeleted, AdminRequested
 
-CompetitionInvites
-ParticipantRequests
+ParticipationRequests
 
 Competition Details:
-  ParticipantRequests
+  ParticipationRequests
 
 Notifications:
-  CompetitionInvites
   RequestToJoinCompetitionAccepted
   UserRemovedFromCompetition
   CompetitionDeleted
@@ -39,4 +42,3 @@ Host with CI/CD
 Future: 
   Fix eslint-disable-next-line
   Break up components - further remove logic?
-  Write snippets? 

@@ -9,7 +9,7 @@ namespace Data.Context
 {
   public class SeedData
   {
-    //TODO - break into smaller method? 
+    //TODO - break into smaller classes? 
     public static async Task SeedAsync(DataContext context, ILoggerFactory loggerFactory)
     {
       //hashed value of Pa$$w0rd
@@ -27,6 +27,17 @@ namespace Data.Context
         new Guid("8be41773-eff0-4668-9326-b53976d852b2"),
         new Guid("df390947-82e4-466f-92a6-c60d62470fc6"),
         new Guid("75193a19-49a0-4467-8bc2-452af673b19d")
+      };
+
+      var GoalGuids = new Guid[7] {
+        new Guid("e429187b-3fab-4c5f-bb1d-613803305cf4"),
+        new Guid("34a0ecc5-0d8f-4a87-9e89-56506a83340d"),
+        new Guid("f42ae22d-d2d2-465e-b096-a60fc58d8f1a"),
+        new Guid("b2b30efa-19d7-4ba9-a152-9b6785ae4388"),
+        new Guid("4c91cbfa-036a-47d3-b67b-becd363230f8"),
+
+        new Guid("7dcab0a3-1df1-40cc-890b-7b546f88942b"),
+        new Guid("2d1ae785-a9dd-4cfa-b7d9-84304d5d0eeb")
       };
 
       var CompGuids = new Guid[9] {
@@ -179,7 +190,9 @@ namespace Data.Context
                 Category = CategoryEnum.cumulative,
                 Description = "This is a goal. Goals are meant for individual users to keep track of their progress. Goals can be set as public or private if you'd rather other users not see.\n\nThis is a cumulative goal which means the target value is achieved by summing up the score from each day. With this goal you are trying to run 100 miles in a month, you'd better getting moving!",
                 Units = "miles",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = GoalGuids[0],
+                // CompetitionId = null
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[1],
@@ -189,7 +202,9 @@ namespace Data.Context
                 Category = CategoryEnum.difference,
                 Description = "This is a difference goal. Difference goals are used when you start with one value and wish to achieve a different value. Examples include losing weight loss or increasing the number of consecutive pullups you can do.",
                 Units = "lbs",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = GoalGuids[1],
+                // CompetitionId = null
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[2],
@@ -200,6 +215,8 @@ namespace Data.Context
                 Description = "This is a pass fail goal which can be used to track whether or not you did something on a particular day. \n\nIf you want to stretch every morning or lift weights three days a week, but aren't concerned with tracking values, this is the goal for you.",
                 Units = null,
                 DaysPerWeek = 7,
+                // GoalId = GoalGuids[2],
+                // CompetitionId = null
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[3],
@@ -209,7 +226,9 @@ namespace Data.Context
                 Category = CategoryEnum.passfail,
                 Description = "This is a finished goal. You can't change what has happened in the past, but you can always look back on it.",
                 Units = null,
-                DaysPerWeek = 7
+                DaysPerWeek = 7,
+                // GoalId = GoalGuids[3],
+                // CompetitionId = null
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[4],
@@ -219,7 +238,9 @@ namespace Data.Context
                 Category = CategoryEnum.difference,
                 Description = "This goal takes place in the future. You can't keep track of anything yet, but you can get ready to crush it!",
                 Units = "pushups",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = GoalGuids[4],
+                // CompetitionId = null
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[5],
@@ -229,7 +250,9 @@ namespace Data.Context
                 Category = CategoryEnum.cumulative,
                 Description = "This is your friend's public goal. He has another goal, but it is set to private, so you can't see it.",
                 Units = "miles",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = GoalGuids[5],
+                // CompetitionId = null
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[6],
@@ -239,7 +262,9 @@ namespace Data.Context
                 Category = CategoryEnum.difference,
                 Description = "This is a current difference goal.",
                 Units = "lbs",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = GoalGuids[6],
+                // CompetitionId = null
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[7],
@@ -249,7 +274,9 @@ namespace Data.Context
                 Category = CategoryEnum.cumulative,
                 Description = "This is a competition. Competitions allow users to compete with each other while trying to achieve a shared goal. Individual users may have their own private goals within a competition, click 'Modify My Goal' below to see more.",
                 Units = "miles",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = null,
+                // CompetitionId = CompGuids[0]
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[8],
@@ -260,6 +287,8 @@ namespace Data.Context
                 Description = "This is a pass fail competition. You are an admin in this competition, click the 'View as Admin' button to see what you can do.",
                 Units = null,
                 DaysPerWeek = 6,
+                // GoalId = null,
+                // CompetitionId = CompGuids[1]
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[9],
@@ -269,7 +298,9 @@ namespace Data.Context
                 Category = CategoryEnum.difference,
                 Description = "Here participants are trying to lose the most weight. Notice the leaderboard, in this competition the lowest score wins.",
                 Units = "lbs",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = null,
+                // CompetitionId = CompGuids[2]
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[10],
@@ -279,7 +310,9 @@ namespace Data.Context
                 Category = CategoryEnum.difference,
                 Description = "This is a finished competition. As with goals, you cannot change the outcome once a competition has finished.",
                 Units = "lbs",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = null,
+                // CompetitionId = CompGuids[3]
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[11],
@@ -289,7 +322,9 @@ namespace Data.Context
                 Category = CategoryEnum.difference,
                 Description = "This competition hasn't started yet. As an admin, you can invite your friends to join and modify anything about the competition before it begins.",
                 Units = "lbs",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = null,
+                // CompetitionId = CompGuids[4]
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[12],
@@ -299,7 +334,9 @@ namespace Data.Context
                 Category = CategoryEnum.cumulative,
                 Description = "This competition has already begun, and you are not participating. You can't join a competition that has started, but you can comment to cheer on your friends.",
                 Units = "miles",
-                DaysPerWeek = null
+                DaysPerWeek = null,
+                // GoalId = null,
+                // CompetitionId = CompGuids[5]
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[13],
@@ -310,6 +347,8 @@ namespace Data.Context
                 Description = "You are not currently in this competition. If you'd like to participate, request to join!",
                 Units = null,
                 DaysPerWeek = 5,
+                // GoalId = null,
+                // CompetitionId = CompGuids[6]
             },
             new Challenge {
                 ChallengeId = ChallengeGuids[14],
@@ -320,6 +359,8 @@ namespace Data.Context
                 Description = "Run more than all of your friends in two weeks!",
                 Units = "miles",
                 DaysPerWeek = 5,
+                // GoalId = null,
+                // CompetitionId = CompGuids[7]
             },
           };
 
@@ -335,7 +376,7 @@ namespace Data.Context
         {
           var goals = new List<Goal>() {
             new Goal {
-                GoalId = new Guid(),
+                GoalId = GoalGuids[0],
                 UserId = UserGuids[0],
                 ChallengeId = ChallengeGuids[0],
                 InitialValue = null,
@@ -344,7 +385,7 @@ namespace Data.Context
                 Ledger = "[3, 2, 3, 4, 0, 6, 2, 2, 2, 7, 0, 3, 3, 1]",
             },
             new Goal {
-                GoalId = new Guid(),
+                GoalId = GoalGuids[1],
                 UserId = UserGuids[0],
                 ChallengeId = ChallengeGuids[1],
                 InitialValue = 170,
@@ -353,7 +394,7 @@ namespace Data.Context
                 Ledger = "[null, null, 168, null, 168, null, 169, 168, null, null, 166, null, 165, null ]",
             },
             new Goal {
-                GoalId = new Guid(),
+                GoalId = GoalGuids[2],
                 UserId = UserGuids[0],
                 ChallengeId = ChallengeGuids[2],
                 InitialValue = null,
@@ -362,7 +403,7 @@ namespace Data.Context
                 Ledger = "[1,1,1,1,0,1,1]",
             },
             new Goal {
-                GoalId = new Guid(),
+                GoalId = GoalGuids[3],
                 UserId = UserGuids[0],
                 ChallengeId = ChallengeGuids[3],
                 InitialValue = null,
@@ -371,7 +412,7 @@ namespace Data.Context
                 Ledger = "[1,0,1,1,1,1,1,1,0,1,1,1,0,1]",
             },
             new Goal {
-                GoalId = new Guid(),
+                GoalId = GoalGuids[4],
                 UserId = UserGuids[0],
                 ChallengeId = ChallengeGuids[4],
                 InitialValue = 40,
@@ -380,7 +421,7 @@ namespace Data.Context
                 Ledger = null,
             },
             new Goal {
-                GoalId = new Guid(),
+                GoalId = GoalGuids[5],
                 UserId = UserGuids[1],
                 ChallengeId = ChallengeGuids[5],
                 InitialValue = null,
@@ -389,7 +430,7 @@ namespace Data.Context
                 Ledger= "[1, 2, 3, 4, 5, 6, 7]",
             },
             new Goal {
-                GoalId = new Guid(),
+                GoalId = GoalGuids[6],
                 UserId = UserGuids[1],
                 ChallengeId = ChallengeGuids[6],
                 InitialValue = 140,

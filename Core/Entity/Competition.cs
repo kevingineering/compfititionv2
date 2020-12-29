@@ -14,13 +14,6 @@ namespace Core.Entity
 
     }
 
-    public Competition(Guid challengeId, bool isHighestScoreWins, bool isPrivate)
-    {
-      ChallengeId = challengeId;
-      IsHighestScoreWins = isHighestScoreWins;
-      IsPrivate = isPrivate;
-    }
-
     public Guid CompetitionId { get; set; }
     public Guid ChallengeId { get; set; }
     public bool IsHighestScoreWins { get; set; } = true;

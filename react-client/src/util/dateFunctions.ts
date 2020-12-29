@@ -46,11 +46,6 @@ export const getGoalTime = (startTime: Date, duration: number) => {
     duration
   );
 
-  // console.log('eotoday', moment().endOf('day'));
-  // console.log('bostart', moment(startTime).startOf('day'));
-
-  // console.log(time);
-
   const isFinished = time === duration;
 
   return { isStarted, time, isFinished };

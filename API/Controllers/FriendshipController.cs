@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Infrastructure.Models.Response;
 using Infrastructure.Signatures;
 
@@ -16,28 +15,28 @@ namespace API.Controllers
       _friendshipService = friendshipService;
     }
 
-    [HttpPost("{friendId}")]
-    public async Task<ActionResult<DifferentUserResponse>> AddFriend(Guid friendId)
+    [HttpPost("{differentUserId}")]
+    public async Task<ActionResult<DifferentUserResponse>> AddFriend(Guid differentUserId)
     {
-      return Ok(await _friendshipService.AddFriend(UserId, friendId));
+      return Ok(await _friendshipService.AddFriend(UserId, differentUserId));
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<DifferentUserResponse>>> GetFriends()
+    public async Task<ActionResult<DifferentUserInfoResponse>> GetFriends()
     {
       return Ok(await _friendshipService.GetFriends(UserId));
     }
 
-    [HttpGet("{friendId}")]
-    public async Task<ActionResult<OtherUserInfoResponse>> GetOtherUserInfo(Guid friendId)
+    [HttpGet("{differentUserId}")]
+    public async Task<ActionResult<DifferentUserInfoResponse>> GetDifferentUserInfo(Guid differentUserId)
     {
-      return Ok(await _friendshipService.GetOtherUserInfo(UserId, friendId));
+      return Ok(await _friendshipService.GetDifferentUserInfo(UserId, differentUserId));
     }
 
-    [HttpDelete("{friendId}")]
-    public async Task<ActionResult> DeleteFriend(Guid friendId)
+    [HttpDelete("{differentUserId}")]
+    public async Task<ActionResult> DeleteFriend(Guid differentUserId)
     {
-      await _friendshipService.DeleteFriend(UserId, friendId);
+      await _friendshipService.DeleteFriend(UserId, differentUserId);
       return NoContent();
     }
   }

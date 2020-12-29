@@ -2,9 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootStore } from '../../../redux/Store';
 import LoadingSpinner from '../../../sharedComponents/misc/LoadingSpinner';
-import { NO_BUTTON } from '../../../redux/buttonTypes';
 import { EmptyCollection } from '../../../sharedComponents/styledComponents/Misc';
-import OtherUserItem from '../../../sharedComponents/misc/OtherUserItem';
+import DifferentUserItem from '../../../sharedComponents/misc/DifferentUserItem';
+import { NO_BUTTON } from '../../../redux/buttonTypes';
 
 interface IProps {
   isOwner: boolean;
@@ -12,6 +12,7 @@ interface IProps {
 
 const FriendList: React.FC<IProps> = ({ isOwner }) => {
   const friendState = useSelector((state: RootStore) => state.friendState);
+  const userState = useSelector((state: RootStore) => state.userState);
 
   const results = friendState.isFiltered
     ? friendState.filteredFriends
@@ -30,7 +31,7 @@ const FriendList: React.FC<IProps> = ({ isOwner }) => {
       <EmptyCollection>{message}</EmptyCollection>
     ) : (
       results.map((friend, index) => (
-        <OtherUserItem
+        <DifferentUserItem
           key={index}
           user={friend}
           isLink={true}
@@ -41,7 +42,7 @@ const FriendList: React.FC<IProps> = ({ isOwner }) => {
 
   return (
     <div>
-      {friendState.loadingButton === NO_BUTTON ? (
+      {userState.loadingButton === NO_BUTTON ? (
         <LoadingSpinner hasContainer={true} />
       ) : (
         <React.Fragment>{friends}</React.Fragment>

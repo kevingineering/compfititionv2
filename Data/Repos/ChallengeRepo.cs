@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Core.Entity;
 using Core.Interfaces.Repos;
 using Data.Context;
@@ -13,20 +12,15 @@ namespace Data.Repos
 
     }
 
-    public void AddChallenge(Challenge challenge)
+    public void Create(Challenge challenge)
     {
       _context.Challenges.Add(challenge);
     }
 
-    public void UpdateChallenge(Challenge challenge)
+    public void Update(Challenge challenge)
     {
       _context.Challenges.Attach(challenge);
       _context.Entry(challenge).State = EntityState.Modified;
-    }
-
-    public void DeleteChallenge(Challenge Challenge)
-    {
-      _context.Challenges.Remove(Challenge);
     }
   }
 }

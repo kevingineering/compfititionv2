@@ -1,10 +1,5 @@
 import { Dispatch } from 'redux';
-import {
-  AlertDispatchTypes,
-  SET_ALERT,
-  CLEAR_ALERT,
-  REMOVE_ALERT,
-} from './types';
+import { AlertDispatchTypes, EAlertActions } from './types';
 
 export const createAlertActions = (
   message?: string,
@@ -12,8 +7,11 @@ export const createAlertActions = (
 ): { alertAction: AlertDispatchTypes; clearAction: AlertDispatchTypes } => {
   const timestamp = new Date().getTime();
   return {
-    alertAction: { type: SET_ALERT, payload: { message, timestamp, persist } },
-    clearAction: { type: REMOVE_ALERT, payload: timestamp },
+    alertAction: {
+      type: EAlertActions.SET_ALERT,
+      payload: { message, timestamp, persist },
+    },
+    clearAction: { type: EAlertActions.REMOVE_ALERT, payload: timestamp },
   };
 };
 
@@ -27,5 +25,5 @@ export const SetAlert = (message?: string, persist = false) => (
 };
 
 export const ClearAlert = () => (dispatch: Dispatch<AlertDispatchTypes>) => {
-  dispatch({ type: CLEAR_ALERT });
+  dispatch({ type: EAlertActions.CLEAR_ALERT });
 };

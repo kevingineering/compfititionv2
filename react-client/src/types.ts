@@ -1,6 +1,6 @@
 export type TDifferentUser = {
-  email: string;
   userId: string;
+  email: string;
   name: string;
 };
 
@@ -9,15 +9,23 @@ export type TUser = TDifferentUser & {
   isSearchable?: boolean;
 };
 
-export type TOtherUser = TDifferentUser & {
+export type TUserHelper = {
   pastGoals: TGoal[];
   activeGoals: TGoal[];
   pastCompetitions: TGoal[];
   activeCompetitions: TGoal[];
-  selectedGoal?: TGoal;
   friends: TDifferentUser[];
-  isFriend: boolean;
 };
+
+export type TUserInfo = TUserHelper & {
+  usersWhoSentFriendRequest: TDifferentUser[];
+};
+
+export type TDifferentUserInfo = TUserHelper &
+  TDifferentUser & {
+    isFriend: boolean;
+    selectedGoal?: TGoal;
+  };
 
 export type TChallenge = {
   name: string;
@@ -49,9 +57,14 @@ export type TCompetition = TChallenge & {
   isHighestScoreWins: boolean;
   participants: TParticipant[];
   admins: string[];
-  invites: string[];
-  participantRequests: string[];
+  invitations: TCompetitionUser[];
+  participationRequests: TCompetitionUser[];
   adminRequests: string[];
+};
+
+export type TCompetitionUser = {
+  userId: string;
+  name: string;
 };
 
 export type TParticipant = {

@@ -1,5 +1,8 @@
+using System;
 using System.Threading.Tasks;
+using Core.Errors;
 using Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repos
 {
@@ -12,9 +15,24 @@ namespace Data.Repos
       _context = context;
     }
 
-    public async Task<int> Save()
+    public async Task Save(string message = null)
     {
-      return await _context.SaveChangesAsync();
+      try
+      {
+        var changes = await _context.SaveChangesAsync();
+        if (changes <= 0)
+        {
+          throw new ApiError(500, "Error saving changes.");
+        }
+      }
+      catch (DbUpdateConcurrencyException)
+      {
+        throw new ApiError(400, "You are working with old data, please refresh.");
+      }
+      catch (Exception)
+      {
+        throw new ApiError(500, message ?? "Error saving changes.");
+      }
     }
   }
 }

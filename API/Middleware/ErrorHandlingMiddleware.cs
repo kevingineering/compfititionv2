@@ -39,7 +39,6 @@ namespace API.Middleware
       catch (Exception ex)
       {
         //we are primarily throwing ApiError which has status code and message
-        //if 
         var ae = ex.InnerException as ApiError;
         var statusCode = ae != null ? ae.StatusCode : (int)HttpStatusCode.InternalServerError;
         var exception = ae != null ? ae : ex;

@@ -1,14 +1,14 @@
 import React from 'react';
 import Leaderboard from './CompetitionListsComponents/Leaderboard';
 import Participants from './CompetitionListsComponents/Participants';
-import Invites from './CompetitionListsComponents/Invites';
+import Invitations from './CompetitionListsComponents/Invitations';
 import { TCompetition } from '../../../types';
 import ToggleButtonModule from '../../../sharedComponents/misc/ToggleButtonModule';
 import { TCompetitionParticipantInfo } from '../../../util/competitionFunctions';
-import { RelinquishAdmin } from '../../../redux/competition/actions';
+import { RelinquishAdmin } from '../../../redux/aggregateCompetition/admin/actions';
 import { useDispatch } from 'react-redux';
 import { RELINQUISH_ADMIN_BUTTON } from '../../../redux/buttonTypes';
-import ParticipantRequest from './ParticipantRequest';
+import ParticipationRequest from './ParticipationRequest';
 import { ListContainer } from '../CompetitionDetailsPageStyledComponents';
 import {
   StandardContainer,
@@ -17,7 +17,7 @@ import {
 import { Button } from '../../../sharedComponents/styledComponents/Button';
 import styled from 'styled-components';
 import Admins from './CompetitionListsComponents/Admins';
-import AdminParticipantRequests from './CompetitionListsComponents/AdminParticipantRequests';
+import AdminParticipationRequests from './CompetitionListsComponents/AdminParticipationRequests';
 import AdminRequestMenu from './CompetitionListsComponents/AdminRequestMenu';
 
 //TODO - IProps
@@ -55,15 +55,18 @@ const CompetitionLists: React.FC<IProps> = ({
     <StandardContainer>
       {/* Allows user to send or delete request to join competition */}
       {participantId === undefined && (
-        <ParticipantRequest
+        <ParticipationRequest
           loadingButton={loadingButton}
           competitionId={competition.competitionId}
           userId={userId}
           hasRequest={
-            competition.participantRequests.findIndex((x) => x === userId) !==
-            -1
+            competition.participationRequests.findIndex(
+              (x) => x.userId === userId
+            ) !== -1
           }
-          hasInvite={competition.invites.findIndex((x) => x === userId) !== -1}
+          hasInvitation={
+            competition.invitations.findIndex((x) => x.userId === userId) !== -1
+          }
         />
       )}
       {/* Shows participants menu if they have been asked to be an admin */}
@@ -75,8 +78,8 @@ const CompetitionLists: React.FC<IProps> = ({
         />
       )}
       {/* Shows admin users who have requested to join competition */}
-      {isAdmin && competition.participantRequests.length !== 0 && (
-        <AdminParticipantRequests competition={competition} />
+      {isAdmin && competition.participationRequests.length !== 0 && (
+        <AdminParticipationRequests competition={competition} />
       )}
       {/* Shows admin button that allows them to toggle between admin view and user view */}
       {isAdmin && (
@@ -106,9 +109,9 @@ const CompetitionLists: React.FC<IProps> = ({
       {isAdminView && (
         <Participants competition={competition} buttonIds={buttonIds} />
       )}
-      {/* Shows admin users they can or already have invited */}
+      {/* Shows admin users they can or already have invitationd */}
       {isAdminView && !isStarted && (
-        <Invites competition={competition} buttonIds={buttonIds} />
+        <Invitations competition={competition} buttonIds={buttonIds} />
       )}
       {/* Button to allow admins to stop being an admin */}
       {isAdminView && (

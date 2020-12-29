@@ -7,10 +7,9 @@ namespace Core.Interfaces.Repos
 {
   public interface IFriendRequestRepo : IBaseRepo
   {
-    Task<FriendRequest> GetFriendRequest(Guid userId, Guid friendId);
-    Task<IEnumerable<FriendRequest>> GetFriendRequestsWithUsers(Guid userId);
-    Task<IEnumerable<User>> GetUsersWhoSentFriendRequest(Guid userId);
-    void AddFriendRequest(FriendRequest friendRequest);
-    void DeleteFriendRequest(FriendRequest friendRequest);
+    Task<FriendRequest> Get(Guid userId, Guid differentUserId);
+    Task<IEnumerable<FriendRequest>> GetUsersWithFriendRequests(Guid userId);
+    void Create(FriendRequest friendRequest);
+    void Delete(FriendRequest friendRequest);
   }
 }

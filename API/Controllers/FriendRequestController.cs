@@ -15,29 +15,23 @@ namespace API.Controllers
       _friendRequestService = friendRequestService;
     }
 
-    [HttpPost("{friendId}")]
-    public async Task<ActionResult> AddFriendRequest(Guid friendId)
+    [HttpPost("{differentUserId}")]
+    public async Task<ActionResult> AddFriendRequest(Guid differentUserId)
     {
-      await _friendRequestService.AddFriendRequest(UserId, friendId);
+      await _friendRequestService.AddFriendRequest(UserId, differentUserId);
       return NoContent();
     }
 
     [HttpGet]
-    public async Task<ActionResult<FriendRequestUserInfoResponse>> GetFriendRequestUserInfo()
+    public async Task<ActionResult<FriendRequestInfoResponse>> GetUserFriendRequestInfo()
     {
-      return Ok(await _friendRequestService.GetFriendRequestUserInfo(UserId));
+      return Ok(await _friendRequestService.GetUserFriendRequestInfo(UserId));
     }
 
-    [HttpGet("received")]
-    public async Task<ActionResult<UsersWhoSentFriendRequestResponse>> GetUsersWhoSentFriendRequest()
+    [HttpDelete("{differentUserId}")]
+    public async Task<ActionResult> DeleteFriendRequest(Guid differentUserId)
     {
-      return Ok(await _friendRequestService.GetUsersWhoSentFriendRequest(UserId));
-    }
-
-    [HttpDelete("{friendId}")]
-    public async Task<ActionResult> RejectOrDeleteFriendRequest(Guid friendId)
-    {
-      await _friendRequestService.RejectOrDeleteFriendRequest(UserId, friendId);
+      await _friendRequestService.DeleteFriendRequest(UserId, differentUserId);
       return NoContent();
     }
   }

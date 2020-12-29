@@ -8,7 +8,7 @@ import {
   GetFriendRequestUserInfo,
 } from '../../redux/friendRequest/actions';
 import { NO_BUTTON } from '../../redux/buttonTypes';
-import OtherUserItem from '../../sharedComponents/misc/OtherUserItem';
+import DifferentUserItem from '../../sharedComponents/misc/DifferentUserItem';
 import CollapsibleListContainer from '../../sharedComponents/misc/CollapsibleListContainer';
 import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
 import SearchBar from '../../sharedComponents/misc/SearchBar';
@@ -36,7 +36,7 @@ const FriendRequestsPage = () => {
 
   const receivedFriendRequests = requestState.usersWhoSentFriendRequest.map(
     (req, index) => (
-      <OtherUserItem
+      <DifferentUserItem
         key={index}
         user={req}
         buttonIds={requestState.buttonIds}
@@ -46,7 +46,7 @@ const FriendRequestsPage = () => {
 
   const sentFriendRequests = requestState.usersWhoReceivedFriendRequest.map(
     (req, index) => (
-      <OtherUserItem
+      <DifferentUserItem
         key={index}
         user={req}
         isSent={true}

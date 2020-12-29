@@ -352,7 +352,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Core.Entity.Competition", b =>
                 {
                     b.HasOne("Core.Entity.Challenge", "Challenge")
-                        .WithOne("Competition")
+                        .WithOne()
                         .HasForeignKey("Core.Entity.Competition", "ChallengeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -391,7 +391,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Core.Entity.Goal", b =>
                 {
                     b.HasOne("Core.Entity.Challenge", "Challenge")
-                        .WithOne("Goal")
+                        .WithOne()
                         .HasForeignKey("Core.Entity.Goal", "ChallengeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

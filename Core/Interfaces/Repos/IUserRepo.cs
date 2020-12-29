@@ -7,11 +7,12 @@ namespace Core.Interfaces.Repos
 {
   public interface IUserRepo : IBaseRepo
   {
-    Task<User> GetUser(Guid userId);
-    Task<User> GetUserByEmail(string email);
+    Task<User> Get(Guid userId);
+    Task<User> Get(string email);
+    Task<User> GetUserInfo(Guid userId);
     Task<IEnumerable<User>> GetSearchableUsers(Guid userId);
-    void CreateUser(User user);
-    void UpdateUser(User user);
-    void DeleteUser(User user);
+    void Create(User user);
+    void Update(User user);
+    void Delete(User user);
   }
 }

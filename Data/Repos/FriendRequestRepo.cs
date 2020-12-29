@@ -16,24 +16,16 @@ namespace Data.Repos
 
     }
 
-    public async Task<FriendRequest> GetFriendRequest(Guid userId, Guid friendId)
+    public async Task<FriendRequest> Get(Guid userId, Guid differentUserId)
     {
       return await _context.FriendRequests
         .FirstOrDefaultAsync(x =>
-            (x.SenderId == userId && x.ReceiverId == friendId) ||
-            (x.ReceiverId == userId && x.SenderId == friendId)
+            (x.SenderId == userId && x.ReceiverId == differentUserId) ||
+            (x.ReceiverId == userId && x.SenderId == differentUserId)
         );
     }
 
-    public async Task<IEnumerable<User>> GetUsersWhoSentFriendRequest(Guid userId)
-    {
-      return await _context.FriendRequests
-        .Where(x => x.ReceiverId == userId)
-        .Select(x => x.Sender)
-        .ToListAsync();
-    }
-
-    public async Task<IEnumerable<FriendRequest>> GetFriendRequestsWithUsers(Guid userId)
+    public async Task<IEnumerable<FriendRequest>> GetUsersWithFriendRequests(Guid userId)
     {
       return await _context.FriendRequests
         .Where(x => x.ReceiverId == userId || x.SenderId == userId)
@@ -42,12 +34,12 @@ namespace Data.Repos
         .ToListAsync();
     }
 
-    public void AddFriendRequest(FriendRequest friendRequest)
+    public void Create(FriendRequest friendRequest)
     {
       _context.FriendRequests.Add(friendRequest);
     }
 
-    public void DeleteFriendRequest(FriendRequest friendRequest)
+    public void Delete(FriendRequest friendRequest)
     {
       _context.FriendRequests.Remove(friendRequest);
     }

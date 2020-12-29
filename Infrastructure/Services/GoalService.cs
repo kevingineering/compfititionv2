@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Core.Entity;
@@ -16,16 +14,18 @@ namespace Infrastructure.Services
   {
     private readonly IGoalRepo _goalRepo;
     private readonly IChallengeRepo _challengeRepo;
+    private readonly IMappingService _mappingService;
 
-    public GoalService(IGoalRepo goalRepo, IChallengeRepo challengeRepo)
+    public GoalService(IGoalRepo goalRepo, IChallengeRepo challengeRepo, IMappingService mappingService)
     {
       _goalRepo = goalRepo;
       _challengeRepo = challengeRepo;
+      _mappingService = mappingService;
     }
 
     public async Task<GoalResponse> GetGoal(Guid userId, Guid goalId)
     {
-      var goal = await _goalRepo.GetGoal(goalId);
+      var goal = await _goalRepo.Get(goalId);
       goal.EnsureExists("Goal not found.");
 
       if (goal.UserId != userId && goal.IsPrivate)
@@ -36,21 +36,13 @@ namespace Infrastructure.Services
       return new GoalResponse(goal);
     }
 
-    public async Task<IReadOnlyList<GoalResponse>> GetUserGoals(Guid userId)
-    {
-      var goals = await _goalRepo.GetUserGoals(userId);
-      return goals.Select(goal => new GoalResponse(goal)).ToList();
-    }
-
     public async Task<GoalResponse> AddGoal(Guid userId, GoalRequest request)
     {
-      var challenge = new Challenge(request.Name, request.Duration, request.StartTime, request.Category, request.Description, request.Units, request.DaysPerWeek);
-      var goal = new Goal(userId, challenge.ChallengeId, request.InitialValue, request.Target, request.IsPrivate);
-      goal.Challenge = challenge;
+      var challenge = _mappingService.CreateChallenge(request);
+      var goal = _mappingService.CreateGoal(userId, challenge.ChallengeId, request);
 
-      //TODO - Test without add challenge?
-      _challengeRepo.AddChallenge(challenge);
-      _goalRepo.AddGoal(goal);
+      _challengeRepo.Create(challenge);
+      _goalRepo.Create(goal);
       await _goalRepo.Save();
 
       return new GoalResponse(goal);
@@ -58,60 +50,24 @@ namespace Infrastructure.Services
 
     public async Task<GoalResponse> UpdateGoal(Guid userId, Guid goalId, GoalRequest request)
     {
-      var goal = await _goalRepo.GetGoal(goalId);
-      goal.EnsureExists("Goal not found.");
-      var challenge = goal.Challenge;
+      var existingGoal = await _goalRepo.Get(goalId);
+      existingGoal.EnsureExists("Goal not found.");
 
-      VerifyUserOwnsGoal(userId, goal);
+      VerifyUserOwnsGoal(userId, existingGoal);
 
-      if (challenge.StartTime.AddDays(challenge.Duration) < DateTime.Now)
-      {
-        throw new ApiError(400, "You cannot change goals that have already finished.");
-      }
+      var updatedChallenge = _mappingService.UpdateChallenge(existingGoal.Challenge, request);
+      var updatedGoal = _mappingService.UpdateGoal(existingGoal, request);
 
-      if (challenge.StartTime.AddDays(request.Duration) < DateTime.Now)
-      {
-        throw new ApiError(400, "Duration can not end in the past.");
-      }
-
-      if (Enum.TryParse<CategoryEnum>(request.Category, out CategoryEnum result))
-      {
-      }
-      else
-      {
-        throw new ApiError(400);
-      }
-
-      //these properties can change for any goal that is not finished
-      challenge.Name = request.Name;
-      challenge.Duration = request.Duration;
-      challenge.Description = request.Description;
-      challenge.Units = request.Units;
-      goal.Target = request.Target;
-      goal.IsPrivate = request.IsPrivate;
-      goal.InitialValue = request.InitialValue;
-
-      //these properties can only change before a goal begins
-      if (challenge.StartTime > DateTime.Now)
-      {
-        if (request.StartTime < DateTime.Now)
-        {
-          throw new ApiError(400, "Start date cannot be in the past.");
-        }
-        challenge.StartTime = request.StartTime;
-        challenge.Category = result;
-        challenge.DaysPerWeek = request.DaysPerWeek;
-      }
-
-      _goalRepo.UpdateGoal(goal);
+      _challengeRepo.Update(updatedChallenge);
+      _goalRepo.Update(updatedGoal);
       await _goalRepo.Save();
 
-      return new GoalResponse(goal);
+      return new GoalResponse(updatedGoal);
     }
 
     public async Task<GoalResponse> UpdateGoalLedger(Guid userId, LedgerRequest request)
     {
-      var goal = await _goalRepo.GetGoal(request.GoalId);
+      var goal = await _goalRepo.Get(request.GoalId);
       goal.EnsureExists("Goal not found.");
       VerifyUserOwnsGoal(userId, goal);
 
@@ -125,7 +81,7 @@ namespace Infrastructure.Services
       }
 
       goal.Ledger = JsonSerializer.Serialize(request.Ledger);
-      _goalRepo.UpdateGoal(goal);
+      _goalRepo.Update(goal);
       await _goalRepo.Save();
 
       return new GoalResponse(goal);
@@ -133,12 +89,12 @@ namespace Infrastructure.Services
 
     public async Task DeleteGoal(Guid userId, Guid goalId)
     {
-      var goal = await _goalRepo.GetGoal(goalId);
-      goal.EnsureExists("Goal not found.");
-      VerifyUserOwnsGoal(userId, goal);
+      var existingGoal = await _goalRepo.Get(goalId);
+      existingGoal.EnsureExists("Goal not found.");
+      VerifyUserOwnsGoal(userId, existingGoal);
 
-      _goalRepo.DeleteGoal(goal);
-      await _goalRepo.Save();
+      _goalRepo.Delete(existingGoal);
+      await _goalRepo.Save("Problem deleting goal.");
     }
 
     private void VerifyUserOwnsGoal(Guid userId, Goal goal)

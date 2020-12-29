@@ -15,6 +15,16 @@ namespace Data.Context.Config
       builder.Property(ch => ch.StartTime).IsRequired();
       builder.Property(ch => ch.Category).IsRequired();
       builder.Property(ch => ch.Units).HasMaxLength(20);
+
+      // builder.HasOne(ch => ch.Goal)
+      //   .WithOne(g => g.Challenge)
+      //   .HasForeignKey<Goal>(ch => ch.GoalId)
+      //   .OnDelete(DeleteBehavior.Cascade);
+
+      // builder.HasOne(ch => ch.Competition)
+      //   .WithOne(g => g.Challenge)
+      //   .HasForeignKey<Competition>(ch => ch.CompetitionId)
+      //   .OnDelete(DeleteBehavior.Cascade);
     }
   }
 }

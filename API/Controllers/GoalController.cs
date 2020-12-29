@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +23,6 @@ namespace API.Controllers
       return Ok(await _goalService.AddGoal(UserId, request));
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<GoalResponse>>> GetGoals()
-    {
-      return Ok(await _goalService.GetUserGoals(UserId));
-    }
-
     [HttpGet("{goalId}")]
     public async Task<ActionResult<GoalResponse>> GetGoal(Guid goalId)
     {
@@ -49,7 +42,7 @@ namespace API.Controllers
     }
 
     [HttpDelete("{goalId}")]
-    public async Task<ActionResult<Goal>> DeleteGoal(Guid goalId)
+    public async Task<ActionResult> DeleteGoal(Guid goalId)
     {
       await _goalService.DeleteGoal(UserId, goalId);
       return NoContent();

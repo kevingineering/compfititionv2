@@ -1,100 +1,90 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Entity;
-using Core.Interfaces;
-using Core.Specifications.Competitions;
-using System.Linq;
-using Core.Specifications.Participants;
+using Core.Errors;
+using Core.Interfaces.Repos;
+using Infrastructure.Models.Request;
+using Infrastructure.Models.Response;
+using Infrastructure.Signatures;
 
 namespace Infrastructure.Services
 {
-  public class CompetitionService
-  //: AbstractService<Competition>, ICompetitionService
+  public class CompetitionService : ICompetitionService
   {
-    // private readonly IUnitOfWork _unitOfWork;
+    private readonly ICompetitionRepo _competitionRepo;
+    private readonly IChallengeRepo _challengeRepo;
+    private readonly IMappingService _mappingService;
+    private readonly IAdminRepo _adminRepo;
+    private readonly IParticipantRepo _participantRepo;
 
-    // public CompetitionService(IUnitOfWork unitOfWork) : base(unitOfWork)
-    // {
-    //   _unitOfWork = unitOfWork;
-    // }
-
-    public Task<bool> AddCompetitionAsync(Competition comp, Guid userId)
+    public CompetitionService(ICompetitionRepo competitionRepo, IChallengeRepo challengeRepo, IMappingService mappingService, IAdminRepo adminRepo, IParticipantRepo participantRepo)
     {
-      throw new NotImplementedException();
-      // var participant = new CompetitionParticipant(userId, comp.Id);
-      // var admin = new CompetitionAdmin(userId, comp.Id);
-
-      // _unitOfWork.Repository<Competition>().Add(comp);
-      // _unitOfWork.Repository<CompetitionParticipant>().Add(participant);
-      // _unitOfWork.Repository<CompetitionAdmin>().Add(admin);
-      // var changes = await _unitOfWork.Complete();
-
-      // if (changes <= 0)
-      // {
-      //   return false;
-      // }
-
-      // return true;
+      _competitionRepo = competitionRepo;
+      _challengeRepo = challengeRepo;
+      _mappingService = mappingService;
+      _adminRepo = adminRepo;
+      _participantRepo = participantRepo;
     }
 
-    public Task<IReadOnlyList<Goal>> GetUserCompetitions(Guid userId)
+    //note - for admin actions, competition can't be null or won't pass authorization
+
+    public async Task<CompetitionResponse> GetCompetition(Guid userId, Guid competitionId)
     {
-      throw new NotImplementedException();
+      var admin = await _adminRepo.Get(userId, competitionId);
+      var competition = await _competitionRepo.GetWithInfo(competitionId);
+      competition.EnsureExists("Competition not found.");
 
-      //get participations (includes competitions)
-      // var spec = new UserParticipationsSpec(userId);
-      // var participations = (await _unitOfWork.Repository<CompetitionParticipant>().ListAsync(spec)).OrderBy(x => x.CompGoal.StartTime);
-      // var goals = new List<Goal>();
-      // foreach (var participation in participations)
-      // {
-      //   goals.Add(new Goal
-      //   {
-      //     Id = participation.CompGoal.Id,
-      //     Name = participation.CompGoal.Name,
-      //     UserId = userId,
-      //     Duration = participation.CompGoal.Duration,
-      //     StartTime = participation.CompGoal.StartTime,
-      //     Type = participation.CompGoal.Type,
-      //     Description = participation.CompGoal.Description,
-      //     Units = participation.CompGoal.Units,
-      //     Target = participation.Target,
-      //     IsPrivate = participation.CompGoal.IsPrivate,
-      //     Ledger = participation.Ledger
-      //   });
-      // }
+      if (admin != null)
+      {
+        return new CompetitionResponse(competition, true, userId);
+      }
 
-      // return goals;
+      var participant = competition.Participants.FirstOrDefault(x => x.UserId == userId);
+
+      if (participant != null || !competition.IsPrivate)
+      {
+        return new CompetitionResponse(competition, false, userId);
+      }
+
+      throw new ApiError(403);
     }
 
-    public Task<IReadOnlyList<Goal>> GetFriendPublicCompetitions(Guid friendId)
+    public async Task<CompetitionResponse> AddCompetition(Guid userId, CompetitionRequest request)
     {
-      throw new NotImplementedException();
-      // var spec = new UserParticipationsSpec(friendId);
-      // var participations = await _unitOfWork.Repository<CompetitionParticipant>().ListAsync(spec);
-      // var competitionIds = participations.Select(x => x.CompId).ToList();
-      // var compSpec = new PublicCompetitionsInIdArraySpec(competitionIds);
-      // var competitions = await _unitOfWork.Repository<Competition>().ListAsync(compSpec);
-      // var goals = new List<Goal>();
-      // foreach (var competition in competitions)
-      // {
-      //   goals.Add(new Goal
-      //   {
-      //     Id = competition.Id,
-      //     Name = competition.Name,
-      //     UserId = friendId,
-      //     Duration = competition.Duration,
-      //     StartTime = competition.StartTime,
-      //     Type = competition.Type,
-      //     Description = competition.Description,
-      //     Units = competition.Units,
-      //     Target = competition.Participants.First(x => x.UserId == friendId).Target,
-      //     IsPrivate = competition.IsPrivate,
-      //     Ledger = competition.Participants.First(x => x.UserId == friendId).Ledger
-      //   });
-      // }
+      var challenge = _mappingService.CreateChallenge(request);
+      var competition = _mappingService.CreateCompetition(challenge.ChallengeId, request);
 
-      // return goals;
+      _challengeRepo.Create(challenge);
+      _competitionRepo.Create(competition);
+      _participantRepo.Create(new Participant(userId, competition.CompetitionId));
+      _adminRepo.Create(new Admin(userId, competition.CompetitionId));
+      await _competitionRepo.Save();
+
+      return new CompetitionResponse(competition, true, userId);
+    }
+
+    public async Task<CompetitionResponse> UpdateCompetition(Guid competitionId, CompetitionRequest request)
+    {
+      var existingCompetition = await _competitionRepo.GetWithInfo(competitionId);
+
+      var updatedChallenge = _mappingService.UpdateChallenge(existingCompetition.Challenge, request);
+      var updatedCompetition = _mappingService.UpdateCompetition(existingCompetition, request);
+
+      _challengeRepo.Update(updatedChallenge);
+      _competitionRepo.Update(updatedCompetition);
+      await _competitionRepo.Save();
+
+      //userId is not required if user is admin
+      return new CompetitionResponse(updatedCompetition, true, Guid.NewGuid());
+    }
+
+    public async Task DeleteCompetition(Guid competitionId)
+    {
+      var competition = await _competitionRepo.Get(competitionId);
+      _competitionRepo.Delete(competition);
+      await _competitionRepo.Save();
     }
   }
 }

@@ -7,9 +7,9 @@ namespace Infrastructure.Signatures
 {
   public interface IFriendshipService
   {
-    Task<OtherUserInfoResponse> GetOtherUserInfo(Guid userId, Guid friendId);
     Task<IReadOnlyList<DifferentUserResponse>> GetFriends(Guid userId);
-    Task<OtherUserInfoResponse> AddFriend(Guid userId, Guid friendId);
-    Task DeleteFriend(Guid userId, Guid friendId);
+    Task<DifferentUserInfoResponse> GetDifferentUserInfo(Guid userId, Guid differentUserId);
+    Task<DifferentUserInfoResponse> AddFriend(Guid userId, Guid differentUserId);
+    Task DeleteFriend(Guid userId, Guid differentUserId);
   }
 }

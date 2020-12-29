@@ -50,7 +50,7 @@ export const ButtonRequestToJoin = `
   font-size: 1.17em;
 `;
 
-export const InviteButtonDelete = `
+export const InvitationButtonDelete = `
   background: var(--danger-color);
   color: var(--secondary-color);
   width: 5rem;
@@ -58,7 +58,7 @@ export const InviteButtonDelete = `
   padding: 0;
 `;
 
-export const InviteButtonSend = `
+export const InvitationButtonSend = `
   background: var(--primary-color);
   color: var(--secondary-color);
   width: 5rem;

@@ -4,6 +4,6 @@ namespace Core.Interfaces.Repos
 {
   public interface IBaseRepo
   {
-    Task<int> Save();
+    Task Save(string message = null);
   }
 }

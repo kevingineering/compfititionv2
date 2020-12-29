@@ -1,19 +1,6 @@
-import {
-  GoalDispatchTypes,
-  GOAL_LOADING,
-  GET_GOALS,
-  GET_GOAL,
-  SET_CURRENT_GOAL,
-  ADD_GOAL,
-  CLEAR_CURRENT_GOAL,
-  UPDATE_GOAL,
-  GOAL_ERROR,
-  DELETE_GOAL,
-  UPDATE_GOAL_LEDGER,
-} from './types';
+import { GoalDispatchTypes, EGoalActions } from './types';
 import { NOT_LOADING } from '../buttonTypes';
 import { TGoal } from '../../types';
-import { getGoalTime } from '../../util/dateFunctions';
 
 export interface IGoalState {
   loadingButton: string;
@@ -34,50 +21,45 @@ const goalReducer = (
   action: GoalDispatchTypes
 ) => {
   switch (action.type) {
-    case GOAL_LOADING:
+    case EGoalActions.GOAL_LOADING:
       return {
         ...state,
         loadingButton: action.payload,
       };
-    case GET_GOALS:
-      let fetchedGoals = action.payload;
+    case EGoalActions.SET_GOALS:
       return {
         ...state,
         loadingButton: NOT_LOADING,
-        activeGoals: fetchedGoals.filter(
-          (goal) => !getGoalTime(goal.startTime, goal.duration).isFinished
-        ),
-        pastGoals: fetchedGoals.filter(
-          (goal) => getGoalTime(goal.startTime, goal.duration).isFinished
-        ),
+        activeGoals: action.payload.activeGoals,
+        pastGoals: action.payload.pastGoals,
       };
-    case GET_GOAL:
+    case EGoalActions.GET_GOAL:
       return {
         ...state,
         selectedGoal: action.payload,
         loadingButton: NOT_LOADING,
       };
-    case SET_CURRENT_GOAL:
+    case EGoalActions.SET_CURRENT_GOAL:
       let concatGoals = state.activeGoals.concat(state.pastGoals);
       let goal = concatGoals.find((goal) => goal.goalId === action.payload);
       return {
         ...state,
         selectedGoal: goal,
       };
-    case CLEAR_CURRENT_GOAL:
+    case EGoalActions.CLEAR_CURRENT_GOAL:
       return {
         ...state,
         selectedGoal: undefined,
       };
-    case ADD_GOAL:
+    case EGoalActions.ADD_GOAL:
       return {
         ...state,
         activeGoals: [...state.activeGoals, action.payload],
         selectedGoal: action.payload,
         loadingButton: NOT_LOADING,
       };
-    case UPDATE_GOAL:
-    case UPDATE_GOAL_LEDGER:
+    case EGoalActions.UPDATE_GOAL:
+    case EGoalActions.UPDATE_GOAL_LEDGER:
       return {
         ...state,
         selectedGoal: action.payload,
@@ -86,7 +68,7 @@ const goalReducer = (
         ),
         loadingButton: NOT_LOADING,
       };
-    case DELETE_GOAL:
+    case EGoalActions.DELETE_GOAL:
       return {
         ...state,
         selectedGoal: undefined,
@@ -98,7 +80,7 @@ const goalReducer = (
           (goal) => goal.goalId !== action.payload
         ),
       };
-    case GOAL_ERROR:
+    case EGoalActions.GOAL_ERROR:
       return {
         ...state,
         loadingButton: NOT_LOADING,

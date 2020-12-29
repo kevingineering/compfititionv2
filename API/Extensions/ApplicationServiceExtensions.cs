@@ -22,12 +22,25 @@ namespace API.Extensions
       services.AddScoped<IGoalRepo, GoalRepo>();
       services.AddScoped<IFriendRequestRepo, FriendRequestRepo>();
       services.AddScoped<IFriendshipRepo, FriendshipRepo>();
+      services.AddScoped<ICompetitionRepo, CompetitionRepo>();
+      services.AddScoped<IParticipantRepo, ParticipantRepo>();
+      services.AddScoped<IParticipationRequestRepo, ParticipationRequestRepo>();
+      services.AddScoped<IInvitationRepo, InvitationRepo>();
+      services.AddScoped<IAdminRepo, AdminRepo>();
+      services.AddScoped<IAdminRequestRepo, AdminRequestRepo>();
 
       //Services
       services.AddScoped<IUserService, UserService>();
       services.AddScoped<IGoalService, GoalService>();
       services.AddScoped<IFriendRequestService, FriendRequestService>();
       services.AddScoped<IFriendshipService, FriendshipService>();
+      services.AddScoped<ICompetitionService, CompetitionService>();
+      services.AddScoped<IParticipantService, ParticipantService>();
+      services.AddScoped<IParticipationRequestService, ParticipationRequestService>();
+      services.AddScoped<IInvitationService, InvitationService>();
+      services.AddScoped<IAdminService, AdminService>();
+      services.AddScoped<IAdminRequestService, AdminRequestService>();
+      services.AddScoped<IMappingService, MappingService>();
 
       //Utilities
       services.AddScoped<ITokenUtility, TokenUtility>();

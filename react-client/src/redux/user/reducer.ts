@@ -1,21 +1,4 @@
-import {
-  UserDispatchTypes,
-  USER_LOADING,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT,
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-  GET_USER_SUCCESS,
-  GET_USER_FAIL,
-  UPDATE_USER_SUCCESS,
-  UPDATE_USER_FAIL,
-  DELETE_USER_FAIL,
-  DELETE_USER_SUCCESS,
-  CHANGE_PASSWORD_SUCCESS,
-  CHANGE_PASSWORD_FAIL,
-  RESET_IS_MODIFIED,
-} from './types';
+import { UserDispatchTypes, EUserActions } from './types';
 
 import setAuthToken from '../../util/setAuthToken';
 import { NOT_LOADING } from '../buttonTypes';
@@ -39,14 +22,14 @@ const userReducer = (
   action: UserDispatchTypes
 ) => {
   switch (action.type) {
-    case USER_LOADING:
+    case EUserActions.USER_LOADING:
       return {
         ...state,
         loadingButton: action.payload,
       };
-    case LOGIN_SUCCESS:
-    case REGISTER_SUCCESS:
-    case GET_USER_SUCCESS:
+    case EUserActions.LOGIN_USER:
+    case EUserActions.REGISTER_USER:
+    case EUserActions.GET_USER:
       localStorage.setItem('token', action.payload.token!);
       setAuthToken(action.payload.token!);
       return {
@@ -55,7 +38,13 @@ const userReducer = (
         user: action.payload,
         isAuthenticated: true,
       };
-    case UPDATE_USER_SUCCESS:
+    case EUserActions.GET_USER_INFO:
+      //handled in other reducers
+      return {
+        ...state,
+        loadingButton: NOT_LOADING,
+      };
+    case EUserActions.UPDATE_USER:
       localStorage.setItem('token', action.payload.token!);
       setAuthToken(action.payload.token!);
       return {
@@ -65,31 +54,27 @@ const userReducer = (
         isAuthenticated: true,
         isModified: true,
       };
-    case CHANGE_PASSWORD_SUCCESS:
+    case EUserActions.CHANGE_PASSWORD:
       return {
         ...state,
         loadingButton: NOT_LOADING,
         isAuthenticated: true,
         isModified: true,
       };
-    case LOGIN_FAIL:
-    case REGISTER_FAIL:
-    case GET_USER_FAIL:
+    case EUserActions.AUTH_ERROR:
       return {
         ...state,
         loadingButton: NOT_LOADING,
         user: undefined,
         isAuthenticated: false,
       };
-    case UPDATE_USER_FAIL:
-    case DELETE_USER_FAIL:
-    case CHANGE_PASSWORD_FAIL:
+    case EUserActions.USER_ERROR:
       return {
         ...state,
         loadingButton: NOT_LOADING,
       };
-    case DELETE_USER_SUCCESS:
-    case LOGOUT:
+    case EUserActions.DELETE_USER:
+    case EUserActions.LOGOUT:
       //NOTE - these cases are also handled by RootReducer
       localStorage.removeItem('token');
       setAuthToken('');
@@ -99,7 +84,7 @@ const userReducer = (
         user: undefined,
         isAuthenticated: false,
       };
-    case RESET_IS_MODIFIED:
+    case EUserActions.RESET_IS_MODIFIED:
       return {
         ...state,
         isModified: false,

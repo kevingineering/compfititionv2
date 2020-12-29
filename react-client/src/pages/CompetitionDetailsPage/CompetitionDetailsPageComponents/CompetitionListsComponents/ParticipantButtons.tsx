@@ -5,10 +5,8 @@ import {
   ButtonSplitDanger,
 } from '../../../../sharedComponents/styledComponents/Button';
 import styled from 'styled-components';
-import {
-  KickUserFromCompetition,
-  AddAdminRequest,
-} from '../../../../redux/competition/actions';
+import { KickUserFromCompetition } from '../../../../redux/aggregateCompetition/participant/actions';
+import { AddAdminRequest } from '../../../../redux/aggregateCompetition/adminRequest/actions';
 import { useDispatch } from 'react-redux';
 import LoadingButton from '../../../../sharedComponents/forms/LoadingButton';
 import {

@@ -10,7 +10,8 @@ namespace Infrastructure.Signatures
     Task<UserResponse> Register(RegisterRequest request);
     Task<UserResponse> Login(LoginRequest request);
     Task<UserResponse> GetUser(Guid userId);
-    Task<UserResponse> UpdateUser(Guid userId, UpdateRequest request);
+    Task<UserInfoResponse> GetUserInfo(Guid userId);
+    Task<UserResponse> UpdateUser(Guid userId, UpdateUserRequest request);
     Task ChangePassword(Guid userId, ChangePasswordRequest request);
     Task DeleteUser(Guid userId, PasswordRequest request);
   }

@@ -25,8 +25,6 @@ interface IProps {
   setUserRecord: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
-//TODO
-
 const CompetitionTable: React.FC<IProps> = ({
   competition,
   competitionArray,

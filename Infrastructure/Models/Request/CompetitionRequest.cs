@@ -7,6 +7,5 @@ namespace Infrastructure.Models.Request
     public bool IsHighestScoreWins { get; set; }
     [Required]
     public bool IsPrivate { get; set; }
-    public decimal? InitialValue { get; set; }
   }
 }

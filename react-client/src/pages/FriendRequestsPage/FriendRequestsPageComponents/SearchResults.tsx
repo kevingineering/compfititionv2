@@ -1,7 +1,7 @@
 import React from 'react';
 import { TDifferentUser } from '../../../types';
 import { EmptyCollection } from '../../../sharedComponents/styledComponents/Misc';
-import OtherUserItem from '../../../sharedComponents/misc/OtherUserItem';
+import DifferentUserItem from '../../../sharedComponents/misc/DifferentUserItem';
 
 interface IProps {
   results: TDifferentUser[];
@@ -14,7 +14,7 @@ const SearchResults: React.FC<IProps> = ({ results, buttonIds }) => {
       <EmptyCollection>No users match your search.</EmptyCollection>
     ) : (
       results.map((user, index) => (
-        <OtherUserItem
+        <DifferentUserItem
           key={index}
           user={user}
           hasButton={true}

@@ -11,50 +11,59 @@ namespace Data.Repos
 {
   public class UserRepo : BaseRepo, IUserRepo
   {
-
     public UserRepo(DataContext context) : base(context)
     {
     }
 
-    public async Task<User> GetUser(Guid userId)
+    public async Task<User> Get(Guid userId)
     {
       return await _context.Users
         .FirstOrDefaultAsync(x => x.UserId == userId);
     }
 
-    public async Task<User> GetUserByEmail(string email)
+    public async Task<User> Get(string email)
     {
       //allowing user to return as null for Register
       return await _context.Users
         .FirstOrDefaultAsync(x => x.Email == email);
     }
 
-    public async Task<User> GetUserWithGoals(Guid userId, Guid friendId)
+    public async Task<User> GetUserInfo(Guid userId)
     {
-      var user = await _context.Users
+      return await _context.Users
         .Include(x => x.Goals)
-        .FirstOrDefaultAsync(x => (x.UserId == userId));
-
-      return user;
+          .ThenInclude(x => x.Challenge)
+        .Include(x => x.Participations)
+          .ThenInclude(x => x.Competition)
+            .ThenInclude(x => x.Challenge)
+        .Include(x => x.User1Friends)
+          .ThenInclude(x => x.User2)
+        .Include(x => x.User2Friends)
+          .ThenInclude(x => x.User1)
+        .Include(x => x.Receivers)
+          .ThenInclude(x => x.Sender)
+        .FirstOrDefaultAsync(x => x.UserId == userId);
     }
 
     public async Task<IEnumerable<User>> GetSearchableUsers(Guid userId)
     {
-      return await _context.Users.Where(x => x.IsSearchable && x.UserId != userId).ToListAsync();
+      return await _context.Users
+        .Where(x => x.IsSearchable && x.UserId != userId)
+        .ToListAsync();
     }
 
-    public void CreateUser(User user)
+    public void Create(User user)
     {
       _context.Users.Add(user);
     }
 
-    public void UpdateUser(User user)
+    public void Update(User user)
     {
       _context.Users.Attach(user);
       _context.Entry(user).State = EntityState.Modified;
     }
 
-    public void DeleteUser(User user)
+    public void Delete(User user)
     {
       _context.Users.Remove(user);
     }

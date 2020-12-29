@@ -6,10 +6,8 @@ import {
 } from '../../../../sharedComponents/styledComponents/Misc';
 import LoadingButton from '../../../../sharedComponents/forms/LoadingButton';
 import { useDispatch } from 'react-redux';
-import {
-  RejectAdminRequest,
-  AcceptAdminRequest,
-} from '../../../../redux/competition/actions';
+import { RejectAdminRequest } from '../../../../redux/aggregateCompetition/adminRequest/actions';
+import { AcceptAdminRequest } from '../../../../redux/aggregateCompetition/admin/actions';
 import {
   ButtonSplitGray,
   ButtonSplitPrimary,

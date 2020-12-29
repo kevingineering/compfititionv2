@@ -1,5 +1,4 @@
 using System;
-using Core.Errors;
 
 namespace Core.Entity
 {
@@ -12,19 +11,6 @@ namespace Core.Entity
     public Challenge()
     {
 
-    }
-
-    public Challenge(string name, int duration, DateTime startTime, string category, string description, string units, int? daysPerWeek)
-    {
-      VerifyStartTime(startTime);
-      ChallengeId = new Guid();
-      Name = name;
-      Duration = duration;
-      StartTime = startTime;
-      Category = ConvertString(category);
-      Description = description;
-      Units = units;
-      DaysPerWeek = daysPerWeek;
     }
 
     public Guid ChallengeId { get; set; }
@@ -41,29 +27,11 @@ namespace Core.Entity
     //pass fail only - number of days per week
     public int? DaysPerWeek { get; set; }
 
-    //relationships
-    public virtual Goal Goal { get; set; }
-    public virtual Competition Competition { get; set; }
+    // public Guid? GoalId { get; set; }
+    // public Guid? CompetitionId { get; set; }
 
-    private CategoryEnum ConvertString(string category)
-    {
-      //Test
-      if (Enum.TryParse<CategoryEnum>(category, out CategoryEnum result))
-      {
-        return result;
-      }
-      else
-      {
-        throw new ApiError(400);
-      }
-    }
-
-    private void VerifyStartTime(DateTime startTime)
-    {
-      if (startTime < DateTime.Now)
-      {
-        throw new ApiError(400, "Start date cannot be in the past.");
-      }
-    }
+    // //relationships
+    // public virtual Goal Goal { get; set; }
+    // public virtual Competition Competition { get; set; }
   }
 }

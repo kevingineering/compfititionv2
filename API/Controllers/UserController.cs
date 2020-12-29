@@ -39,8 +39,14 @@ namespace API.Controllers
       return Ok(await _userService.GetUser(UserId));
     }
 
+    [HttpGet("info")]
+    public async Task<ActionResult<UserInfoResponse>> GetUserInfo()
+    {
+      return Ok(await _userService.GetUserInfo(UserId));
+    }
+
     [HttpPatch]
-    public async Task<ActionResult<UserResponse>> UpdateUser(UpdateRequest request)
+    public async Task<ActionResult<UserResponse>> UpdateUser(UpdateUserRequest request)
     {
       return Ok(await _userService.UpdateUser(UserId, request));
     }

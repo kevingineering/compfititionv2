@@ -1,13 +1,14 @@
 import { combineReducers, AnyAction } from 'redux';
 import userReducer from './user/reducer';
 import goalReducer from './goal/reducer';
-import competitionReducer from './competition/reducer';
+import competitionReducer from './aggregateCompetition/reducer';
 import alertReducer from './alert/reducer';
 import requestReducer from './friendRequest/reducer';
 import friendReducer from './friendship/reducer';
 import axios from 'axios';
 import { createAlertActions } from './alert/actions';
 import Store from './Store';
+import aggregateCompetitionReducer from './aggregateCompetition/reducer';
 
 //TODO - remove debugging delay
 axios.interceptors.request.use(async (req) => {
@@ -49,6 +50,7 @@ const CombinedReducer = combineReducers({
   competitionState: competitionReducer,
   requestState: requestReducer,
   friendState: friendReducer,
+  aggregateCompetitionReducer: aggregateCompetitionReducer,
 });
 
 const RootReducer = (state: any, action: AnyAction) => {

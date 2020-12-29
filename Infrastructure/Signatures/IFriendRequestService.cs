@@ -6,9 +6,8 @@ namespace Infrastructure.Signatures
 {
   public interface IFriendRequestService
   {
-    Task<FriendRequestUserInfoResponse> GetFriendRequestUserInfo(Guid userId);
-    Task<UsersWhoSentFriendRequestResponse> GetUsersWhoSentFriendRequest(Guid userId);
-    Task AddFriendRequest(Guid userId, Guid friendId);
-    Task RejectOrDeleteFriendRequest(Guid userId, Guid friendId);
+    Task<FriendRequestInfoResponse> GetUserFriendRequestInfo(Guid userId);
+    Task AddFriendRequest(Guid userId, Guid differentUserId);
+    Task DeleteFriendRequest(Guid userId, Guid differentUserId);
   }
 }

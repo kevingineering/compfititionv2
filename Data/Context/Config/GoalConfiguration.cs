@@ -14,13 +14,14 @@ namespace Data.Context.Config
 
       builder.HasOne(g => g.User)
         .WithMany(u => u.Goals)
-        .HasForeignKey(g => g.UserId)
-        .OnDelete(DeleteBehavior.Cascade);
+        .HasForeignKey(g => g.UserId);
 
+      //TODO - DELETE CHALLENGE WITH GOAL
       builder.HasOne(g => g.Challenge)
-        .WithOne(ch => ch.Goal)
-        .HasForeignKey<Goal>(c => c.ChallengeId)
-        .OnDelete(DeleteBehavior.Cascade);
+      // .WithOne(ch => ch.Goal)
+      .WithOne()
+      .HasForeignKey<Goal>(c => c.ChallengeId)
+      .OnDelete(DeleteBehavior.Cascade);
     }
   }
 }

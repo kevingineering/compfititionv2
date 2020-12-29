@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootStore } from '../../../redux/Store';
 import LoadingSpinner from '../../../sharedComponents/misc/LoadingSpinner';
 import { NO_BUTTON } from '../../../redux/buttonTypes';
-import OtherUserItem from '../../../sharedComponents/misc/OtherUserItem';
+import DifferentUserItem from '../../../sharedComponents/misc/DifferentUserItem';
 import { EmptyBorderedSpace } from '../../../sharedComponents/styledComponents/Misc';
 
 const ReceivedFriendRequestList = () => {
@@ -11,7 +11,7 @@ const ReceivedFriendRequestList = () => {
 
   const friendRequestsList = requestState.usersWhoSentFriendRequest.map(
     (req, index) => (
-      <OtherUserItem
+      <DifferentUserItem
         hasMessage={true}
         key={index}
         user={req}

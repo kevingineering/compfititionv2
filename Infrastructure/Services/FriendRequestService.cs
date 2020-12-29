@@ -22,20 +22,11 @@ namespace Infrastructure.Services
       _friendshipRepo = friendshipRepo;
     }
 
-    public async Task<UsersWhoSentFriendRequestResponse> GetUsersWhoSentFriendRequest(Guid userId)
-    {
-      var users = (await _friendRequestRepo.GetUsersWhoSentFriendRequest(userId));
-      return new UsersWhoSentFriendRequestResponse(users
-        .Select(x => new DifferentUserResponse(x))
-        .ToList()
-      );
-    }
-
-    public async Task<FriendRequestUserInfoResponse> GetFriendRequestUserInfo(Guid userId)
+    public async Task<FriendRequestInfoResponse> GetUserFriendRequestInfo(Guid userId)
     {
       var searchableUsers = await _userRepo.GetSearchableUsers(userId);
-      var friends = await _friendshipRepo.GetFriends(userId);
-      var friendRequests = await _friendRequestRepo.GetFriendRequestsWithUsers(userId);
+      var friends = await _friendshipRepo.GetList(userId);
+      var friendRequests = await _friendRequestRepo.GetUsersWithFriendRequests(userId);
 
       var usersWhoReceivedFriendRequest = friendRequests
         .Where(x => x.SenderId == userId)
@@ -48,49 +39,49 @@ namespace Infrastructure.Services
         .Except(usersWhoReceivedFriendRequest)
         .Except(usersWhoSentFriendRequest);
 
-      return new FriendRequestUserInfoResponse
+      return new FriendRequestInfoResponse
       {
         UsersWhoSentFriendRequest = usersWhoSentFriendRequest
-          .Select(x => new DifferentUserResponse(x.UserId, x.Email, x.Name))
+          .Select(x => new DifferentUserResponse(x))
           .ToList(),
         UsersWhoReceivedFriendRequest = usersWhoReceivedFriendRequest
-          .Select(x => new DifferentUserResponse(x.UserId, x.Email, x.Name))
+          .Select(x => new DifferentUserResponse(x))
           .ToList(),
         SearchableUsers = filteredSearchableUsers
-          .Select(x => new DifferentUserResponse(x.UserId, x.Email, x.Name))
+          .Select(x => new DifferentUserResponse(x))
           .ToList()
       };
     }
 
-    public async Task AddFriendRequest(Guid userId, Guid friendId)
+    public async Task AddFriendRequest(Guid userId, Guid differentUserId)
     {
-      if (userId == friendId)
+      if (userId == differentUserId)
       {
         throw new ApiError(400, "You cannot add yourself as a friend.");
       }
 
-      var user = await _userRepo.GetUser(friendId);
-      user.EnsureExists("User not found.");
+      var existingUser = await _userRepo.Get(differentUserId);
+      existingUser.EnsureExists("User not found.");
 
-      var existingFriendRequest = await _friendRequestRepo.GetFriendRequest(userId, friendId);
+      var existingFriendRequest = await _friendRequestRepo.Get(userId, differentUserId);
       existingFriendRequest.EnsureDoesNotExist();
 
-      var existingFriend = await _friendshipRepo.GetFriend(userId, friendId);
+      var existingFriend = await _friendshipRepo.Get(userId, differentUserId);
       existingFriend.EnsureDoesNotExist("Friendship already exists.");
 
-      _friendRequestRepo.AddFriendRequest(new FriendRequest(userId, friendId));
+      _friendRequestRepo.Create(new FriendRequest(userId, differentUserId));
       await _friendRequestRepo.Save();
 
-      var temp = await _friendRequestRepo.GetFriendRequest(userId, friendId);
+      var temp = await _friendRequestRepo.Get(userId, differentUserId);
 
     }
 
-    public async Task RejectOrDeleteFriendRequest(Guid userId, Guid friendId)
+    public async Task DeleteFriendRequest(Guid userId, Guid differentUserId)
     {
-      var friendRequest = await _friendRequestRepo.GetFriendRequest(userId, friendId);
-      friendRequest.EnsureExists("Friend request not found.");
+      var existingFriendRequest = await _friendRequestRepo.Get(userId, differentUserId);
+      existingFriendRequest.EnsureExists("Friend request not found.");
 
-      _friendRequestRepo.DeleteFriendRequest(friendRequest);
+      _friendRequestRepo.Delete(existingFriendRequest);
       await _friendRequestRepo.Save();
     }
   }

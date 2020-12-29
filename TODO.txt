@@ -1,12 +1,13 @@
-Partial delete for comments
-When deleting competition, create goals
-Determine if competition has no more users and delete
-Determine if competition has no more admins and promote oldest participant
+Coordinate seedData.txt and SeedData.cs
+Figure out how to cascade delete challenges with goal, competition, and user deletion
+Verify cascade deletion for all items in database
+
+Determine if competition has no more users and delete - occurs when user deletes account
+Determine if competition has no more admins and promote oldest participant - occurs when user deletes account
 
 Add start time and end time to goals/competitions?
 
 FUTURE:
-Chat
+When deleting competition, create goals?
+Chat - Partial delete for comments
 Turn Ok() 200 to Created() 201
-NotFound() instead of BadRequest()
-Unauthorized() to Forbid()

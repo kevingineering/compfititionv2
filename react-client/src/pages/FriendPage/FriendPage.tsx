@@ -4,7 +4,7 @@ import FriendAndNotificationContainer from '../../sharedComponents/userDashboard
 import { useSelector, useDispatch } from 'react-redux';
 import { RootStore } from '../../redux/Store';
 import { useParams, useHistory } from 'react-router-dom';
-import { GetOtherUserInfo } from '../../redux/friendship/actions';
+import { GetDifferentUserInfo } from '../../redux/friendship/actions';
 import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
 import DeleteFriendModule from './FriendPageComponents/DeleteFriendModule';
 import {
@@ -54,7 +54,7 @@ const FriendPage = () => {
   //runs on page load
   useEffect(() => {
     dispatch(GetFriendRequestUserInfo());
-    dispatch(GetOtherUserInfo(friendId));
+    dispatch(GetDifferentUserInfo(friendId));
     setIsLoaded(true);
   }, [dispatch, friendId]);
 
@@ -73,7 +73,7 @@ const FriendPage = () => {
   //runs when user accepts request
   useEffect(() => {
     if (friendState.friends.length !== 0 && isLoaded) {
-      dispatch(GetOtherUserInfo(friendId));
+      dispatch(GetDifferentUserInfo(friendId));
     }
     //eslint-disable-next-line
   }, [friendState.friends.length]);

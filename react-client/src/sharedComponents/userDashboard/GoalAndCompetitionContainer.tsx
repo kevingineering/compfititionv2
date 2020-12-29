@@ -14,6 +14,7 @@ interface IProps {
 //used for both user and friend pages
 const GoalAndCompetitionContainer: React.FC<IProps> = ({ isOwner }) => {
   const goalState = useSelector((state: RootStore) => state.goalState);
+  const userState = useSelector((state: RootStore) => state.userState);
   const competitionState = useSelector(
     (state: RootStore) => state.competitionState
   );
@@ -35,6 +36,7 @@ const GoalAndCompetitionContainer: React.FC<IProps> = ({ isOwner }) => {
 
   //controls loading spinner
   const isLoading =
+    userState.loadingButton === NO_BUTTON ||
     goalState.loadingButton === NO_BUTTON ||
     friendState.loadingButton === NO_BUTTON ||
     competitionState.loadingButton === NO_BUTTON;

@@ -88,8 +88,6 @@ const GoalDetailsPage: React.FC<IProps> = () => {
     dispatch(UpdateGoalLedger({ goalId: goalId, ledger: record }));
   };
 
-  console.log(record);
-
   return (
     <StandardContainer>
       <CollectionHeader>{name}</CollectionHeader>

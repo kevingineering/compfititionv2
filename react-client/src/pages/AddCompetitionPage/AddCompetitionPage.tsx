@@ -4,7 +4,7 @@ import { RootStore } from '../../redux/Store';
 import { useHistory } from 'react-router-dom';
 import { ADD_COMPETITION_BUTTON } from '../../redux/buttonTypes';
 import { TCompetitionRequest } from '../../redux/Models';
-import { AddCompetition } from '../../redux/competition/actions';
+import { AddCompetition } from '../../redux/aggregateCompetition/competition/actions';
 import GCInputs from '../../sharedComponents/goalCompPage/GCInputs';
 
 const AddCompetitionPage = () => {

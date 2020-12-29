@@ -1,20 +1,22 @@
 import { TAlert } from '../../types';
 
-export const SET_ALERT = 'SET_ALERT';
-export const REMOVE_ALERT = 'REMOVE_ALERT';
-export const CLEAR_ALERT = 'CLEAR_ALERT';
+export enum EAlertActions {
+  SET_ALERT = 'SET_ALERT',
+  REMOVE_ALERT = 'REMOVE_ALERT',
+  CLEAR_ALERT = 'CLEAR_ALERT',
+}
 
 export interface ISetAlert {
-  type: typeof SET_ALERT;
+  type: EAlertActions.SET_ALERT;
   payload: TAlert;
 }
 
 export interface IClearAlert {
-  type: typeof CLEAR_ALERT;
+  type: EAlertActions.CLEAR_ALERT;
 }
 
 export interface IRemoveAlert {
-  type: typeof REMOVE_ALERT;
+  type: EAlertActions.REMOVE_ALERT;
   payload: number;
 }
 

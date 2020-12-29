@@ -5,7 +5,7 @@ import { RootStore } from '../../redux/Store';
 import {
   GetCompetition,
   ClearCurrentCompetition,
-} from '../../redux/competition/actions';
+} from '../../redux/aggregateCompetition/competition/actions';
 import { NOT_LOADING } from '../../redux/buttonTypes';
 import { getGoalTime } from '../../util/dateFunctions';
 import LoadingSpinner from '../../sharedComponents/misc/LoadingSpinner';
@@ -22,8 +22,6 @@ import styled from 'styled-components';
 interface IParams {
   competitionId: string;
 }
-
-//TODO
 
 const CompetitionDetailsPage = () => {
   const dispatch = useDispatch();

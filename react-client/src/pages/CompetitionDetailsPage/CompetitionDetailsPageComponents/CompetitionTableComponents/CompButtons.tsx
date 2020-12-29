@@ -11,11 +11,11 @@ import NumberInput from '../../../../sharedComponents/forms/NumberInput';
 import { TCompetition, EGoalCategory } from '../../../../types';
 import { useDispatch } from 'react-redux';
 import {
-  DeleteCompetition,
   UpdateParticipantTarget,
   UpdateParticipantLedger,
   UpdateParticipantInitialValue,
-} from '../../../../redux/competition/actions';
+} from '../../../../redux/aggregateCompetition/participant/actions';
+import { DeleteCompetition } from '../../../../redux/aggregateCompetition/competition/actions';
 import {
   EmptyBorderedSpace,
   MessageInBorderedSpace,

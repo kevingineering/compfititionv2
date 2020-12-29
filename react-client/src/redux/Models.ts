@@ -10,7 +10,7 @@ export type TRegisterRequest = {
 
 export type TLoginRequest = { email: string; password: string };
 
-export type TUpdateRequest = TRegisterRequest;
+export type TUpdateUserRequest = TRegisterRequest;
 
 export type TChangePasswordRequest = {
   oldPassword: string;
@@ -33,27 +33,25 @@ export type TCompetitionRequest = TChallenge & {
   isPrivate: boolean;
 };
 
+export type TUpdateParticipationRequest = {
+  competitionId: string;
+  value: number;
+};
 //#endregion
 
 //#region Responses
 // export type TUserResponse = TUser;
 // export type TGoalResponse = TGoal;
+// export type TCompetitionResponse = TCompetition;
 // export type TDifferentUserResponse = TDifferentUser;
-// export type OtherUserInfoResponse = TOtherUser;
+// export type TDifferentUserInfoResponse = TDifferentUserInfo;
+// export type TUserInfoResponse = TUserInfo;
+// export type TParticipant
 
-export type TFriendRequestUserInfoResponse = {
+export type TFriendRequestInfoResponse = {
   usersWhoReceivedFriendRequest: TDifferentUser[];
   usersWhoSentFriendRequest: TDifferentUser[];
   searchableUsers: TDifferentUser[];
 };
 
-export type TUsersWhoSentFriendRequestResponse = {
-  usersWhoSentFriendRequest: TDifferentUser[];
-};
-
 //#endregion
-
-export type TUpdateParticipantDTO = {
-  competitionId: string;
-  value: number;
-};

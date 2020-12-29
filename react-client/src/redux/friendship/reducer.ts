@@ -1,25 +1,12 @@
-import {
-  FriendDispatchTypes,
-  GET_OTHER_USER,
-  GET_FRIENDS,
-  FRIEND_LOADING,
-  FRIEND_ERROR,
-  DELETE_FRIEND,
-  FILTER_FRIENDS,
-  CLEAR_FILTERED_FRIENDS,
-  ADD_FRIEND,
-  FRIEND_FILTER_FRIENDS,
-  CLEAR_FRIEND,
-  SET_FRIEND_CURRENT_GOAL,
-} from './types';
+import { FriendDispatchTypes, EFriendActions } from './types';
 import { makeSimpleRegex } from '../../util/makeRegex';
 import { NOT_LOADING } from '../buttonTypes';
-import { TDifferentUser, TOtherUser } from '../../types';
+import { TDifferentUser, TDifferentUserInfo } from '../../types';
 
 export interface IFriendState {
   loadingButton: string;
   friends: TDifferentUser[];
-  friend?: TOtherUser;
+  friend?: TDifferentUserInfo;
   filteredFriends: TDifferentUser[];
   isFiltered: boolean;
 }
@@ -37,42 +24,43 @@ const friendReducer = (
   action: FriendDispatchTypes
 ) => {
   switch (action.type) {
-    case FRIEND_LOADING:
+    case EFriendActions.FRIEND_LOADING:
       return {
         ...state,
         loadingButton: action.payload,
       };
-    case GET_FRIENDS:
+    case EFriendActions.SET_FRIENDS:
+    case EFriendActions.GET_FRIENDS:
       return {
         ...state,
         loadingButton: NOT_LOADING,
         friends: action.payload,
       };
-    case GET_OTHER_USER:
+    case EFriendActions.GET_DIFFERENT_USER_INFO:
       return {
         ...state,
         loadingButton: NOT_LOADING,
         friend: { ...action.payload },
         filteredFriends: [],
       };
-    case ADD_FRIEND:
+    case EFriendActions.ADD_FRIEND:
       return {
         ...state,
         loadingButton: NOT_LOADING,
         friends: [...state.friends, action.payload],
       };
-    case DELETE_FRIEND:
+    case EFriendActions.DELETE_FRIEND:
       return {
         ...state,
         loadingButton: NOT_LOADING,
         friend: undefined,
       };
-    case FRIEND_ERROR:
+    case EFriendActions.FRIEND_ERROR:
       return {
         ...state,
         loadingButton: NOT_LOADING,
       };
-    case FILTER_FRIENDS:
+    case EFriendActions.FILTER_FRIENDS:
       const regex = makeSimpleRegex(action.payload);
       return {
         ...state,
@@ -81,7 +69,7 @@ const friendReducer = (
         }),
         isFiltered: true,
       };
-    case FRIEND_FILTER_FRIENDS:
+    case EFriendActions.FRIEND_FILTER_FRIENDS:
       const regexB = makeSimpleRegex(action.payload);
       return {
         ...state,
@@ -90,15 +78,15 @@ const friendReducer = (
         ),
         isFiltered: true,
       };
-    case CLEAR_FILTERED_FRIENDS:
+    case EFriendActions.CLEAR_FILTERED_FRIENDS:
       return {
         ...state,
         filteredFriends: [],
         isFiltered: false,
       };
-    case CLEAR_FRIEND:
+    case EFriendActions.CLEAR_FRIEND:
       return friendState;
-    case SET_FRIEND_CURRENT_GOAL:
+    case EFriendActions.SET_FRIEND_CURRENT_GOAL:
       if (state.friend === undefined) {
         return state;
       } else {
@@ -109,7 +97,6 @@ const friendReducer = (
         let goal = concatGoals.find((goal) => goal.goalId === action.payload);
         return {
           ...state,
-          friends: state.friends,
           friend: { ...state.friend, selectedGoal: goal },
         };
       }

@@ -1,9 +1,4 @@
-import {
-  SET_ALERT,
-  REMOVE_ALERT,
-  CLEAR_ALERT,
-  AlertDispatchTypes,
-} from './types';
+import { AlertDispatchTypes, EAlertActions } from './types';
 
 interface IAlertState {
   message?: string;
@@ -20,14 +15,14 @@ const alertReducer = (
   action: AlertDispatchTypes
 ) => {
   switch (action.type) {
-    case SET_ALERT:
+    case EAlertActions.SET_ALERT:
       return {
         ...state,
         message: action.payload.message,
         timestamp: action.payload.timestamp,
         persist: action.payload.persist,
       };
-    case CLEAR_ALERT:
+    case EAlertActions.CLEAR_ALERT:
       if (!state.persist)
         return {
           ...state,
@@ -36,7 +31,7 @@ const alertReducer = (
           persist: false,
         };
       else return state;
-    case REMOVE_ALERT:
+    case EAlertActions.REMOVE_ALERT:
       if (state.timestamp === action.payload)
         return {
           ...state,
